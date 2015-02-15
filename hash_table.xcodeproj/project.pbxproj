@@ -11,6 +11,8 @@
 		D45564A81A8F23FE0081AB73 /* libhash_table.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D45564791A8EF31E0081AB73 /* libhash_table.a */; };
 		D48E43791A8F24FB0065D4A4 /* hash_table.c in Sources */ = {isa = PBXBuildFile; fileRef = D48E43771A8F24FB0065D4A4 /* hash_table.c */; };
 		D48E437A1A8F24FB0065D4A4 /* hash_table.h in Headers */ = {isa = PBXBuildFile; fileRef = D48E43781A8F24FB0065D4A4 /* hash_table.h */; };
+		D48E437C1A907FD00065D4A4 /* int_test.c in Sources */ = {isa = PBXBuildFile; fileRef = D48E437B1A907FD00065D4A4 /* int_test.c */; };
+		D48E437F1A90805F0065D4A4 /* string_test.c in Sources */ = {isa = PBXBuildFile; fileRef = D48E437D1A90805F0065D4A4 /* string_test.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,6 +43,8 @@
 		D45564A41A8F23C30081AB73 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		D48E43771A8F24FB0065D4A4 /* hash_table.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hash_table.c; sourceTree = "<group>"; };
 		D48E43781A8F24FB0065D4A4 /* hash_table.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hash_table.h; sourceTree = "<group>"; };
+		D48E437B1A907FD00065D4A4 /* int_test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = int_test.c; sourceTree = "<group>"; };
+		D48E437D1A90805F0065D4A4 /* string_test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = string_test.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,7 +87,9 @@
 		D45564A31A8F23C30081AB73 /* tests */ = {
 			isa = PBXGroup;
 			children = (
+				D48E437B1A907FD00065D4A4 /* int_test.c */,
 				D45564A41A8F23C30081AB73 /* main.c */,
+				D48E437D1A90805F0065D4A4 /* string_test.c */,
 			);
 			path = tests;
 			sourceTree = "<group>";
@@ -195,6 +201,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				D45564A51A8F23C30081AB73 /* main.c in Sources */,
+				D48E437C1A907FD00065D4A4 /* int_test.c in Sources */,
+				D48E437F1A90805F0065D4A4 /* string_test.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -21,6 +21,9 @@ hash_table_alloc(uint32_t capacity,
                  hash_table_hash_key_function *hash_key,
                  hash_table_compare_keys_function *compare_keys);
 
+void const **
+hash_table_alloc_keys(struct hash_table const *hash_table);
+
 uint32_t
 hash_table_capacity(struct hash_table const *hash_table);
 

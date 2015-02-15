@@ -45,6 +45,28 @@ hash_table_alloc(uint32_t capacity,
 }
 
 
+void const **
+hash_table_alloc_keys(struct hash_table const *hash_table)
+{
+  void const **keys = calloc(hash_table->count, sizeof(void *));
+  if ( ! keys) return NULL;
+  
+  size_t key_index = 0;
+  for (size_t entry_index = 0; entry_index < hash_table->capacity; ++entry_index) {
+    if (hash_table->entries[entry_index]) {
+      struct hash_table_entry *entry = hash_table->entries[entry_index];
+      while (entry) {
+        keys[key_index] = entry->key;
+        ++key_index;
+        entry = entry->next;
+      }
+    }
+  }
+  
+  return keys;
+}
+
+
 uint32_t
 hash_table_capacity(struct hash_table const *hash_table)
 {
