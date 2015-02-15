@@ -10,10 +10,10 @@ struct hash_table;
 
 
 typedef int
-hash_table_compare_keys_function(void *first_key, void *second_key);
+hash_table_compare_keys_function(void const *first_key, void const *second_key);
 
 typedef uint32_t
-hash_table_hash_key_function(void *key);
+hash_table_hash_key_function(void const *key);
 
 
 struct hash_table *
@@ -30,20 +30,20 @@ hash_table_count(struct hash_table const *hash_table);
 void
 hash_table_free(struct hash_table *hash_table);
 
-void *
-hash_table_get(struct hash_table const *hash_table, void *key);
+void const *
+hash_table_get(struct hash_table const *hash_table, void const *key);
 
 bool
-hash_table_has_key(struct hash_table const *hash_table, void *key);
+hash_table_has_key(struct hash_table const *hash_table, void const *key);
 
 int
 hash_table_put(struct hash_table *hash_table,
-               void *key,
-               void *value,
-               void **previous_value);
+               void const *key,
+               void const *value,
+               void const **previous_value);
 
-void *
-hash_table_remove(struct hash_table *hash_table, void *key);
+void const *
+hash_table_remove(struct hash_table *hash_table, void const *key);
 
 
 #endif

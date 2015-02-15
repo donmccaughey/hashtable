@@ -6,10 +6,10 @@
 
 
 static int
-compare_int_keys(void *first_key, void *second_key);
+compare_int_keys(void const *first_key, void const *second_key);
 
 static uint32_t
-hash_int_key(void *key);
+hash_int_key(void const *key);
 
 
 int
@@ -24,7 +24,7 @@ main(int argc, char const *argv[])
   int value1 = 10;
   assert( ! hash_table_has_key(hash_table, &key1));
   
-  void *previous_value;
+  void const *previous_value;
   int result = hash_table_put(hash_table, &key1, &value1, &previous_value);
   assert(0 == result);
   assert(1 == hash_table_count(hash_table));
@@ -63,7 +63,7 @@ main(int argc, char const *argv[])
   assert(&value3b == hash_table_get(hash_table, &key3));
   
   int key4 = 4;
-  void *removed_value = hash_table_remove(hash_table, &key4);
+  void const *removed_value = hash_table_remove(hash_table, &key4);
   assert(NULL == removed_value);
   assert(3 == hash_table_count(hash_table));
   
@@ -85,10 +85,10 @@ main(int argc, char const *argv[])
 
 
 static int
-compare_int_keys(void *first_key, void *second_key)
+compare_int_keys(void const *first_key, void const *second_key)
 {
-  int *first_int_key = first_key;
-  int *second_int_key = second_key;
+  int const *first_int_key = first_key;
+  int const *second_int_key = second_key;
   if (*first_int_key < *second_int_key) return -1;
   if (*first_int_key > *second_int_key) return 1;
   return 0;
@@ -96,8 +96,8 @@ compare_int_keys(void *first_key, void *second_key)
 
 
 static uint32_t
-hash_int_key(void *key)
+hash_int_key(void const *key)
 {
-  int *int_key = key;
+  int const *int_key = key;
   return abs(*int_key) % UINT32_MAX;
 }

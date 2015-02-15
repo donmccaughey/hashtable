@@ -5,8 +5,8 @@
 
 struct hash_table_entry {
   struct hash_table_entry *next;
-  void *key;
-  void *value;
+  void const *key;
+  void const *value;
 };
 
 
@@ -20,7 +20,7 @@ struct hash_table {
 
 
 static struct hash_table_entry *
-hash_table_entry_alloc(void *key, void *value);
+hash_table_entry_alloc(void const *key, void const *value);
 
 
 struct hash_table *
@@ -60,7 +60,7 @@ hash_table_count(struct hash_table const *hash_table)
 
 
 static struct hash_table_entry *
-hash_table_entry_alloc(void *key, void *value)
+hash_table_entry_alloc(void const *key, void const *value)
 {
   struct hash_table_entry *entry = calloc(1, sizeof(struct hash_table_entry));
   if ( ! entry) return NULL;
@@ -78,8 +78,8 @@ hash_table_free(struct hash_table *hash_table)
 }
 
 
-void *
-hash_table_get(struct hash_table const *hash_table, void *key)
+void const *
+hash_table_get(struct hash_table const *hash_table, void const *key)
 {
   uint32_t hash = hash_table->hash_key(key);
   size_t index = hash % hash_table->capacity;
@@ -97,7 +97,7 @@ hash_table_get(struct hash_table const *hash_table, void *key)
 
 
 bool
-hash_table_has_key(struct hash_table const *hash_table, void *key)
+hash_table_has_key(struct hash_table const *hash_table, void const *key)
 {
   uint32_t hash = hash_table->hash_key(key);
   size_t index = hash % hash_table->capacity;
@@ -116,9 +116,9 @@ hash_table_has_key(struct hash_table const *hash_table, void *key)
 
 int
 hash_table_put(struct hash_table *hash_table,
-               void *key,
-               void *value,
-               void **previous_value)
+               void const *key,
+               void const *value,
+               void const **previous_value)
 {
   uint32_t hash = hash_table->hash_key(key);
   size_t index = hash % hash_table->capacity;
@@ -146,8 +146,8 @@ hash_table_put(struct hash_table *hash_table,
 }
 
 
-void *
-hash_table_remove(struct hash_table *hash_table, void *key)
+void const *
+hash_table_remove(struct hash_table *hash_table, void const *key)
 {
   uint32_t hash = hash_table->hash_key(key);
   size_t index = hash % hash_table->capacity;
@@ -162,7 +162,7 @@ hash_table_remove(struct hash_table *hash_table, void *key)
         } else {
           hash_table->entries[index] = NULL;
         }
-        void *value = entry->value;
+        void const *value = entry->value;
         free(entry);
         --hash_table->count;
         return value;
