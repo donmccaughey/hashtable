@@ -24,8 +24,8 @@ string_test(void)
   assert(keys);
   free(keys);
   
-  char const key1[] = "red";
-  char const value1[] = "10";
+  char *key1 = strdup("red");
+  char *value1 = strdup("10");
   assert( ! hash_table_has_key(hash_table, key1));
   
   void const *previous_value;
@@ -34,15 +34,17 @@ string_test(void)
   assert(1 == hash_table_count(hash_table));
   assert(NULL == previous_value);
   assert(hash_table_has_key(hash_table, key1));
+  assert(hash_table_has_key(hash_table, "red"));
   assert(value1 == hash_table_get(hash_table, key1));
+  assert(value1 == hash_table_get(hash_table, "red"));
   
   keys = hash_table_alloc_keys(hash_table);
   assert(keys);
   assert(key1 == keys[0]);
   free(keys);
   
-  char const key2[] = "green";
-  char const value2[] = "20";
+  char *key2 = strdup("green");
+  char *value2 = strdup("20");
   assert( ! hash_table_has_key(hash_table, key2));
   
   result = hash_table_put(hash_table, key2, value2, &previous_value);
@@ -50,7 +52,9 @@ string_test(void)
   assert(2 == hash_table_count(hash_table));
   assert(NULL == previous_value);
   assert(hash_table_has_key(hash_table, key2));
+  assert(hash_table_has_key(hash_table, "green"));
   assert(value2 == hash_table_get(hash_table, key2));
+  assert(value2 == hash_table_get(hash_table, "green"));
   
   keys = hash_table_alloc_keys(hash_table);
   assert(keys);
@@ -58,8 +62,8 @@ string_test(void)
   assert(key2 == keys[0] || key2 == keys[1]);
   free(keys);
   
-  char const key3[] = "blue";
-  char const value3a[] = "30";
+  char *key3 = strdup("blue");
+  char *value3a = strdup("30");
   assert( ! hash_table_has_key(hash_table, key3));
   
   result = hash_table_put(hash_table, key3, value3a, &previous_value);
@@ -67,7 +71,9 @@ string_test(void)
   assert(3 == hash_table_count(hash_table));
   assert(NULL == previous_value);
   assert(hash_table_has_key(hash_table, key3));
+  assert(hash_table_has_key(hash_table, "blue"));
   assert(value3a == hash_table_get(hash_table, key3));
+  assert(value3a == hash_table_get(hash_table, "blue"));
   
   keys = hash_table_alloc_keys(hash_table);
   assert(keys);
@@ -76,13 +82,15 @@ string_test(void)
   assert(key3 == keys[0] || key3 == keys[1] || key3 == keys[2]);
   free(keys);
   
-  char const value3b[] = "33";
+  char *value3b = strdup("33");
   result = hash_table_put(hash_table, key3, value3b, &previous_value);
   assert(0 == result);
   assert(3 == hash_table_count(hash_table));
   assert(value3a == previous_value);
   assert(hash_table_has_key(hash_table, key3));
+  assert(hash_table_has_key(hash_table, "blue"));
   assert(value3b == hash_table_get(hash_table, key3));
+  assert(value3b == hash_table_get(hash_table, "blue"));
   
   keys = hash_table_alloc_keys(hash_table);
   assert(keys);
@@ -91,7 +99,7 @@ string_test(void)
   assert(key3 == keys[0] || key3 == keys[1] || key3 == keys[2]);
   free(keys);
   
-  char const key4[] = "alpha";
+  char *key4 = strdup("alpha");
   void const *removed_value = hash_table_remove(hash_table, key4);
   assert(NULL == removed_value);
   assert(3 == hash_table_count(hash_table));
@@ -115,13 +123,22 @@ string_test(void)
   assert(key2 == keys[0]);
   free(keys);
   
-  removed_value = hash_table_remove(hash_table, key2);
+  removed_value = hash_table_remove(hash_table, "green");
   assert(value2 == removed_value);
   assert(0 == hash_table_count(hash_table));
   
   keys = hash_table_alloc_keys(hash_table);
   assert(keys);
   free(keys);
+  
+  free(key1);
+  free(value1);
+  free(key2);
+  free(value2);
+  free(key3);
+  free(value3a);
+  free(value3b);
+  free(key4);
   
   hash_table_free(hash_table);
   return 0;
