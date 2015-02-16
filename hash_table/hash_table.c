@@ -14,8 +14,8 @@ struct hash_table {
   struct hash_table_entry **entries;
   uint32_t capacity;
   uint32_t count;
-  hash_table_hash_key_function *hash_key;
-  hash_table_equal_keys_function *equal_keys;
+  hash_table_hash_function *hash;
+  hash_table_equals_function *equals;
 };
 
 
@@ -25,8 +25,8 @@ hash_table_entry_alloc(void const *key, void const *value);
 
 struct hash_table *
 hash_table_alloc(uint32_t capacity,
-                 hash_table_hash_key_function *hash_key,
-                 hash_table_equal_keys_function *equal_keys)
+                 hash_table_hash_function *hash,
+                 hash_table_equals_function *equals)
 {
   struct hash_table *hash_table = calloc(1, sizeof(struct hash_table));
   if ( ! hash_table) return NULL;
@@ -38,8 +38,8 @@ hash_table_alloc(uint32_t capacity,
   }
   
   hash_table->capacity = capacity;
-  hash_table->hash_key = hash_key;
-  hash_table->equal_keys = equal_keys;
+  hash_table->hash = hash;
+  hash_table->equals = equals;
   
   return hash_table;
 }
@@ -103,13 +103,13 @@ hash_table_free(struct hash_table *hash_table)
 void const *
 hash_table_get(struct hash_table const *hash_table, void const *key)
 {
-  uint32_t hash = hash_table->hash_key(key);
+  uint32_t hash = hash_table->hash(key);
   size_t index = hash % hash_table->capacity;
   
   if (hash_table->entries[index]) {
     struct hash_table_entry *entry = hash_table->entries[index];
     do {
-      if (hash_table->equal_keys(key, entry->key)) return entry->value;
+      if (hash_table->equals(key, entry->key)) return entry->value;
       entry = entry->next;
     } while (entry);
   }
@@ -121,13 +121,13 @@ hash_table_get(struct hash_table const *hash_table, void const *key)
 bool
 hash_table_has_key(struct hash_table const *hash_table, void const *key)
 {
-  uint32_t hash = hash_table->hash_key(key);
+  uint32_t hash = hash_table->hash(key);
   size_t index = hash % hash_table->capacity;
   
   if (hash_table->entries[index]) {
     struct hash_table_entry *entry = hash_table->entries[index];
     do {
-      if (hash_table->equal_keys(key, entry->key)) return true;
+      if (hash_table->equals(key, entry->key)) return true;
       entry = entry->next;
     } while (entry);
   }
@@ -142,13 +142,13 @@ hash_table_put(struct hash_table *hash_table,
                void const *value,
                void const **previous_value)
 {
-  uint32_t hash = hash_table->hash_key(key);
+  uint32_t hash = hash_table->hash(key);
   size_t index = hash % hash_table->capacity;
   
   if (hash_table->entries[index]) {
     struct hash_table_entry *entry = hash_table->entries[index];
     do {
-      if (hash_table->equal_keys(key, entry->key)) {
+      if (hash_table->equals(key, entry->key)) {
         if (previous_value) *previous_value = entry->value;
         entry->value = value;
         return 0;
@@ -171,14 +171,14 @@ hash_table_put(struct hash_table *hash_table,
 void const *
 hash_table_remove(struct hash_table *hash_table, void const *key)
 {
-  uint32_t hash = hash_table->hash_key(key);
+  uint32_t hash = hash_table->hash(key);
   size_t index = hash % hash_table->capacity;
   
   if (hash_table->entries[index]) {
     struct hash_table_entry *entry = hash_table->entries[index];
     struct hash_table_entry *previous_entry = NULL;
     do {
-      if (hash_table->equal_keys(key, entry->key)) {
+      if (hash_table->equals(key, entry->key)) {
         if (previous_entry) {
           previous_entry->next = entry->next;
         } else {

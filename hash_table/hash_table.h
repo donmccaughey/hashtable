@@ -10,16 +10,16 @@ struct hash_table;
 
 
 typedef bool
-hash_table_equal_keys_function(void const *first_key, void const *second_key);
+hash_table_equals_function(void const *first_key, void const *second_key);
 
 typedef uint32_t
-hash_table_hash_key_function(void const *key);
+hash_table_hash_function(void const *key);
 
 
 struct hash_table *
 hash_table_alloc(uint32_t capacity,
-                 hash_table_hash_key_function *hash_key,
-                 hash_table_equal_keys_function *equal_keys);
+                 hash_table_hash_function *hash,
+                 hash_table_equals_function *equals);
 
 void const **
 hash_table_alloc_keys(struct hash_table const *hash_table);
