@@ -5,8 +5,8 @@
 #include "hash_table.h"
 
 
-static int
-compare_string_keys(void const *first_key, void const *second_key);
+static bool
+equal_string_keys(void const *first_key, void const *second_key);
 
 static uint32_t
 hash_string_key(void const *key);
@@ -15,7 +15,7 @@ hash_string_key(void const *key);
 int
 string_test(void)
 {
-  struct hash_table *hash_table = hash_table_alloc(10, hash_string_key, compare_string_keys);
+  struct hash_table *hash_table = hash_table_alloc(10, hash_string_key, equal_string_keys);
   assert(hash_table);
   assert(10 == hash_table_capacity(hash_table));
   assert(0 == hash_table_count(hash_table));
@@ -128,12 +128,12 @@ string_test(void)
 }
 
 
-static int
-compare_string_keys(void const *first_key, void const *second_key)
+static bool
+equal_string_keys(void const *first_key, void const *second_key)
 {
   char const *first_string_key = first_key;
   char const *second_string_key = second_key;
-  return strcmp(first_string_key, second_string_key);
+  return 0 == strcmp(first_string_key, second_string_key);
 }
 
 

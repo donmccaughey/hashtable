@@ -4,8 +4,8 @@
 #include "hash_table.h"
 
 
-static int
-compare_int_keys(void const *first_key, void const *second_key);
+static bool
+equal_int_keys(void const *first_key, void const *second_key);
 
 static uint32_t
 hash_int_key(void const *key);
@@ -14,7 +14,7 @@ hash_int_key(void const *key);
 int
 int_test(void)
 {
-  struct hash_table *hash_table = hash_table_alloc(10, hash_int_key, compare_int_keys);
+  struct hash_table *hash_table = hash_table_alloc(10, hash_int_key, equal_int_keys);
   assert(hash_table);
   assert(10 == hash_table_capacity(hash_table));
   assert(0 == hash_table_count(hash_table));
@@ -127,14 +127,12 @@ int_test(void)
 }
 
 
-static int
-compare_int_keys(void const *first_key, void const *second_key)
+static bool
+equal_int_keys(void const *first_key, void const *second_key)
 {
   int const *first_int_key = first_key;
   int const *second_int_key = second_key;
-  if (*first_int_key < *second_int_key) return -1;
-  if (*first_int_key > *second_int_key) return 1;
-  return 0;
+  return *first_int_key == *second_int_key;
 }
 
 
