@@ -47,8 +47,10 @@ hash_table_put(struct hash_table *hash_table,
                void const *value,
                void const **previous_value);
 
-void const *
-hash_table_remove(struct hash_table *hash_table, void const *key);
+void
+hash_table_remove(struct hash_table *hash_table,
+                  void const *key,
+                  void const **previous_value);
 
 
 #endif

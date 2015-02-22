@@ -91,11 +91,12 @@ int_test(void)
   free(keys);
   
   int key4 = 4;
-  void const *removed_value = hash_table_remove(hash_table, &key4);
+  void const *removed_value;
+  hash_table_remove(hash_table, &key4, &removed_value);
   assert(NULL == removed_value);
   assert(3 == hash_table_count(hash_table));
   
-  removed_value = hash_table_remove(hash_table, &key3);
+  hash_table_remove(hash_table, &key3, &removed_value);
   assert(&value3b == removed_value);
   assert(2 == hash_table_count(hash_table));
   
@@ -105,7 +106,7 @@ int_test(void)
   assert(&key2 == keys[0] || &key2 == keys[1]);
   free(keys);
   
-  removed_value = hash_table_remove(hash_table, &key1);
+  hash_table_remove(hash_table, &key1, &removed_value);
   assert(&value1 == removed_value);
   assert(1 == hash_table_count(hash_table));
   
@@ -114,7 +115,7 @@ int_test(void)
   assert(&key2 == keys[0]);
   free(keys);
   
-  removed_value = hash_table_remove(hash_table, &key2);
+  hash_table_remove(hash_table, &key2, &removed_value);
   assert(&value2 == removed_value);
   assert(0 == hash_table_count(hash_table));
   

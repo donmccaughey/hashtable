@@ -175,8 +175,10 @@ hash_table_put(struct hash_table *hash_table,
 }
 
 
-void const *
-hash_table_remove(struct hash_table *hash_table, void const *key)
+void
+hash_table_remove(struct hash_table *hash_table,
+                  void const *key,
+                  void const **previous_value)
 {
   size_t index = get_index(hash_table, key);
   
@@ -193,12 +195,14 @@ hash_table_remove(struct hash_table *hash_table, void const *key)
         void const *value = entry->value;
         free(entry);
         --hash_table->count;
-        return value;
+        if (previous_value) *previous_value = value;
+        return;
       }
       previous_entry = entry;
       entry = entry->next;
     } while (entry);
   }
   
-  return NULL;
+  if (previous_value) *previous_value = NULL;
+  return;
 }
