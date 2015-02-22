@@ -34,9 +34,9 @@ string_test(void)
   assert(1 == hash_table_count(hash_table));
   assert(NULL == previous_value);
   assert(hash_table_has_key(hash_table, key1));
-  assert(hash_table_has_key(hash_table, "red"));
-  assert(value1 == hash_table_get(hash_table, key1));
-  assert(value1 == hash_table_get(hash_table, "red"));
+  void const *value;
+  assert(0 == hash_table_get(hash_table, key1, &value));
+  assert(value1 == value);
   
   keys = hash_table_alloc_keys(hash_table);
   assert(keys);
@@ -52,9 +52,8 @@ string_test(void)
   assert(2 == hash_table_count(hash_table));
   assert(NULL == previous_value);
   assert(hash_table_has_key(hash_table, key2));
-  assert(hash_table_has_key(hash_table, "green"));
-  assert(value2 == hash_table_get(hash_table, key2));
-  assert(value2 == hash_table_get(hash_table, "green"));
+  assert(0 == hash_table_get(hash_table, key2, &value));
+  assert(value2 == value);
   
   keys = hash_table_alloc_keys(hash_table);
   assert(keys);
@@ -71,9 +70,8 @@ string_test(void)
   assert(3 == hash_table_count(hash_table));
   assert(NULL == previous_value);
   assert(hash_table_has_key(hash_table, key3));
-  assert(hash_table_has_key(hash_table, "blue"));
-  assert(value3a == hash_table_get(hash_table, key3));
-  assert(value3a == hash_table_get(hash_table, "blue"));
+  assert(0 == hash_table_get(hash_table, key3, &value));
+  assert(value3a == value);
   
   keys = hash_table_alloc_keys(hash_table);
   assert(keys);
@@ -88,9 +86,8 @@ string_test(void)
   assert(3 == hash_table_count(hash_table));
   assert(value3a == previous_value);
   assert(hash_table_has_key(hash_table, key3));
-  assert(hash_table_has_key(hash_table, "blue"));
-  assert(value3b == hash_table_get(hash_table, key3));
-  assert(value3b == hash_table_get(hash_table, "blue"));
+  assert(0 == hash_table_get(hash_table, key3, &value));
+  assert(value3b == value);
   
   keys = hash_table_alloc_keys(hash_table);
   assert(keys);

@@ -33,8 +33,10 @@ hash_table_count(struct hash_table const *hash_table);
 void
 hash_table_free(struct hash_table *hash_table);
 
-void const *
-hash_table_get(struct hash_table const *hash_table, void const *key);
+int
+hash_table_get(struct hash_table const *hash_table,
+               void const *key,
+               void const **value);
 
 bool
 hash_table_has_key(struct hash_table const *hash_table, void const *key);

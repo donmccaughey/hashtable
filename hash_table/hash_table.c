@@ -110,37 +110,33 @@ hash_table_free(struct hash_table *hash_table)
 }
 
 
-void const *
-hash_table_get(struct hash_table const *hash_table, void const *key)
+int
+hash_table_get(struct hash_table const *hash_table,
+               void const *key,
+               void const **value)
 {
   size_t index = get_index(hash_table, key);
   
   if (hash_table->entries[index]) {
     struct ht_entry *entry = hash_table->entries[index];
     do {
-      if (hash_table->equals(key, entry->key)) return entry->value;
+      if (hash_table->equals(key, entry->key)) {
+        if (value) *value = entry->value;
+        return 0;
+      }
       entry = entry->next;
     } while (entry);
   }
   
-  return NULL;
+  if (value) *value = NULL;
+  return -1;
 }
 
 
 bool
 hash_table_has_key(struct hash_table const *hash_table, void const *key)
 {
-  size_t index = get_index(hash_table, key);
-  
-  if (hash_table->entries[index]) {
-    struct ht_entry *entry = hash_table->entries[index];
-    do {
-      if (hash_table->equals(key, entry->key)) return true;
-      entry = entry->next;
-    } while (entry);
-  }
-  
-  return false;
+  return 0 == hash_table_get(hash_table, key, NULL);
 }
 
 
