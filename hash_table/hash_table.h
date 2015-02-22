@@ -6,30 +6,33 @@
 #include <stdint.h>
 
 
+#define HT_UINT_MAX UINT32_MAX
+
+
 struct hash_table;
 
 
-typedef uint32_t hash_table_uint_t;
+typedef uint32_t ht_uint_t;
 
 typedef bool
-hash_table_equals_function(void const *first_key, void const *second_key);
+ht_equals_function(void const *first_key, void const *second_key);
 
-typedef hash_table_uint_t
-hash_table_hash_function(void const *key);
+typedef ht_uint_t
+ht_hash_function(void const *key);
 
 
 struct hash_table *
-hash_table_alloc(hash_table_uint_t capacity,
-                 hash_table_hash_function *hash,
-                 hash_table_equals_function *equals);
+hash_table_alloc(ht_uint_t capacity,
+                 ht_hash_function *hash,
+                 ht_equals_function *equals);
 
 void const **
 hash_table_alloc_keys(struct hash_table const *hash_table);
 
-hash_table_uint_t
+ht_uint_t
 hash_table_capacity(struct hash_table const *hash_table);
 
-hash_table_uint_t
+ht_uint_t
 hash_table_count(struct hash_table const *hash_table);
 
 void

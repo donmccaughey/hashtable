@@ -141,5 +141,5 @@ static uint32_t
 hash_int_key(void const *key)
 {
   int const *int_key = key;
-  return abs(*int_key) % UINT32_MAX;
+  return abs(*int_key) % HT_UINT_MAX;
 }
