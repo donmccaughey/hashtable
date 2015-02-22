@@ -8,7 +8,7 @@
 static bool
 equal_string_keys(void const *first_key, void const *second_key);
 
-static uint32_t
+static size_t
 hash_string_key(void const *key);
 
 
@@ -155,11 +155,11 @@ equal_string_keys(void const *first_key, void const *second_key)
 }
 
 
-static uint32_t
+static size_t
 hash_string_key(void const *key)
 {
   char const *string_key = key;
-  uint32_t hash = 0;
+  size_t hash = 0;
   while (*string_key) {
     hash = 31 * hash + *string_key;
     ++string_key;

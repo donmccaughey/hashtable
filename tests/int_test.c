@@ -7,7 +7,7 @@
 static bool
 equal_int_keys(void const *first_key, void const *second_key);
 
-static uint32_t
+static size_t
 hash_int_key(void const *key);
 
 
@@ -137,9 +137,9 @@ equal_int_keys(void const *first_key, void const *second_key)
 }
 
 
-static uint32_t
+static size_t
 hash_int_key(void const *key)
 {
   int const *int_key = key;
-  return abs(*int_key) % HT_UINT_MAX;
+  return abs(*int_key) % SIZE_MAX;
 }

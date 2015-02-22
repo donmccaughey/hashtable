@@ -12,8 +12,8 @@ struct ht_entry {
 
 struct hash_table {
   struct ht_entry **entries;
-  ht_uint_t capacity;
-  ht_uint_t count;
+  size_t capacity;
+  size_t count;
   ht_hash_function *hash;
   ht_equals_function *equals;
 };
@@ -45,7 +45,7 @@ get_index(struct hash_table const *hash_table, void const *key)
 
 
 struct hash_table *
-hash_table_alloc(ht_uint_t capacity,
+hash_table_alloc(size_t capacity,
                  ht_hash_function *hash,
                  ht_equals_function *equals)
 {
@@ -88,14 +88,14 @@ hash_table_alloc_keys(struct hash_table const *hash_table)
 }
 
 
-ht_uint_t
+size_t
 hash_table_capacity(struct hash_table const *hash_table)
 {
   return hash_table->capacity;
 }
 
 
-ht_uint_t
+size_t
 hash_table_count(struct hash_table const *hash_table)
 {
   return hash_table->count;
