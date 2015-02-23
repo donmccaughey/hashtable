@@ -5,27 +5,31 @@
 #include "hash_table.h"
 
 
+static struct ht_key
+alloc_string_key(char const *value);
+
 static bool
-equal_string_keys(void const *first_key, void const *second_key);
+equal_string_keys(struct ht_key first_key, struct ht_key second_key);
 
 static size_t
-hash_string_key(void const *key);
+hash_string(char const *key);
+
+static bool
+keys_contains_key(struct ht_key *keys, size_t count, struct ht_key key);
 
 
 int
 string_test(void)
 {
-  struct hash_table *hash_table = hash_table_alloc(10, hash_string_key, equal_string_keys);
+  struct hash_table *hash_table = hash_table_alloc(10, equal_string_keys);
   assert(hash_table);
   assert(10 == hash_table_capacity(hash_table));
   assert(0 == hash_table_count(hash_table));
   
-  void const **keys = hash_table_alloc_keys(hash_table);
-  assert(keys);
-  free(keys);
-  
-  char *key1 = strdup("red");
+  struct ht_key key1 = alloc_string_key("red");
+  assert(key1.value.str_value);
   union ht_value value1 = {.str_value=strdup("10"),};
+  assert(value1.str_value);
   assert( ! hash_table_has_key(hash_table, key1));
   
   union ht_value previous_value;
@@ -37,13 +41,15 @@ string_test(void)
   assert(0 == hash_table_get(hash_table, key1, &value));
   assert(value1.str_value == value.str_value);
   
-  keys = hash_table_alloc_keys(hash_table);
+  struct ht_key *keys = hash_table_alloc_keys(hash_table);
   assert(keys);
-  assert(key1 == keys[0]);
+  assert(keys_contains_key(keys, hash_table_count(hash_table), key1));
   free(keys);
   
-  char *key2 = strdup("green");
+  struct ht_key key2 = alloc_string_key("green");
+  assert(key2.value.str_value);
   union ht_value value2 = {.str_value=strdup("20"),};
+  assert(value2.str_value);
   assert( ! hash_table_has_key(hash_table, key2));
   
   result = hash_table_put(hash_table, key2, value2, &previous_value);
@@ -55,12 +61,14 @@ string_test(void)
   
   keys = hash_table_alloc_keys(hash_table);
   assert(keys);
-  assert(key1 == keys[0] || key1 == keys[1]);
-  assert(key2 == keys[0] || key2 == keys[1]);
+  assert(keys_contains_key(keys, hash_table_count(hash_table), key1));
+  assert(keys_contains_key(keys, hash_table_count(hash_table), key2));
   free(keys);
   
-  char *key3 = strdup("blue");
+  struct ht_key key3 = alloc_string_key("blue");
+  assert(key3.value.str_value);
   union ht_value value3a = {.str_value=strdup("30"),};
+  assert(value3a.str_value);
   assert( ! hash_table_has_key(hash_table, key3));
   
   result = hash_table_put(hash_table, key3, value3a, &previous_value);
@@ -72,12 +80,13 @@ string_test(void)
   
   keys = hash_table_alloc_keys(hash_table);
   assert(keys);
-  assert(key1 == keys[0] || key1 == keys[1] || key1 == keys[2]);
-  assert(key2 == keys[0] || key2 == keys[1] || key2 == keys[2]);
-  assert(key3 == keys[0] || key3 == keys[1] || key3 == keys[2]);
+  assert(keys_contains_key(keys, hash_table_count(hash_table), key1));
+  assert(keys_contains_key(keys, hash_table_count(hash_table), key2));
+  assert(keys_contains_key(keys, hash_table_count(hash_table), key3));
   free(keys);
   
   union ht_value value3b = {.str_value=strdup("33"),};
+  assert(value3b.str_value);
   result = hash_table_put(hash_table, key3, value3b, &previous_value);
   assert(0 == result);
   assert(3 == hash_table_count(hash_table));
@@ -88,12 +97,13 @@ string_test(void)
   
   keys = hash_table_alloc_keys(hash_table);
   assert(keys);
-  assert(key1 == keys[0] || key1 == keys[1] || key1 == keys[2]);
-  assert(key2 == keys[0] || key2 == keys[1] || key2 == keys[2]);
-  assert(key3 == keys[0] || key3 == keys[1] || key3 == keys[2]);
+  assert(keys_contains_key(keys, hash_table_count(hash_table), key1));
+  assert(keys_contains_key(keys, hash_table_count(hash_table), key2));
+  assert(keys_contains_key(keys, hash_table_count(hash_table), key3));
   free(keys);
   
-  char *key4 = strdup("alpha");
+  struct ht_key key4 = alloc_string_key("alpha");
+  assert(key4.value.str_value);
   union ht_value removed_value;
   result = hash_table_remove(hash_table, key4, &removed_value);
   assert(-1 == result);
@@ -106,8 +116,8 @@ string_test(void)
   
   keys = hash_table_alloc_keys(hash_table);
   assert(keys);
-  assert(key1 == keys[0] || key1 == keys[1]);
-  assert(key2 == keys[0] || key2 == keys[1]);
+  assert(keys_contains_key(keys, hash_table_count(hash_table), key1));
+  assert(keys_contains_key(keys, hash_table_count(hash_table), key2));
   free(keys);
   
   result = hash_table_remove(hash_table, key1, &removed_value);
@@ -117,49 +127,62 @@ string_test(void)
   
   keys = hash_table_alloc_keys(hash_table);
   assert(keys);
-  assert(key2 == keys[0]);
+  assert(keys_contains_key(keys, hash_table_count(hash_table), key2));
   free(keys);
   
-  hash_table_remove(hash_table, "green", &removed_value);
+  hash_table_remove(hash_table, key2, &removed_value);
   assert(0 == result);
   assert(value2.str_value == removed_value.str_value);
   assert(0 == hash_table_count(hash_table));
   
-  keys = hash_table_alloc_keys(hash_table);
-  assert(keys);
-  free(keys);
-  
-  free(key1);
+  free(key1.value.str_value);
   free(value1.str_value);
-  free(key2);
+  free(key2.value.str_value);
   free(value2.str_value);
-  free(key3);
+  free(key3.value.str_value);
   free(value3a.str_value);
   free(value3b.str_value);
-  free(key4);
+  free(key4.value.str_value);
   
   hash_table_free(hash_table);
   return 0;
 }
 
 
-static bool
-equal_string_keys(void const *first_key, void const *second_key)
+static struct ht_key
+alloc_string_key(char const *value)
 {
-  char const *first_string_key = first_key;
-  char const *second_string_key = second_key;
-  return 0 == strcmp(first_string_key, second_string_key);
+  return (struct ht_key){
+    .hash=hash_string(value),
+    .value={.str_value=strdup(value),},
+  };
+}
+
+
+static bool
+equal_string_keys(struct ht_key first_key, struct ht_key second_key)
+{
+  return 0 == strcmp(first_key.value.str_value, second_key.value.str_value);
 }
 
 
 static size_t
-hash_string_key(void const *key)
+hash_string(char const *value)
 {
-  char const *string_key = key;
   size_t hash = 0;
-  while (*string_key) {
-    hash = 31 * hash + *string_key;
-    ++string_key;
+  while (*value) {
+    hash = 31 * hash + *value;
+    ++value;
   }
   return hash;
+}
+
+
+static bool
+keys_contains_key(struct ht_key *keys, size_t count, struct ht_key key)
+{
+  for (size_t i = 0; i < count; ++i) {
+    if (equal_string_keys(key, keys[i])) return true;
+  }
+  return false;
 }
