@@ -49,9 +49,6 @@ hash_table_get(struct hash_table const *hash_table,
                struct ht_key key,
                union ht_value *value_out);
 
-bool
-hash_table_has_key(struct hash_table const *hash_table, struct ht_key key);
-
 int
 hash_table_put(struct hash_table *hash_table,
                struct ht_key key,

@@ -7,13 +7,13 @@
 static bool
 equal_int_keys(struct ht_key first_key, struct ht_key second_key);
 
-static size_t
+static inline size_t
 hash_int(intptr_t value);
 
 static bool
 keys_contains_key(struct ht_key *keys, size_t count, struct ht_key key);
 
-static struct ht_key
+static inline struct ht_key
 make_int_key(intptr_t value);
 
 
@@ -27,13 +27,12 @@ int_test(void)
   
   struct ht_key key1 = make_int_key(1);
   union ht_value value1 = {.int_value=10,};
-  assert( ! hash_table_has_key(hash_table, key1));
+  assert(-1 == hash_table_get(hash_table, key1, NULL));
   
   union ht_value previous_value;
   int result = hash_table_put(hash_table, key1, value1, &previous_value);
   assert(0 == result);
   assert(1 == hash_table_count(hash_table));
-  assert(hash_table_has_key(hash_table, key1));
   union ht_value value;
   assert(0 == hash_table_get(hash_table, key1, &value));
   assert(value1.int_value == value.int_value);
@@ -45,12 +44,11 @@ int_test(void)
   
   struct ht_key key2 = make_int_key(2);
   union ht_value value2 = {.int_value=20,};
-  assert( ! hash_table_has_key(hash_table, key2));
+  assert(-1 == hash_table_get(hash_table, key2, NULL));
   
   result = hash_table_put(hash_table, key2, value2, &previous_value);
   assert(0 == result);
   assert(2 == hash_table_count(hash_table));
-  assert(hash_table_has_key(hash_table, key2));
   assert(0 == hash_table_get(hash_table, key2, &value));
   assert(value2.int_value == value.int_value);
   
@@ -62,12 +60,11 @@ int_test(void)
   
   struct ht_key key3 = make_int_key(3);
   union ht_value value3a = {.int_value=30,};
-  assert( ! hash_table_has_key(hash_table, key3));
+  assert(-1 == hash_table_get(hash_table, key3, NULL));
   
   result = hash_table_put(hash_table, key3, value3a, &previous_value);
   assert(0 == result);
   assert(3 == hash_table_count(hash_table));
-  assert(hash_table_has_key(hash_table, key3));
   assert(0 == hash_table_get(hash_table, key3, &value));
   assert(value3a.int_value == value.int_value);
   
@@ -83,7 +80,6 @@ int_test(void)
   assert(0 == result);
   assert(3 == hash_table_count(hash_table));
   assert(value3a.int_value == previous_value.int_value);
-  assert(hash_table_has_key(hash_table, key3));
   assert(0 == hash_table_get(hash_table, key3, &value));
   assert(value3b.int_value == value.int_value);
   
@@ -138,7 +134,7 @@ equal_int_keys(struct ht_key first_key, struct ht_key second_key)
 }
 
 
-static size_t
+static inline size_t
 hash_int(intptr_t value)
 {
   return ((uintptr_t)value) % SIZE_MAX;
@@ -155,7 +151,7 @@ keys_contains_key(struct ht_key *keys, size_t count, struct ht_key key)
 }
 
 
-static struct ht_key
+static inline struct ht_key
 make_int_key(intptr_t value)
 {
   return (struct ht_key){

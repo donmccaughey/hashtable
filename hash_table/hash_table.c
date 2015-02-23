@@ -128,13 +128,6 @@ hash_table_get(struct hash_table const *hash_table,
 }
 
 
-bool
-hash_table_has_key(struct hash_table const *hash_table, struct ht_key key)
-{
-  return 0 == hash_table_get(hash_table, key, NULL);
-}
-
-
 int
 hash_table_put(struct hash_table *hash_table,
                struct ht_key key,
