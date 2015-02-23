@@ -17,6 +17,9 @@ hash_string(char const *key);
 static bool
 keys_contains_key(struct ht_key *keys, size_t count, struct ht_key key);
 
+static bool
+values_contains_value(union ht_value *values, size_t count, union ht_value value);
+
 
 int
 string_test(void)
@@ -45,6 +48,11 @@ string_test(void)
   assert(keys_contains_key(keys, hash_table_count(hash_table), key1));
   free(keys);
   
+  union ht_value *values = hash_table_alloc_values(hash_table);
+  assert(values);
+  assert(values_contains_value(values, hash_table_count(hash_table), value1));
+  free(values);
+  
   struct ht_key key2 = alloc_string_key("green");
   assert(key2.value.str_value);
   union ht_value value2 = {.str_value=strdup("20"),};
@@ -62,6 +70,12 @@ string_test(void)
   assert(keys_contains_key(keys, hash_table_count(hash_table), key1));
   assert(keys_contains_key(keys, hash_table_count(hash_table), key2));
   free(keys);
+  
+  values = hash_table_alloc_values(hash_table);
+  assert(values);
+  assert(values_contains_value(values, hash_table_count(hash_table), value1));
+  assert(values_contains_value(values, hash_table_count(hash_table), value2));
+  free(values);
   
   struct ht_key key3 = alloc_string_key("blue");
   assert(key3.value.str_value);
@@ -82,6 +96,13 @@ string_test(void)
   assert(keys_contains_key(keys, hash_table_count(hash_table), key3));
   free(keys);
   
+  values = hash_table_alloc_values(hash_table);
+  assert(values);
+  assert(values_contains_value(values, hash_table_count(hash_table), value1));
+  assert(values_contains_value(values, hash_table_count(hash_table), value2));
+  assert(values_contains_value(values, hash_table_count(hash_table), value3a));
+  free(values);
+  
   union ht_value value3b = {.str_value=strdup("33"),};
   assert(value3b.str_value);
   result = hash_table_put(hash_table, key3, value3b, &previous_value);
@@ -97,6 +118,13 @@ string_test(void)
   assert(keys_contains_key(keys, hash_table_count(hash_table), key2));
   assert(keys_contains_key(keys, hash_table_count(hash_table), key3));
   free(keys);
+  
+  values = hash_table_alloc_values(hash_table);
+  assert(values);
+  assert(values_contains_value(values, hash_table_count(hash_table), value1));
+  assert(values_contains_value(values, hash_table_count(hash_table), value2));
+  assert(values_contains_value(values, hash_table_count(hash_table), value3b));
+  free(values);
   
   struct ht_key key4 = alloc_string_key("alpha");
   assert(key4.value.str_value);
@@ -116,6 +144,12 @@ string_test(void)
   assert(keys_contains_key(keys, hash_table_count(hash_table), key2));
   free(keys);
   
+  values = hash_table_alloc_values(hash_table);
+  assert(values);
+  assert(values_contains_value(values, hash_table_count(hash_table), value1));
+  assert(values_contains_value(values, hash_table_count(hash_table), value2));
+  free(values);
+  
   result = hash_table_remove(hash_table, key1, &removed_value);
   assert(0 == result);
   assert(value1.str_value == removed_value.str_value);
@@ -125,6 +159,11 @@ string_test(void)
   assert(keys);
   assert(keys_contains_key(keys, hash_table_count(hash_table), key2));
   free(keys);
+  
+  values = hash_table_alloc_values(hash_table);
+  assert(values);
+  assert(values_contains_value(values, hash_table_count(hash_table), value2));
+  free(values);
   
   hash_table_remove(hash_table, key2, &removed_value);
   assert(0 == result);
@@ -179,6 +218,16 @@ keys_contains_key(struct ht_key *keys, size_t count, struct ht_key key)
 {
   for (size_t i = 0; i < count; ++i) {
     if (equal_string_keys(key, keys[i])) return true;
+  }
+  return false;
+}
+
+
+static bool
+values_contains_value(union ht_value *values, size_t count, union ht_value value)
+{
+  for (size_t i = 0; i < count; ++i) {
+    if (0 == strcmp(value.str_value, values[i].str_value)) return true;
   }
   return false;
 }

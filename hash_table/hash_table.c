@@ -68,19 +68,41 @@ hash_table_alloc_keys(struct hash_table const *hash_table)
   struct ht_key *keys = calloc(hash_table->count, sizeof(struct ht_key));
   if ( ! keys) return NULL;
   
-  size_t key_index = 0;
-  for (size_t entry_index = 0; entry_index < hash_table->capacity; ++entry_index) {
-    if (hash_table->entries[entry_index]) {
-      struct ht_entry *entry = hash_table->entries[entry_index];
+  size_t i = 0;
+  for (size_t j = 0; j < hash_table->capacity; ++j) {
+    if (hash_table->entries[j]) {
+      struct ht_entry *entry = hash_table->entries[j];
       while (entry) {
-        keys[key_index] = entry->key;
-        ++key_index;
+        keys[i] = entry->key;
+        ++i;
         entry = entry->next;
       }
     }
   }
   
   return keys;
+}
+
+
+union ht_value *
+hash_table_alloc_values(struct hash_table const *hash_table)
+{
+  union ht_value *values = calloc(hash_table->count, sizeof(union ht_value));
+  if ( ! values) return NULL;
+  
+  size_t i = 0;
+  for (size_t j = 0; j < hash_table->capacity; ++j) {
+    if (hash_table->entries[j]) {
+      struct ht_entry *entry = hash_table->entries[j];
+      while (entry) {
+        values[i] = entry->value;
+        ++i;
+        entry = entry->next;
+      }
+    }
+  }
+  
+  return values;
 }
 
 

@@ -16,6 +16,9 @@ keys_contains_key(struct ht_key *keys, size_t count, struct ht_key key);
 static inline struct ht_key
 make_int_key(intptr_t value);
 
+static bool
+values_contains_value(union ht_value *values, size_t count, union ht_value value);
+
 
 int
 int_test(void)
@@ -42,6 +45,11 @@ int_test(void)
   assert(keys_contains_key(keys, hash_table_count(hash_table), key1));
   free(keys);
   
+  union ht_value *values = hash_table_alloc_values(hash_table);
+  assert(values);
+  assert(values_contains_value(values, hash_table_count(hash_table), value1));
+  free(values);
+  
   struct ht_key key2 = make_int_key(2);
   union ht_value value2 = {.int_value=20,};
   assert(-1 == hash_table_get(hash_table, key2, NULL));
@@ -57,6 +65,12 @@ int_test(void)
   assert(keys_contains_key(keys, hash_table_count(hash_table), key1));
   assert(keys_contains_key(keys, hash_table_count(hash_table), key2));
   free(keys);
+  
+  values = hash_table_alloc_values(hash_table);
+  assert(values);
+  assert(values_contains_value(values, hash_table_count(hash_table), value1));
+  assert(values_contains_value(values, hash_table_count(hash_table), value2));
+  free(values);
   
   struct ht_key key3 = make_int_key(3);
   union ht_value value3a = {.int_value=30,};
@@ -75,6 +89,13 @@ int_test(void)
   assert(keys_contains_key(keys, hash_table_count(hash_table), key3));
   free(keys);
   
+  values = hash_table_alloc_values(hash_table);
+  assert(values);
+  assert(values_contains_value(values, hash_table_count(hash_table), value1));
+  assert(values_contains_value(values, hash_table_count(hash_table), value2));
+  assert(values_contains_value(values, hash_table_count(hash_table), value3a));
+  free(values);
+  
   union ht_value value3b = {.int_value=33,};
   result = hash_table_put(hash_table, key3, value3b, &previous_value);
   assert(0 == result);
@@ -89,6 +110,13 @@ int_test(void)
   assert(keys_contains_key(keys, hash_table_count(hash_table), key2));
   assert(keys_contains_key(keys, hash_table_count(hash_table), key3));
   free(keys);
+  
+  values = hash_table_alloc_values(hash_table);
+  assert(values);
+  assert(values_contains_value(values, hash_table_count(hash_table), value1));
+  assert(values_contains_value(values, hash_table_count(hash_table), value2));
+  assert(values_contains_value(values, hash_table_count(hash_table), value3b));
+  free(values);
   
   struct ht_key key4 = make_int_key(4);
   union ht_value removed_value;
@@ -107,6 +135,12 @@ int_test(void)
   assert(keys_contains_key(keys, hash_table_count(hash_table), key2));
   free(keys);
   
+  values = hash_table_alloc_values(hash_table);
+  assert(values);
+  assert(values_contains_value(values, hash_table_count(hash_table), value1));
+  assert(values_contains_value(values, hash_table_count(hash_table), value2));
+  free(values);
+  
   result = hash_table_remove(hash_table, key1, &removed_value);
   assert(0 == result);
   assert(value1.int_value == removed_value.int_value);
@@ -116,6 +150,11 @@ int_test(void)
   assert(keys);
   assert(keys_contains_key(keys, hash_table_count(hash_table), key2));
   free(keys);
+  
+  values = hash_table_alloc_values(hash_table);
+  assert(values);
+  assert(values_contains_value(values, hash_table_count(hash_table), value2));
+  free(values);
   
   result = hash_table_remove(hash_table, key2, &removed_value);
   assert(0 == result);
@@ -158,4 +197,14 @@ make_int_key(intptr_t value)
     .hash=hash_int(value),
     .value={.int_value=value,},
   };
+}
+
+
+static bool
+values_contains_value(union ht_value *values, size_t count, union ht_value value)
+{
+  for (size_t i = 0; i < count; ++i) {
+    if (value.int_value == values[i].int_value) return true;
+  }
+  return false;
 }

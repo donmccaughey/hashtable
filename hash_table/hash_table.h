@@ -35,6 +35,9 @@ hash_table_alloc(size_t capacity, ht_equals_func *equals);
 struct ht_key *
 hash_table_alloc_keys(struct hash_table const *hash_table);
 
+union ht_value *
+hash_table_alloc_values(struct hash_table const *hash_table);
+
 size_t
 hash_table_capacity(struct hash_table const *hash_table);
 
