@@ -14,7 +14,7 @@ struct hash_table {
   struct ht_entry **entries;
   size_t capacity;
   size_t count;
-  ht_equals_function *equals;
+  ht_equals_func *equals;
 };
 
 
@@ -44,7 +44,7 @@ get_index(struct hash_table const *hash_table, struct ht_key key)
 
 
 struct hash_table *
-hash_table_alloc(size_t capacity, ht_equals_function *equals)
+hash_table_alloc(size_t capacity, ht_equals_func *equals)
 {
   struct hash_table *hash_table = calloc(1, sizeof(struct hash_table));
   if ( ! hash_table) return NULL;

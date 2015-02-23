@@ -26,11 +26,11 @@ struct ht_key {
 
 
 typedef bool
-ht_equals_function(struct ht_key first_key, struct ht_key second_key);
+ht_equals_func(struct ht_key first_key, struct ht_key second_key);
 
 
 struct hash_table *
-hash_table_alloc(size_t capacity, ht_equals_function *equals);
+hash_table_alloc(size_t capacity, ht_equals_func *equals);
 
 struct ht_key *
 hash_table_alloc_keys(struct hash_table const *hash_table);
