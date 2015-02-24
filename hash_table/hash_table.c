@@ -12,7 +12,7 @@ struct hash_table {
   struct ht_entry **entries;
   size_t capacity;
   size_t count;
-  ht_equals_func *equals;
+  ht_equal_keys_func *equal_keys;
 };
 
 
@@ -35,13 +35,13 @@ extern inline void
 ht_free_str_value(union ht_value value);
 
 extern inline size_t
-ht_hash_str(char *value);
+ht_hash_of_str(char *value);
 
 extern inline size_t
-ht_hash_int(intptr_t value);
+ht_hash_of_int(intptr_t value);
 
 extern inline size_t
-ht_hash_uint(uintptr_t value);
+ht_hash_of_uint(uintptr_t value);
 
 extern inline struct ht_key
 ht_int_key(intptr_t value);
@@ -75,7 +75,7 @@ get_index(struct hash_table const *hash_table, struct ht_key key)
 
 
 struct hash_table *
-hash_table_alloc(size_t capacity, ht_equals_func *equals)
+hash_table_alloc(size_t capacity, ht_equal_keys_func *equal_keys)
 {
   struct hash_table *hash_table = calloc(1, sizeof(struct hash_table));
   if ( ! hash_table) return NULL;
@@ -87,7 +87,7 @@ hash_table_alloc(size_t capacity, ht_equals_func *equals)
   }
   
   hash_table->capacity = capacity;
-  hash_table->equals = equals;
+  hash_table->equal_keys = equal_keys;
   
   return hash_table;
 }
@@ -169,7 +169,7 @@ hash_table_get(struct hash_table const *hash_table,
   if (hash_table->entries[index]) {
     struct ht_entry *entry = hash_table->entries[index];
     do {
-      if (hash_table->equals(key, entry->key)) {
+      if (hash_table->equal_keys(key, entry->key)) {
         if (value_out) *value_out = entry->value;
         return 0;
       }
@@ -192,7 +192,7 @@ hash_table_put(struct hash_table *hash_table,
   if (hash_table->entries[index]) {
     struct ht_entry *entry = hash_table->entries[index];
     do {
-      if (hash_table->equals(key, entry->key)) {
+      if (hash_table->equal_keys(key, entry->key)) {
         if (previous_value_out) *previous_value_out = entry->value;
         entry->value = value;
         return 0;
@@ -222,7 +222,7 @@ hash_table_remove(struct hash_table *hash_table,
     struct ht_entry *entry = hash_table->entries[index];
     struct ht_entry *previous_entry = NULL;
     do {
-      if (hash_table->equals(key, entry->key)) {
+      if (hash_table->equal_keys(key, entry->key)) {
         if (previous_entry) {
           previous_entry->next = entry->next;
         } else {
@@ -271,7 +271,7 @@ ht_equal_uint_keys(struct ht_key first_key, struct ht_key second_key)
 
 
 size_t
-ht_hash_const_str(char const *value)
+ht_hash_of_const_str(char const *value)
 {
   if ( ! value) return 0;
   
