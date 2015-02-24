@@ -7,16 +7,17 @@
 #include <string.h>
 
 
-struct hash_table;
+typedef intptr_t ht_int_t;
+typedef uintptr_t ht_uint_t;
 
 
 union ht_value {
   void const *const_ptr_value;
   char const *const_str_value;
-  intptr_t int_value;
+  ht_int_t int_value;
   void *ptr_value;
   char *str_value;
-  uintptr_t uint_value;
+  ht_uint_t uint_value;
 };
 
 
@@ -28,6 +29,9 @@ struct ht_key {
 
 typedef bool
 ht_equal_keys_func(struct ht_key first_key, struct ht_key second_key);
+
+
+struct hash_table;
 
 
 struct hash_table *
@@ -98,19 +102,19 @@ size_t
 ht_hash_of_const_str(char const *value);
 
 inline size_t
-ht_hash_of_int(intptr_t value);
+ht_hash_of_int(ht_int_t value);
 
 inline size_t
 ht_hash_of_str(char *value);
 
 inline size_t
-ht_hash_of_uint(uintptr_t value);
+ht_hash_of_uint(ht_uint_t value);
 
 inline struct ht_key
-ht_int_key(intptr_t value);
+ht_int_key(ht_int_t value);
 
 inline union ht_value
-ht_int_value(intptr_t value);
+ht_int_value(ht_int_t value);
 
 inline struct ht_key
 ht_str_key(char *value);
@@ -119,10 +123,10 @@ inline union ht_value
 ht_str_value(char *value);
 
 inline struct ht_key
-ht_uint_key(uintptr_t value);
+ht_uint_key(ht_uint_t value);
 
 inline union ht_value
-ht_uint_value(uintptr_t value);
+ht_uint_value(ht_uint_t value);
 
 
 inline struct ht_key
@@ -165,6 +169,7 @@ ht_free_str_key(struct ht_key key)
   ht_free_str_value(key.value);
 }
 
+
 inline void
 ht_free_str_value(union ht_value value)
 {
@@ -173,9 +178,9 @@ ht_free_str_value(union ht_value value)
 
 
 inline size_t
-ht_hash_of_int(intptr_t value)
+ht_hash_of_int(ht_int_t value)
 {
-  return (uintptr_t)value % SIZE_MAX;
+  return (ht_uint_t)value % SIZE_MAX;
 }
 
 
@@ -187,14 +192,14 @@ ht_hash_of_str(char *value)
 
 
 inline size_t
-ht_hash_of_uint(uintptr_t value)
+ht_hash_of_uint(ht_uint_t value)
 {
   return value % SIZE_MAX;
 }
 
 
 inline struct ht_key
-ht_int_key(intptr_t value)
+ht_int_key(ht_int_t value)
 {
   return (struct ht_key){
     .hash=ht_hash_of_int(value),
@@ -204,7 +209,7 @@ ht_int_key(intptr_t value)
 
 
 inline union ht_value
-ht_int_value(intptr_t value)
+ht_int_value(ht_int_t value)
 {
   return (union ht_value){.int_value=value,};
 }
@@ -228,7 +233,7 @@ ht_str_value(char *value)
 
 
 inline struct ht_key
-ht_uint_key(uintptr_t value)
+ht_uint_key(ht_uint_t value)
 {
   return (struct ht_key){
     .hash=ht_hash_of_uint(value),
@@ -238,7 +243,7 @@ ht_uint_key(uintptr_t value)
 
 
 inline union ht_value
-ht_uint_value(uintptr_t value)
+ht_uint_value(ht_uint_t value)
 {
   return (union ht_value){.uint_value=value,};
 }

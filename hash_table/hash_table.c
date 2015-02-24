@@ -38,22 +38,22 @@ extern inline size_t
 ht_hash_of_str(char *value);
 
 extern inline size_t
-ht_hash_of_int(intptr_t value);
+ht_hash_of_int(ht_int_t value);
 
 extern inline size_t
-ht_hash_of_uint(uintptr_t value);
+ht_hash_of_uint(ht_uint_t value);
 
 extern inline struct ht_key
-ht_int_key(intptr_t value);
+ht_int_key(ht_int_t value);
 
 extern inline union ht_value
-ht_int_value(intptr_t value);
+ht_int_value(ht_int_t value);
 
 extern inline struct ht_key
-ht_uint_key(uintptr_t value);
+ht_uint_key(ht_uint_t value);
 
 extern inline union ht_value
-ht_uint_value(uintptr_t value);
+ht_uint_value(ht_uint_t value);
 
 
 static struct ht_entry *
