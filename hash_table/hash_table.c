@@ -1,7 +1,5 @@
 #include "hash_table.h"
 
-#include <stdlib.h>
-
 
 struct ht_entry {
   struct ht_entry *next;
@@ -23,6 +21,39 @@ alloc_entry(struct ht_key key, union ht_value value);
 
 static size_t
 get_index(struct hash_table const *hash_table, struct ht_key key);
+
+extern inline struct ht_key
+ht_alloc_str_key(char const *value);
+
+extern inline union ht_value
+ht_alloc_str_value(char const *value);
+
+extern inline void
+ht_free_str_key(struct ht_key key);
+
+extern inline void
+ht_free_str_value(union ht_value value);
+
+extern inline size_t
+ht_hash_str(char *value);
+
+extern inline size_t
+ht_hash_int(intptr_t value);
+
+extern inline size_t
+ht_hash_uint(uintptr_t value);
+
+extern inline struct ht_key
+ht_int_key(intptr_t value);
+
+extern inline union ht_value
+ht_int_value(intptr_t value);
+
+extern inline struct ht_key
+ht_uint_key(uintptr_t value);
+
+extern inline union ht_value
+ht_uint_value(uintptr_t value);
 
 
 static struct ht_entry *
@@ -208,4 +239,46 @@ hash_table_remove(struct hash_table *hash_table,
   }
   
   return -1;
+}
+
+
+bool
+ht_equal_const_str_keys(struct ht_key first_key, struct ht_key second_key)
+{
+  return 0 == strcmp(first_key.value.const_str_value, second_key.value.const_str_value);
+}
+
+
+bool
+ht_equal_int_keys(struct ht_key first_key, struct ht_key second_key)
+{
+  return first_key.value.int_value == second_key.value.int_value;
+}
+
+
+bool
+ht_equal_str_keys(struct ht_key first_key, struct ht_key second_key)
+{
+  return 0 == strcmp(first_key.value.str_value, second_key.value.str_value);
+}
+
+
+bool
+ht_equal_uint_keys(struct ht_key first_key, struct ht_key second_key)
+{
+  return first_key.value.uint_value == second_key.value.uint_value;
+}
+
+
+size_t
+ht_hash_const_str(char const *value)
+{
+  if ( ! value) return 0;
+  
+  size_t hash = 0;
+  while (*value) {
+    hash = 31 * hash + *value;
+    ++value;
+  }
+  return hash;
 }
