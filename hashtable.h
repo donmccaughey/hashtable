@@ -1,5 +1,5 @@
-#ifndef HASH_TABLE_H_INCLUDED
-#define HASH_TABLE_H_INCLUDED
+#ifndef HASHTABLE_H_INCLUDED
+#define HASHTABLE_H_INCLUDED
 
 
 #include <stdbool.h>
@@ -31,42 +31,42 @@ typedef bool
 ht_equal_keys_func(struct ht_key first_key, struct ht_key second_key);
 
 
-struct hash_table;
+struct hashtable;
 
 
-struct hash_table *
-hash_table_alloc(size_t capacity, ht_equal_keys_func *equal_keys);
+struct hashtable *
+hashtable_alloc(size_t capacity, ht_equal_keys_func *equal_keys);
 
 struct ht_key *
-hash_table_alloc_keys(struct hash_table const *hash_table);
+hashtable_alloc_keys(struct hashtable const *hashtable);
 
 union ht_value *
-hash_table_alloc_values(struct hash_table const *hash_table);
+hashtable_alloc_values(struct hashtable const *hashtable);
 
 size_t
-hash_table_capacity(struct hash_table const *hash_table);
+hashtable_capacity(struct hashtable const *hashtable);
 
 size_t
-hash_table_count(struct hash_table const *hash_table);
+hashtable_count(struct hashtable const *hashtable);
 
 void
-hash_table_free(struct hash_table *hash_table);
+hashtable_free(struct hashtable *hashtable);
 
 int
-hash_table_get(struct hash_table const *hash_table,
-               struct ht_key key,
-               union ht_value *value_out);
+hashtable_get(struct hashtable const *hashtable,
+              struct ht_key key,
+              union ht_value *value_out);
 
 int
-hash_table_put(struct hash_table *hash_table,
-               struct ht_key key,
-               union ht_value value,
-               union ht_value *previous_value_out);
+hashtable_put(struct hashtable *hashtable,
+              struct ht_key key,
+              union ht_value value,
+              union ht_value *previous_value_out);
 
 int
-hash_table_remove(struct hash_table *hash_table,
-                  struct ht_key key,
-                  union ht_value *previous_value_out);
+hashtable_remove(struct hashtable *hashtable,
+                 struct ht_key key,
+                 union ht_value *previous_value_out);
 
 inline struct ht_key
 ht_alloc_str_key(char const *value);

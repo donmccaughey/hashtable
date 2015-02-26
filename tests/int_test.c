@@ -1,7 +1,6 @@
 #include <assert.h>
-#include <stdlib.h>
 
-#include "hash_table.h"
+#include "hashtable.h"
 
 
 static bool
@@ -14,145 +13,145 @@ values_contains_value(union ht_value *values, size_t count, union ht_value value
 int
 int_test(void)
 {
-  struct hash_table *hash_table = hash_table_alloc(10, ht_equal_int_keys);
-  assert(hash_table);
-  assert(10 == hash_table_capacity(hash_table));
-  assert(0 == hash_table_count(hash_table));
+  struct hashtable *hashtable = hashtable_alloc(10, ht_equal_int_keys);
+  assert(hashtable);
+  assert(10 == hashtable_capacity(hashtable));
+  assert(0 == hashtable_count(hashtable));
   
   struct ht_key key1 = ht_int_key(1);
   union ht_value value1 = ht_int_value(10);
-  assert(-1 == hash_table_get(hash_table, key1, NULL));
+  assert(-1 == hashtable_get(hashtable, key1, NULL));
   
   union ht_value previous_value;
-  int result = hash_table_put(hash_table, key1, value1, &previous_value);
+  int result = hashtable_put(hashtable, key1, value1, &previous_value);
   assert(0 == result);
-  assert(1 == hash_table_count(hash_table));
+  assert(1 == hashtable_count(hashtable));
   union ht_value value;
-  assert(0 == hash_table_get(hash_table, key1, &value));
+  assert(0 == hashtable_get(hashtable, key1, &value));
   assert(value1.int_value == value.int_value);
   
-  struct ht_key *keys = hash_table_alloc_keys(hash_table);
+  struct ht_key *keys = hashtable_alloc_keys(hashtable);
   assert(keys);
-  assert(keys_contains_key(keys, hash_table_count(hash_table), key1));
+  assert(keys_contains_key(keys, hashtable_count(hashtable), key1));
   free(keys);
   
-  union ht_value *values = hash_table_alloc_values(hash_table);
+  union ht_value *values = hashtable_alloc_values(hashtable);
   assert(values);
-  assert(values_contains_value(values, hash_table_count(hash_table), value1));
+  assert(values_contains_value(values, hashtable_count(hashtable), value1));
   free(values);
   
   struct ht_key key2 = ht_int_key(2);
   union ht_value value2 = ht_int_value(20);
-  assert(-1 == hash_table_get(hash_table, key2, NULL));
+  assert(-1 == hashtable_get(hashtable, key2, NULL));
   
-  result = hash_table_put(hash_table, key2, value2, &previous_value);
+  result = hashtable_put(hashtable, key2, value2, &previous_value);
   assert(0 == result);
-  assert(2 == hash_table_count(hash_table));
-  assert(0 == hash_table_get(hash_table, key2, &value));
+  assert(2 == hashtable_count(hashtable));
+  assert(0 == hashtable_get(hashtable, key2, &value));
   assert(value2.int_value == value.int_value);
   
-  keys = hash_table_alloc_keys(hash_table);
+  keys = hashtable_alloc_keys(hashtable);
   assert(keys);
-  assert(keys_contains_key(keys, hash_table_count(hash_table), key1));
-  assert(keys_contains_key(keys, hash_table_count(hash_table), key2));
+  assert(keys_contains_key(keys, hashtable_count(hashtable), key1));
+  assert(keys_contains_key(keys, hashtable_count(hashtable), key2));
   free(keys);
   
-  values = hash_table_alloc_values(hash_table);
+  values = hashtable_alloc_values(hashtable);
   assert(values);
-  assert(values_contains_value(values, hash_table_count(hash_table), value1));
-  assert(values_contains_value(values, hash_table_count(hash_table), value2));
+  assert(values_contains_value(values, hashtable_count(hashtable), value1));
+  assert(values_contains_value(values, hashtable_count(hashtable), value2));
   free(values);
   
   struct ht_key key3 = ht_int_key(3);
   union ht_value value3a = ht_int_value(30);
-  assert(-1 == hash_table_get(hash_table, key3, NULL));
+  assert(-1 == hashtable_get(hashtable, key3, NULL));
   
-  result = hash_table_put(hash_table, key3, value3a, &previous_value);
+  result = hashtable_put(hashtable, key3, value3a, &previous_value);
   assert(0 == result);
-  assert(3 == hash_table_count(hash_table));
-  assert(0 == hash_table_get(hash_table, key3, &value));
+  assert(3 == hashtable_count(hashtable));
+  assert(0 == hashtable_get(hashtable, key3, &value));
   assert(value3a.int_value == value.int_value);
   
-  keys = hash_table_alloc_keys(hash_table);
+  keys = hashtable_alloc_keys(hashtable);
   assert(keys);
-  assert(keys_contains_key(keys, hash_table_count(hash_table), key1));
-  assert(keys_contains_key(keys, hash_table_count(hash_table), key2));
-  assert(keys_contains_key(keys, hash_table_count(hash_table), key3));
+  assert(keys_contains_key(keys, hashtable_count(hashtable), key1));
+  assert(keys_contains_key(keys, hashtable_count(hashtable), key2));
+  assert(keys_contains_key(keys, hashtable_count(hashtable), key3));
   free(keys);
   
-  values = hash_table_alloc_values(hash_table);
+  values = hashtable_alloc_values(hashtable);
   assert(values);
-  assert(values_contains_value(values, hash_table_count(hash_table), value1));
-  assert(values_contains_value(values, hash_table_count(hash_table), value2));
-  assert(values_contains_value(values, hash_table_count(hash_table), value3a));
+  assert(values_contains_value(values, hashtable_count(hashtable), value1));
+  assert(values_contains_value(values, hashtable_count(hashtable), value2));
+  assert(values_contains_value(values, hashtable_count(hashtable), value3a));
   free(values);
   
   union ht_value value3b = ht_int_value(33);
-  result = hash_table_put(hash_table, key3, value3b, &previous_value);
+  result = hashtable_put(hashtable, key3, value3b, &previous_value);
   assert(0 == result);
-  assert(3 == hash_table_count(hash_table));
+  assert(3 == hashtable_count(hashtable));
   assert(value3a.int_value == previous_value.int_value);
-  assert(0 == hash_table_get(hash_table, key3, &value));
+  assert(0 == hashtable_get(hashtable, key3, &value));
   assert(value3b.int_value == value.int_value);
   
-  keys = hash_table_alloc_keys(hash_table);
+  keys = hashtable_alloc_keys(hashtable);
   assert(keys);
-  assert(keys_contains_key(keys, hash_table_count(hash_table), key1));
-  assert(keys_contains_key(keys, hash_table_count(hash_table), key2));
-  assert(keys_contains_key(keys, hash_table_count(hash_table), key3));
+  assert(keys_contains_key(keys, hashtable_count(hashtable), key1));
+  assert(keys_contains_key(keys, hashtable_count(hashtable), key2));
+  assert(keys_contains_key(keys, hashtable_count(hashtable), key3));
   free(keys);
   
-  values = hash_table_alloc_values(hash_table);
+  values = hashtable_alloc_values(hashtable);
   assert(values);
-  assert(values_contains_value(values, hash_table_count(hash_table), value1));
-  assert(values_contains_value(values, hash_table_count(hash_table), value2));
-  assert(values_contains_value(values, hash_table_count(hash_table), value3b));
+  assert(values_contains_value(values, hashtable_count(hashtable), value1));
+  assert(values_contains_value(values, hashtable_count(hashtable), value2));
+  assert(values_contains_value(values, hashtable_count(hashtable), value3b));
   free(values);
   
   struct ht_key key4 = ht_int_key(4);
   union ht_value removed_value;
-  result = hash_table_remove(hash_table, key4, &removed_value);
+  result = hashtable_remove(hashtable, key4, &removed_value);
   assert(-1 == result);
-  assert(3 == hash_table_count(hash_table));
+  assert(3 == hashtable_count(hashtable));
   
-  result = hash_table_remove(hash_table, key3, &removed_value);
+  result = hashtable_remove(hashtable, key3, &removed_value);
   assert(0 == result);
   assert(value3b.int_value == removed_value.int_value);
-  assert(2 == hash_table_count(hash_table));
+  assert(2 == hashtable_count(hashtable));
   
-  keys = hash_table_alloc_keys(hash_table);
+  keys = hashtable_alloc_keys(hashtable);
   assert(keys);
-  assert(keys_contains_key(keys, hash_table_count(hash_table), key1));
-  assert(keys_contains_key(keys, hash_table_count(hash_table), key2));
+  assert(keys_contains_key(keys, hashtable_count(hashtable), key1));
+  assert(keys_contains_key(keys, hashtable_count(hashtable), key2));
   free(keys);
   
-  values = hash_table_alloc_values(hash_table);
+  values = hashtable_alloc_values(hashtable);
   assert(values);
-  assert(values_contains_value(values, hash_table_count(hash_table), value1));
-  assert(values_contains_value(values, hash_table_count(hash_table), value2));
+  assert(values_contains_value(values, hashtable_count(hashtable), value1));
+  assert(values_contains_value(values, hashtable_count(hashtable), value2));
   free(values);
   
-  result = hash_table_remove(hash_table, key1, &removed_value);
+  result = hashtable_remove(hashtable, key1, &removed_value);
   assert(0 == result);
   assert(value1.int_value == removed_value.int_value);
-  assert(1 == hash_table_count(hash_table));
+  assert(1 == hashtable_count(hashtable));
   
-  keys = hash_table_alloc_keys(hash_table);
+  keys = hashtable_alloc_keys(hashtable);
   assert(keys);
-  assert(keys_contains_key(keys, hash_table_count(hash_table), key2));
+  assert(keys_contains_key(keys, hashtable_count(hashtable), key2));
   free(keys);
   
-  values = hash_table_alloc_values(hash_table);
+  values = hashtable_alloc_values(hashtable);
   assert(values);
-  assert(values_contains_value(values, hash_table_count(hash_table), value2));
+  assert(values_contains_value(values, hashtable_count(hashtable), value2));
   free(values);
   
-  result = hash_table_remove(hash_table, key2, &removed_value);
+  result = hashtable_remove(hashtable, key2, &removed_value);
   assert(0 == result);
   assert(value2.int_value == removed_value.int_value);
-  assert(0 == hash_table_count(hash_table));
+  assert(0 == hashtable_count(hashtable));
   
-  hash_table_free(hash_table);
+  hashtable_free(hashtable);
   return 0;
 }
 

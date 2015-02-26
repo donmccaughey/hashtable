@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D4451CFD1A9EEF0500765DDF /* hashtable.c in Sources */ = {isa = PBXBuildFile; fileRef = D4451CFB1A9EEF0500765DDF /* hashtable.c */; };
+		D4451CFE1A9EEF0500765DDF /* hashtable.h in Headers */ = {isa = PBXBuildFile; fileRef = D4451CFC1A9EEF0500765DDF /* hashtable.h */; };
 		D45564A51A8F23C30081AB73 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = D45564A41A8F23C30081AB73 /* main.c */; };
-		D45564A81A8F23FE0081AB73 /* libhash_table.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D45564791A8EF31E0081AB73 /* libhash_table.a */; };
-		D48E43791A8F24FB0065D4A4 /* hash_table.c in Sources */ = {isa = PBXBuildFile; fileRef = D48E43771A8F24FB0065D4A4 /* hash_table.c */; };
-		D48E437A1A8F24FB0065D4A4 /* hash_table.h in Headers */ = {isa = PBXBuildFile; fileRef = D48E43781A8F24FB0065D4A4 /* hash_table.h */; };
+		D45564A81A8F23FE0081AB73 /* libhashtable.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D45564791A8EF31E0081AB73 /* libhashtable.a */; };
 		D48E437C1A907FD00065D4A4 /* int_test.c in Sources */ = {isa = PBXBuildFile; fileRef = D48E437B1A907FD00065D4A4 /* int_test.c */; };
 		D48E437F1A90805F0065D4A4 /* string_test.c in Sources */ = {isa = PBXBuildFile; fileRef = D48E437D1A90805F0065D4A4 /* string_test.c */; };
 /* End PBXBuildFile section */
@@ -38,11 +38,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		D45564791A8EF31E0081AB73 /* libhash_table.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libhash_table.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		D4451CFB1A9EEF0500765DDF /* hashtable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hashtable.c; sourceTree = "<group>"; };
+		D4451CFC1A9EEF0500765DDF /* hashtable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hashtable.h; sourceTree = "<group>"; };
+		D45564791A8EF31E0081AB73 /* libhashtable.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libhashtable.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D455649C1A8F237B0081AB73 /* tests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = tests; sourceTree = BUILT_PRODUCTS_DIR; };
 		D45564A41A8F23C30081AB73 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
-		D48E43771A8F24FB0065D4A4 /* hash_table.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hash_table.c; sourceTree = "<group>"; };
-		D48E43781A8F24FB0065D4A4 /* hash_table.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hash_table.h; sourceTree = "<group>"; };
 		D48E437B1A907FD00065D4A4 /* int_test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = int_test.c; sourceTree = "<group>"; };
 		D48E437D1A90805F0065D4A4 /* string_test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = string_test.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -59,7 +59,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D45564A81A8F23FE0081AB73 /* libhash_table.a in Frameworks */,
+				D45564A81A8F23FE0081AB73 /* libhashtable.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -69,7 +69,8 @@
 		D45564701A8EF31E0081AB73 = {
 			isa = PBXGroup;
 			children = (
-				D48E43761A8F24FB0065D4A4 /* hash_table */,
+				D4451CFC1A9EEF0500765DDF /* hashtable.h */,
+				D4451CFB1A9EEF0500765DDF /* hashtable.c */,
 				D45564A31A8F23C30081AB73 /* tests */,
 				D455647A1A8EF31E0081AB73 /* Products */,
 			);
@@ -78,7 +79,7 @@
 		D455647A1A8EF31E0081AB73 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D45564791A8EF31E0081AB73 /* libhash_table.a */,
+				D45564791A8EF31E0081AB73 /* libhashtable.a */,
 				D455649C1A8F237B0081AB73 /* tests */,
 			);
 			name = Products;
@@ -94,15 +95,6 @@
 			path = tests;
 			sourceTree = "<group>";
 		};
-		D48E43761A8F24FB0065D4A4 /* hash_table */ = {
-			isa = PBXGroup;
-			children = (
-				D48E43781A8F24FB0065D4A4 /* hash_table.h */,
-				D48E43771A8F24FB0065D4A4 /* hash_table.c */,
-			);
-			path = hash_table;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -110,16 +102,16 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D48E437A1A8F24FB0065D4A4 /* hash_table.h in Headers */,
+				D4451CFE1A9EEF0500765DDF /* hashtable.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		D45564781A8EF31E0081AB73 /* hash_table */ = {
+		D45564781A8EF31E0081AB73 /* hashtable */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D455647D1A8EF31E0081AB73 /* Build configuration list for PBXNativeTarget "hash_table" */;
+			buildConfigurationList = D455647D1A8EF31E0081AB73 /* Build configuration list for PBXNativeTarget "hashtable" */;
 			buildPhases = (
 				D45564751A8EF31E0081AB73 /* Sources */,
 				D45564761A8EF31E0081AB73 /* Frameworks */,
@@ -129,9 +121,9 @@
 			);
 			dependencies = (
 			);
-			name = hash_table;
+			name = hashtable;
 			productName = hash_table;
-			productReference = D45564791A8EF31E0081AB73 /* libhash_table.a */;
+			productReference = D45564791A8EF31E0081AB73 /* libhashtable.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		D455649B1A8F237B0081AB73 /* tests */ = {
@@ -169,7 +161,7 @@
 					};
 				};
 			};
-			buildConfigurationList = D45564741A8EF31E0081AB73 /* Build configuration list for PBXProject "hash_table" */;
+			buildConfigurationList = D45564741A8EF31E0081AB73 /* Build configuration list for PBXProject "HashTable" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -181,7 +173,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D45564781A8EF31E0081AB73 /* hash_table */,
+				D45564781A8EF31E0081AB73 /* hashtable */,
 				D455649B1A8F237B0081AB73 /* tests */,
 			);
 		};
@@ -192,7 +184,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D48E43791A8F24FB0065D4A4 /* hash_table.c in Sources */,
+				D4451CFD1A9EEF0500765DDF /* hashtable.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -211,7 +203,7 @@
 /* Begin PBXTargetDependency section */
 		D45564A71A8F23F70081AB73 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = D45564781A8EF31E0081AB73 /* hash_table */;
+			target = D45564781A8EF31E0081AB73 /* hashtable */;
 			targetProxy = D45564A61A8F23F70081AB73 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -236,7 +228,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -278,7 +270,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -328,7 +320,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		D45564741A8EF31E0081AB73 /* Build configuration list for PBXProject "hash_table" */ = {
+		D45564741A8EF31E0081AB73 /* Build configuration list for PBXProject "HashTable" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D455647B1A8EF31E0081AB73 /* Debug */,
@@ -337,7 +329,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D455647D1A8EF31E0081AB73 /* Build configuration list for PBXNativeTarget "hash_table" */ = {
+		D455647D1A8EF31E0081AB73 /* Build configuration list for PBXNativeTarget "hashtable" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D455647E1A8EF31E0081AB73 /* Debug */,
