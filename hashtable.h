@@ -7,10 +7,13 @@
 #include <string.h>
 
 
+/* Pointer-sized integers. */
+
 typedef intptr_t ht_int_t;
 typedef uintptr_t ht_uint_t;
 
 
+/* A value contains a pointer-sized type. */
 union ht_value {
   void const *const_ptr_value;
   char const *const_str_value;
@@ -21,23 +24,28 @@ union ht_value {
 };
 
 
+/* A key contains a value and the computed hash of that value. */
 struct ht_key {
   size_t hash;
   union ht_value value;
 };
 
 
+/* An entry in the hash table. */
 struct ht_entry {
   struct ht_key key;
   union ht_value value;
 };
 
 
+/* A space for an entry in the hash table, which may be used or unused. */
 struct ht_bucket {
   bool in_use;
   struct ht_entry entry;
 };
 
+
+/* Function types for comparing keys and values. */
 
 typedef bool
 ht_equal_keys_func(struct ht_key first, struct ht_key second);
@@ -46,6 +54,7 @@ typedef bool
 ht_equal_values_func(union ht_value first, union ht_value second);
 
 
+/* The hash table. */
 struct hashtable {
   size_t capacity;
   size_t count;
@@ -54,28 +63,21 @@ struct hashtable {
 };
 
 
+/* Hash table creation and destruction functions. */
+
 struct hashtable *
 hashtable_alloc(size_t capacity, ht_equal_keys_func *equal_keys);
 
-struct ht_key *
-hashtable_alloc_keys(struct hashtable const *hashtable);
-
-union ht_value *
-hashtable_alloc_values(struct hashtable const *hashtable);
-
 void
 hashtable_free(struct hashtable *hashtable);
+
+
+/* Functions to read, write and delete entries in the hash table. */
 
 int
 hashtable_get(struct hashtable const *hashtable,
               struct ht_key key,
               union ht_value *value_out);
-
-bool
-hashtable_next(struct hashtable const *hashtable,
-               size_t *iterator,
-               struct ht_key *key_out,
-               union ht_value *value_out);
 
 int
 hashtable_put(struct hashtable *hashtable,
@@ -88,47 +90,98 @@ hashtable_remove(struct hashtable *hashtable,
                  struct ht_key key,
                  union ht_value *previous_value_out);
 
+
+/* Functions to iterate over keys and values in the hash table. */
+
+bool
+hashtable_next(struct hashtable const *hashtable,
+               size_t *iterator,
+               struct ht_key *key_out,
+               union ht_value *value_out);
+
+struct ht_key *
+hashtable_alloc_keys(struct hashtable const *hashtable);
+
+union ht_value *
+hashtable_alloc_values(struct hashtable const *hashtable);
+
+
+/* Functions to make keys. */
+
+inline struct ht_key
+ht_const_str_key(char const *value);
+
+inline struct ht_key
+ht_int_key(ht_int_t value);
+
+inline struct ht_key
+ht_str_key(char *value);
+
+inline struct ht_key
+ht_uint_key(ht_uint_t value);
+
+
+/* Functions to make values. */
+
+inline union ht_value
+ht_const_str_value(char const *value);
+
+inline union ht_value
+ht_int_value(ht_int_t value);
+
+inline union ht_value
+ht_str_value(char *value);
+
+inline union ht_value
+ht_uint_value(ht_uint_t value);
+
+
+/* Functions to dynamically allocate string keys and values. */
+
 inline struct ht_key
 ht_alloc_str_key(char const *value);
 
 inline union ht_value
 ht_alloc_str_value(char const *value);
 
-inline struct ht_key
-ht_const_str_key(char const *value);
-
-inline union ht_value
-ht_const_str_value(char const *value);
-
-inline bool
-ht_equal_const_str_keys(struct ht_key first, struct ht_key second);
-
-inline bool
-ht_equal_const_str_values(union ht_value first, union ht_value second);
-
-inline bool
-ht_equal_int_keys(struct ht_key first, struct ht_key second);
-
-inline bool
-ht_equal_int_values(union ht_value first, union ht_value second);
-
-inline bool
-ht_equal_str_keys(struct ht_key first, struct ht_key second);
-
-inline bool
-ht_equal_str_values(union ht_value first, union ht_value second);
-
-inline bool
-ht_equal_uint_keys(struct ht_key first, struct ht_key second);
-
-inline bool
-ht_equal_uint_values(union ht_value first, union ht_value second);
-
 inline void
 ht_free_str_key(struct ht_key key);
 
 inline void
 ht_free_str_value(union ht_value value);
+
+
+/* Equality functions for keys. */
+
+inline bool
+ht_equal_const_str_keys(struct ht_key first, struct ht_key second);
+
+inline bool
+ht_equal_int_keys(struct ht_key first, struct ht_key second);
+
+inline bool
+ht_equal_str_keys(struct ht_key first, struct ht_key second);
+
+inline bool
+ht_equal_uint_keys(struct ht_key first, struct ht_key second);
+
+
+/* Equality functions for values. */
+
+inline bool
+ht_equal_const_str_values(union ht_value first, union ht_value second);
+
+inline bool
+ht_equal_int_values(union ht_value first, union ht_value second);
+
+inline bool
+ht_equal_str_values(union ht_value first, union ht_value second);
+
+inline bool
+ht_equal_uint_values(union ht_value first, union ht_value second);
+
+
+/* Hash functions. */
 
 size_t
 ht_hash_of_const_str(char const *value);
@@ -142,24 +195,8 @@ ht_hash_of_str(char *value);
 inline size_t
 ht_hash_of_uint(ht_uint_t value);
 
-inline struct ht_key
-ht_int_key(ht_int_t value);
 
-inline union ht_value
-ht_int_value(ht_int_t value);
-
-inline struct ht_key
-ht_str_key(char *value);
-
-inline union ht_value
-ht_str_value(char *value);
-
-inline struct ht_key
-ht_uint_key(ht_uint_t value);
-
-inline union ht_value
-ht_uint_value(ht_uint_t value);
-
+/* Definitions of inline functions. */
 
 inline struct ht_key
 ht_alloc_str_key(char const *value)

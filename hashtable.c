@@ -157,6 +157,54 @@ hashtable_remove(struct hashtable *hashtable,
 }
 
 
+extern inline struct ht_key
+ht_alloc_str_key(char const *value);
+
+
+extern inline union ht_value
+ht_alloc_str_value(char const *value);
+
+
+extern inline bool
+ht_equal_const_str_keys(struct ht_key first, struct ht_key second);
+
+
+extern inline bool
+ht_equal_const_str_values(union ht_value first, union ht_value second);
+
+
+extern inline bool
+ht_equal_int_keys(struct ht_key first, struct ht_key second);
+
+
+extern inline bool
+ht_equal_int_values(union ht_value first, union ht_value second);
+
+
+extern inline bool
+ht_equal_str_keys(struct ht_key first, struct ht_key second);
+
+
+extern inline bool
+ht_equal_str_values(union ht_value first, union ht_value second);
+
+
+extern inline bool
+ht_equal_uint_keys(struct ht_key first, struct ht_key second);
+
+
+extern inline bool
+ht_equal_uint_values(union ht_value first, union ht_value second);
+
+
+extern inline void
+ht_free_str_key(struct ht_key key);
+
+
+extern inline void
+ht_free_str_value(union ht_value value);
+
+
 size_t
 ht_hash_of_const_str(char const *value)
 {
@@ -171,59 +219,29 @@ ht_hash_of_const_str(char const *value)
 }
 
 
-extern inline struct ht_key
-ht_alloc_str_key(char const *value);
+extern inline size_t
+ht_hash_of_int(ht_int_t value);
 
-extern inline union ht_value
-ht_alloc_str_value(char const *value);
-
-extern inline bool
-ht_equal_const_str_keys(struct ht_key first, struct ht_key second);
-
-extern inline bool
-ht_equal_const_str_values(union ht_value first, union ht_value second);
-
-extern inline bool
-ht_equal_int_keys(struct ht_key first, struct ht_key second);
-
-extern inline bool
-ht_equal_int_values(union ht_value first, union ht_value second);
-
-extern inline bool
-ht_equal_str_keys(struct ht_key first, struct ht_key second);
-
-extern inline bool
-ht_equal_str_values(union ht_value first, union ht_value second);
-
-extern inline bool
-ht_equal_uint_keys(struct ht_key first, struct ht_key second);
-
-extern inline bool
-ht_equal_uint_values(union ht_value first, union ht_value second);
-
-extern inline void
-ht_free_str_key(struct ht_key key);
-
-extern inline void
-ht_free_str_value(union ht_value value);
 
 extern inline size_t
 ht_hash_of_str(char *value);
 
-extern inline size_t
-ht_hash_of_int(ht_int_t value);
 
 extern inline size_t
 ht_hash_of_uint(ht_uint_t value);
 
+
 extern inline struct ht_key
 ht_int_key(ht_int_t value);
+
 
 extern inline union ht_value
 ht_int_value(ht_int_t value);
 
+
 extern inline struct ht_key
 ht_uint_key(ht_uint_t value);
+
 
 extern inline union ht_value
 ht_uint_value(ht_uint_t value);
