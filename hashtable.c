@@ -141,7 +141,7 @@ hashtable_get(struct hashtable const *hashtable,
   for (size_t i = 0, j = index; i < hashtable->capacity; ++i, ++j) {
     if (j == hashtable->capacity) j = 0;
     
-    if ( ! (ENTRY_IN_USE | ENTRY_REMOVED) & hashtable->entries[j].flags) return -1;
+    if ( ! ((ENTRY_IN_USE | ENTRY_REMOVED) & hashtable->entries[j].flags)) break;
     
     if (   ENTRY_IN_USE & hashtable->entries[j].flags
         && hashtable->equal_keys(key, hashtable->entries[j].key))
@@ -197,7 +197,7 @@ hashtable_remove(struct hashtable *hashtable,
   for (size_t i = 0, j = index; i < hashtable->capacity; ++i, ++j) {
     if (j == hashtable->capacity) j = 0;
     
-    if ( ! (ENTRY_IN_USE | ENTRY_REMOVED) & hashtable->entries[j].flags) return -1;
+    if ( ! ((ENTRY_IN_USE | ENTRY_REMOVED) & hashtable->entries[j].flags)) break;
     
     if (   ENTRY_IN_USE & hashtable->entries[j].flags
         && hashtable->equal_keys(key, hashtable->entries[j].key))
