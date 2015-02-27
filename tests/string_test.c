@@ -9,8 +9,8 @@ string_test(void)
 {
   struct hashtable *hashtable = hashtable_alloc(10, ht_equal_str_keys);
   assert(hashtable);
-  assert(10 == hashtable_capacity(hashtable));
-  assert(0 == hashtable_count(hashtable));
+  assert(10 == hashtable->capacity);
+  assert(0 == hashtable->count);
   assert_keys_and_values(hashtable,
                          (struct ht_key[]){},
                          (union ht_value[]){},
@@ -28,7 +28,7 @@ string_test(void)
   union ht_value previous_value;
   int result = hashtable_put(hashtable, key1, value1, &previous_value);
   assert(0 == result);
-  assert(1 == hashtable_count(hashtable));
+  assert(1 == hashtable->count);
   union ht_value value;
   assert(0 == hashtable_get(hashtable, key1, &value));
   assert(value1.str_value == value.str_value);
@@ -48,7 +48,7 @@ string_test(void)
   
   result = hashtable_put(hashtable, key2, value2, &previous_value);
   assert(0 == result);
-  assert(2 == hashtable_count(hashtable));
+  assert(2 == hashtable->count);
   assert(0 == hashtable_get(hashtable, key2, &value));
   assert(value2.str_value == value.str_value);
   assert_keys_and_values(hashtable,
@@ -67,7 +67,7 @@ string_test(void)
   
   result = hashtable_put(hashtable, key3, value3a, &previous_value);
   assert(0 == result);
-  assert(3 == hashtable_count(hashtable));
+  assert(3 == hashtable->count);
   assert(0 == hashtable_get(hashtable, key3, &value));
   assert(value3a.str_value == value.str_value);
   assert_keys_and_values(hashtable,
@@ -82,7 +82,7 @@ string_test(void)
   assert(value3b.str_value);
   result = hashtable_put(hashtable, key3, value3b, &previous_value);
   assert(0 == result);
-  assert(3 == hashtable_count(hashtable));
+  assert(3 == hashtable->count);
   assert(value3a.str_value == previous_value.str_value);
   assert(0 == hashtable_get(hashtable, key3, &value));
   assert(value3b.str_value == value.str_value);
@@ -99,13 +99,13 @@ string_test(void)
   union ht_value removed_value;
   result = hashtable_remove(hashtable, key4, &removed_value);
   assert(-1 == result);
-  assert(3 == hashtable_count(hashtable));
+  assert(3 == hashtable->count);
   
   
   result = hashtable_remove(hashtable, key3, &removed_value);
   assert(0 == result);
   assert(value3b.str_value == removed_value.str_value);
-  assert(2 == hashtable_count(hashtable));
+  assert(2 == hashtable->count);
   assert_keys_and_values(hashtable,
                          (struct ht_key[]){ key1, key2, },
                          (union ht_value[]){ value1, value2, },
@@ -117,7 +117,7 @@ string_test(void)
   result = hashtable_remove(hashtable, key1, &removed_value);
   assert(0 == result);
   assert(value1.str_value == removed_value.str_value);
-  assert(1 == hashtable_count(hashtable));
+  assert(1 == hashtable->count);
   assert_keys_and_values(hashtable,
                          (struct ht_key[]){ key2, },
                          (union ht_value[]){ value2, },
@@ -129,7 +129,7 @@ string_test(void)
   hashtable_remove(hashtable, key2, &removed_value);
   assert(0 == result);
   assert(value2.str_value == removed_value.str_value);
-  assert(0 == hashtable_count(hashtable));
+  assert(0 == hashtable->count);
   assert_keys_and_values(hashtable,
                          (struct ht_key[]){},
                          (union ht_value[]){},

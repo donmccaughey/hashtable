@@ -1,25 +1,10 @@
 #include "hashtable.h"
 
 
-struct ht_entry {
-  bool in_use;
-  struct ht_key key;
-  union ht_value value;
-};
-
-
-struct hashtable {
-  size_t capacity;
-  size_t count;
-  ht_equal_keys_func *equal_keys;
-  struct ht_entry entries[];
-};
-
-
 struct hashtable *
 hashtable_alloc(size_t capacity, ht_equal_keys_func *equal_keys)
 {
-  size_t size = sizeof(struct hashtable) + sizeof(struct ht_entry[capacity]);
+  size_t size = sizeof(struct hashtable) + sizeof(struct ht_bucket[capacity]);
   struct hashtable *hashtable = calloc(1, size);
   if ( ! hashtable) return NULL;
   
@@ -64,20 +49,6 @@ hashtable_alloc_values(struct hashtable const *hashtable)
 }
 
 
-size_t
-hashtable_capacity(struct hashtable const *hashtable)
-{
-  return hashtable->capacity;
-}
-
-
-size_t
-hashtable_count(struct hashtable const *hashtable)
-{
-  return hashtable->count;
-}
-
-
 void
 hashtable_free(struct hashtable *hashtable)
 {
@@ -95,10 +66,10 @@ hashtable_get(struct hashtable const *hashtable,
   for (size_t i = 0, j = index; i < hashtable->capacity; ++i, ++j) {
     if (j == hashtable->capacity) j = 0;
     
-    if ( ! hashtable->entries[j].in_use) break;
+    if ( ! hashtable->buckets[j].in_use) break;
     
-    if (hashtable->equal_keys(key, hashtable->entries[j].key)) {
-      if (value_out) *value_out = hashtable->entries[j].value;
+    if (hashtable->equal_keys(key, hashtable->buckets[j].entry.key)) {
+      if (value_out) *value_out = hashtable->buckets[j].entry.value;
       return 0;
     }
   }
@@ -115,9 +86,9 @@ hashtable_next(struct hashtable const *hashtable,
 {
   while (*iterator < hashtable->capacity) {
     size_t i = (*iterator)++;
-    if (hashtable->entries[i].in_use) {
-      if (key_out) *key_out = hashtable->entries[i].key;
-      if (value_out) *value_out = hashtable->entries[i].value;
+    if (hashtable->buckets[i].in_use) {
+      if (key_out) *key_out = hashtable->buckets[i].entry.key;
+      if (value_out) *value_out = hashtable->buckets[i].entry.value;
       return true;
     }
   }
@@ -136,17 +107,17 @@ hashtable_put(struct hashtable *hashtable,
   for (size_t i = 0, j = index; i < hashtable->capacity; ++i, ++j) {
     if (j == hashtable->capacity) j = 0;
     
-    if ( ! hashtable->entries[j].in_use) {
-      hashtable->entries[j].in_use = true;
-      hashtable->entries[j].key = key;
-      hashtable->entries[j].value = value;
+    if ( ! hashtable->buckets[j].in_use) {
+      hashtable->buckets[j].in_use = true;
+      hashtable->buckets[j].entry.key = key;
+      hashtable->buckets[j].entry.value = value;
       ++hashtable->count;
       return 0;
     }
     
-    if (hashtable->equal_keys(key, hashtable->entries[j].key)) {
-      if (previous_value_out) *previous_value_out = hashtable->entries[j].value;
-      hashtable->entries[j].value = value;
+    if (hashtable->equal_keys(key, hashtable->buckets[j].entry.key)) {
+      if (previous_value_out) *previous_value_out = hashtable->buckets[j].entry.value;
+      hashtable->buckets[j].entry.value = value;
       return 0;
     }
   }
@@ -166,19 +137,19 @@ hashtable_remove(struct hashtable *hashtable,
   for (size_t i = 0, j = index; i < hashtable->capacity; ++i, ++j) {
     if (j == hashtable->capacity) j = 0;
     
-    if ( ! hashtable->entries[j].in_use) break;
+    if ( ! hashtable->buckets[j].in_use) break;
     
     if ( ! removed) {
-      if (hashtable->equal_keys(key, hashtable->entries[j].key)) {
-        if (previous_value_out) *previous_value_out = hashtable->entries[j].value;
-        hashtable->entries[j].in_use = false;
+      if (hashtable->equal_keys(key, hashtable->buckets[j].entry.key)) {
+        if (previous_value_out) *previous_value_out = hashtable->buckets[j].entry.value;
+        hashtable->buckets[j].in_use = false;
         --hashtable->count;
         removed = true;
       }
     } else {
-      hashtable->entries[j].in_use = false;
+      hashtable->buckets[j].in_use = false;
       --hashtable->count;
-      hashtable_put(hashtable, hashtable->entries[j].key, hashtable->entries[j].value, NULL);
+      hashtable_put(hashtable, hashtable->buckets[j].entry.key, hashtable->buckets[j].entry.value, NULL);
     }
   }
   

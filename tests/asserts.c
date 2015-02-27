@@ -23,21 +23,21 @@ assert_keys_and_values(struct hashtable *hashtable,
   
   for (size_t i = 0; i < expected_count; ++i) {
     assert(keys_contains_key(keys,
-                             hashtable_count(hashtable),
+                             hashtable->count,
                              expected_keys[i],
                              equal_keys));
     assert(values_contains_value(values,
-                                 hashtable_count(hashtable),
+                                 hashtable->count,
                                  expected_values[i],
                                  equal_values));
     
     assert(hashtable_next(hashtable, &iterator, &next_key, &next_value));
     assert(keys_contains_key(keys,
-                             hashtable_count(hashtable),
+                             hashtable->count,
                              next_key,
                              equal_keys));
     assert(values_contains_value(values,
-                                 hashtable_count(hashtable),
+                                 hashtable->count,
                                  next_value,
                                  equal_values));
     

@@ -27,6 +27,18 @@ struct ht_key {
 };
 
 
+struct ht_entry {
+  struct ht_key key;
+  union ht_value value;
+};
+
+
+struct ht_bucket {
+  bool in_use;
+  struct ht_entry entry;
+};
+
+
 typedef bool
 ht_equal_keys_func(struct ht_key first, struct ht_key second);
 
@@ -34,7 +46,12 @@ typedef bool
 ht_equal_values_func(union ht_value first, union ht_value second);
 
 
-struct hashtable;
+struct hashtable {
+  size_t capacity;
+  size_t count;
+  ht_equal_keys_func *equal_keys;
+  struct ht_bucket buckets[];
+};
 
 
 struct hashtable *
@@ -45,12 +62,6 @@ hashtable_alloc_keys(struct hashtable const *hashtable);
 
 union ht_value *
 hashtable_alloc_values(struct hashtable const *hashtable);
-
-size_t
-hashtable_capacity(struct hashtable const *hashtable);
-
-size_t
-hashtable_count(struct hashtable const *hashtable);
 
 void
 hashtable_free(struct hashtable *hashtable);
