@@ -16,40 +16,6 @@ struct hashtable {
 };
 
 
-extern inline struct ht_key
-ht_alloc_str_key(char const *value);
-
-extern inline union ht_value
-ht_alloc_str_value(char const *value);
-
-extern inline void
-ht_free_str_key(struct ht_key key);
-
-extern inline void
-ht_free_str_value(union ht_value value);
-
-extern inline size_t
-ht_hash_of_str(char *value);
-
-extern inline size_t
-ht_hash_of_int(ht_int_t value);
-
-extern inline size_t
-ht_hash_of_uint(ht_uint_t value);
-
-extern inline struct ht_key
-ht_int_key(ht_int_t value);
-
-extern inline union ht_value
-ht_int_value(ht_int_t value);
-
-extern inline struct ht_key
-ht_uint_key(ht_uint_t value);
-
-extern inline union ht_value
-ht_uint_value(ht_uint_t value);
-
-
 struct hashtable *
 hashtable_alloc(size_t capacity, ht_equal_keys_func *equal_keys)
 {
@@ -70,10 +36,11 @@ hashtable_alloc_keys(struct hashtable const *hashtable)
   struct ht_key *keys = calloc(hashtable->count, sizeof(struct ht_key));
   if ( ! keys) return NULL;
   
-  for (size_t i = 0, j = 0; i < hashtable->capacity; ++i) {
-    if (hashtable->entries[i].in_use) {
-      keys[j++] = hashtable->entries[i].key;
-    }
+  size_t iterator = 0;
+  struct ht_key key;
+  size_t i = 0;
+  while (hashtable_next(hashtable, &iterator, &key, NULL)) {
+    keys[i++] = key;
   }
   
   return keys;
@@ -86,10 +53,11 @@ hashtable_alloc_values(struct hashtable const *hashtable)
   union ht_value *values = calloc(hashtable->count, sizeof(union ht_value));
   if ( ! values) return NULL;
   
-  for (size_t i = 0, j = 0; i < hashtable->capacity; ++i) {
-    if (hashtable->entries[i].in_use) {
-      values[j++] = hashtable->entries[i].value;
-    }
+  size_t iterator = 0;
+  union ht_value value;
+  size_t i = 0;
+  while (hashtable_next(hashtable, &iterator, NULL, &value)) {
+    values[i++] = value;
   }
   
   return values;
@@ -136,6 +104,24 @@ hashtable_get(struct hashtable const *hashtable,
   }
   
   return -1;
+}
+
+
+bool
+hashtable_next(struct hashtable const *hashtable,
+               size_t *iterator,
+               struct ht_key *key_out,
+               union ht_value *value_out)
+{
+  while (*iterator < hashtable->capacity) {
+    size_t i = (*iterator)++;
+    if (hashtable->entries[i].in_use) {
+      if (key_out) *key_out = hashtable->entries[i].key;
+      if (value_out) *value_out = hashtable->entries[i].value;
+      return true;
+    }
+  }
+  return false;
 }
 
 
@@ -200,34 +186,6 @@ hashtable_remove(struct hashtable *hashtable,
 }
 
 
-bool
-ht_equal_const_str_keys(struct ht_key first_key, struct ht_key second_key)
-{
-  return 0 == strcmp(first_key.value.const_str_value, second_key.value.const_str_value);
-}
-
-
-bool
-ht_equal_int_keys(struct ht_key first_key, struct ht_key second_key)
-{
-  return first_key.value.int_value == second_key.value.int_value;
-}
-
-
-bool
-ht_equal_str_keys(struct ht_key first_key, struct ht_key second_key)
-{
-  return 0 == strcmp(first_key.value.str_value, second_key.value.str_value);
-}
-
-
-bool
-ht_equal_uint_keys(struct ht_key first_key, struct ht_key second_key)
-{
-  return first_key.value.uint_value == second_key.value.uint_value;
-}
-
-
 size_t
 ht_hash_of_const_str(char const *value)
 {
@@ -240,3 +198,61 @@ ht_hash_of_const_str(char const *value)
   }
   return hash;
 }
+
+
+extern inline struct ht_key
+ht_alloc_str_key(char const *value);
+
+extern inline union ht_value
+ht_alloc_str_value(char const *value);
+
+extern inline bool
+ht_equal_const_str_keys(struct ht_key first, struct ht_key second);
+
+extern inline bool
+ht_equal_const_str_values(union ht_value first, union ht_value second);
+
+extern inline bool
+ht_equal_int_keys(struct ht_key first, struct ht_key second);
+
+extern inline bool
+ht_equal_int_values(union ht_value first, union ht_value second);
+
+extern inline bool
+ht_equal_str_keys(struct ht_key first, struct ht_key second);
+
+extern inline bool
+ht_equal_str_values(union ht_value first, union ht_value second);
+
+extern inline bool
+ht_equal_uint_keys(struct ht_key first, struct ht_key second);
+
+extern inline bool
+ht_equal_uint_values(union ht_value first, union ht_value second);
+
+extern inline void
+ht_free_str_key(struct ht_key key);
+
+extern inline void
+ht_free_str_value(union ht_value value);
+
+extern inline size_t
+ht_hash_of_str(char *value);
+
+extern inline size_t
+ht_hash_of_int(ht_int_t value);
+
+extern inline size_t
+ht_hash_of_uint(ht_uint_t value);
+
+extern inline struct ht_key
+ht_int_key(ht_int_t value);
+
+extern inline union ht_value
+ht_int_value(ht_int_t value);
+
+extern inline struct ht_key
+ht_uint_key(ht_uint_t value);
+
+extern inline union ht_value
+ht_uint_value(ht_uint_t value);

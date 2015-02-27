@@ -28,7 +28,10 @@ struct ht_key {
 
 
 typedef bool
-ht_equal_keys_func(struct ht_key first_key, struct ht_key second_key);
+ht_equal_keys_func(struct ht_key first, struct ht_key second);
+
+typedef bool
+ht_equal_values_func(union ht_value first, union ht_value second);
 
 
 struct hashtable;
@@ -57,6 +60,12 @@ hashtable_get(struct hashtable const *hashtable,
               struct ht_key key,
               union ht_value *value_out);
 
+bool
+hashtable_next(struct hashtable const *hashtable,
+               size_t *iterator,
+               struct ht_key *key_out,
+               union ht_value *value_out);
+
 int
 hashtable_put(struct hashtable *hashtable,
               struct ht_key key,
@@ -80,17 +89,29 @@ ht_const_str_key(char const *value);
 inline union ht_value
 ht_const_str_value(char const *value);
 
-bool
-ht_equal_const_str_keys(struct ht_key first_key, struct ht_key second_key);
+inline bool
+ht_equal_const_str_keys(struct ht_key first, struct ht_key second);
 
-bool
-ht_equal_int_keys(struct ht_key first_key, struct ht_key second_key);
+inline bool
+ht_equal_const_str_values(union ht_value first, union ht_value second);
 
-bool
-ht_equal_str_keys(struct ht_key first_key, struct ht_key second_key);
+inline bool
+ht_equal_int_keys(struct ht_key first, struct ht_key second);
 
-bool
-ht_equal_uint_keys(struct ht_key first_key, struct ht_key second_key);
+inline bool
+ht_equal_int_values(union ht_value first, union ht_value second);
+
+inline bool
+ht_equal_str_keys(struct ht_key first, struct ht_key second);
+
+inline bool
+ht_equal_str_values(union ht_value first, union ht_value second);
+
+inline bool
+ht_equal_uint_keys(struct ht_key first, struct ht_key second);
+
+inline bool
+ht_equal_uint_values(union ht_value first, union ht_value second);
 
 inline void
 ht_free_str_key(struct ht_key key);
@@ -160,6 +181,62 @@ inline union ht_value
 ht_const_str_value(char const *value)
 {
   return (union ht_value){.const_str_value=value,};
+}
+
+
+inline bool
+ht_equal_const_str_keys(struct ht_key first, struct ht_key second)
+{
+  return ht_equal_const_str_values(first.value, second.value);
+}
+
+
+inline bool
+ht_equal_const_str_values(union ht_value first, union ht_value second)
+{
+  return 0 == strcmp(first.const_str_value, second.const_str_value);
+}
+
+
+inline bool
+ht_equal_int_keys(struct ht_key first, struct ht_key second)
+{
+  return ht_equal_int_values(first.value, second.value);
+}
+
+
+inline bool
+ht_equal_int_values(union ht_value first, union ht_value second)
+{
+  return first.int_value == second.int_value;
+}
+
+
+inline bool
+ht_equal_str_keys(struct ht_key first, struct ht_key second)
+{
+  return ht_equal_str_values(first.value, second.value);
+}
+
+
+inline bool
+ht_equal_str_values(union ht_value first, union ht_value second)
+{
+  return 0 == strcmp(first.str_value, second.str_value);
+}
+
+
+inline bool
+ht_equal_uint_keys(struct ht_key first, struct ht_key second)
+{
+  return ht_equal_uint_values(first.value, second.value);
+}
+
+
+inline bool
+ht_equal_uint_values(union ht_value first, union ht_value second)
+{
+  return first.uint_value == second.uint_value;
 }
 
 
