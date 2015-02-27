@@ -16,9 +16,6 @@ struct hashtable {
 };
 
 
-static inline size_t
-get_index(struct hashtable const *hashtable, struct ht_key key);
-
 extern inline struct ht_key
 ht_alloc_str_key(char const *value);
 
@@ -51,13 +48,6 @@ ht_uint_key(ht_uint_t value);
 
 extern inline union ht_value
 ht_uint_value(ht_uint_t value);
-
-
-static inline size_t
-get_index(struct hashtable const *hashtable, struct ht_key key)
-{
-  return key.hash % hashtable->capacity;
-}
 
 
 struct hashtable *
@@ -132,7 +122,7 @@ hashtable_get(struct hashtable const *hashtable,
               struct ht_key key,
               union ht_value *value_out)
 {
-  size_t index = get_index(hashtable, key);
+  size_t index = key.hash % hashtable->capacity;
   
   for (size_t i = 0, j = index; i < hashtable->capacity; ++i, ++j) {
     if (j == hashtable->capacity) j = 0;
@@ -155,7 +145,7 @@ hashtable_put(struct hashtable *hashtable,
               union ht_value value,
               union ht_value *previous_value_out)
 {
-  size_t index = get_index(hashtable, key);
+  size_t index = key.hash % hashtable->capacity;
   
   for (size_t i = 0, j = index; i < hashtable->capacity; ++i, ++j) {
     if (j == hashtable->capacity) j = 0;
@@ -184,7 +174,7 @@ hashtable_remove(struct hashtable *hashtable,
                  struct ht_key key,
                  union ht_value *previous_value_out)
 {
-  size_t index = get_index(hashtable, key);
+  size_t index = key.hash % hashtable->capacity;
   bool removed = false;
   
   for (size_t i = 0, j = index; i < hashtable->capacity; ++i, ++j) {
