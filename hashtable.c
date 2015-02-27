@@ -1,12 +1,8 @@
 #include "hashtable.h"
 
 
-#define ENTRY_IN_USE  0x01
-#define ENTRY_REMOVED 0x02
-
-
 struct ht_entry {
-  unsigned flags;
+  bool in_use;
   struct ht_key key;
   union ht_value value;
 };
@@ -85,7 +81,7 @@ hashtable_alloc_keys(struct hashtable const *hashtable)
   if ( ! keys) return NULL;
   
   for (size_t i = 0, j = 0; i < hashtable->capacity; ++i) {
-    if (ENTRY_IN_USE & hashtable->entries[i].flags) {
+    if (hashtable->entries[i].in_use) {
       keys[j++] = hashtable->entries[i].key;
     }
   }
@@ -101,7 +97,7 @@ hashtable_alloc_values(struct hashtable const *hashtable)
   if ( ! values) return NULL;
   
   for (size_t i = 0, j = 0; i < hashtable->capacity; ++i) {
-    if (ENTRY_IN_USE & hashtable->entries[i].flags) {
+    if (hashtable->entries[i].in_use) {
       values[j++] = hashtable->entries[i].value;
     }
   }
@@ -141,11 +137,9 @@ hashtable_get(struct hashtable const *hashtable,
   for (size_t i = 0, j = index; i < hashtable->capacity; ++i, ++j) {
     if (j == hashtable->capacity) j = 0;
     
-    if ( ! ((ENTRY_IN_USE | ENTRY_REMOVED) & hashtable->entries[j].flags)) break;
+    if ( ! hashtable->entries[j].in_use) break;
     
-    if (   ENTRY_IN_USE & hashtable->entries[j].flags
-        && hashtable->equal_keys(key, hashtable->entries[j].key))
-    {
+    if (hashtable->equal_keys(key, hashtable->entries[j].key)) {
       if (value_out) *value_out = hashtable->entries[j].value;
       return 0;
     }
@@ -166,17 +160,15 @@ hashtable_put(struct hashtable *hashtable,
   for (size_t i = 0, j = index; i < hashtable->capacity; ++i, ++j) {
     if (j == hashtable->capacity) j = 0;
     
-    if ( ! (ENTRY_IN_USE & hashtable->entries[j].flags)) {
-      hashtable->entries[j].flags = ENTRY_IN_USE;
+    if ( ! hashtable->entries[j].in_use) {
+      hashtable->entries[j].in_use = true;
       hashtable->entries[j].key = key;
       hashtable->entries[j].value = value;
       ++hashtable->count;
       return 0;
     }
     
-    if (   ENTRY_IN_USE & hashtable->entries[j].flags
-        && hashtable->equal_keys(key, hashtable->entries[j].key))
-    {
+    if (hashtable->equal_keys(key, hashtable->entries[j].key)) {
       if (previous_value_out) *previous_value_out = hashtable->entries[j].value;
       hashtable->entries[j].value = value;
       return 0;
@@ -193,23 +185,28 @@ hashtable_remove(struct hashtable *hashtable,
                  union ht_value *previous_value_out)
 {
   size_t index = get_index(hashtable, key);
+  bool removed = false;
   
   for (size_t i = 0, j = index; i < hashtable->capacity; ++i, ++j) {
     if (j == hashtable->capacity) j = 0;
     
-    if ( ! ((ENTRY_IN_USE | ENTRY_REMOVED) & hashtable->entries[j].flags)) break;
+    if ( ! hashtable->entries[j].in_use) break;
     
-    if (   ENTRY_IN_USE & hashtable->entries[j].flags
-        && hashtable->equal_keys(key, hashtable->entries[j].key))
-    {
-      if (previous_value_out) *previous_value_out = hashtable->entries[j].value;
-      hashtable->entries[j].flags = ENTRY_REMOVED;
+    if ( ! removed) {
+      if (hashtable->equal_keys(key, hashtable->entries[j].key)) {
+        if (previous_value_out) *previous_value_out = hashtable->entries[j].value;
+        hashtable->entries[j].in_use = false;
+        --hashtable->count;
+        removed = true;
+      }
+    } else {
+      hashtable->entries[j].in_use = false;
       --hashtable->count;
-      return 0;
+      hashtable_put(hashtable, hashtable->entries[j].key, hashtable->entries[j].value, NULL);
     }
   }
   
-  return -1;
+  return removed ? 0 : -1;
 }
 
 
