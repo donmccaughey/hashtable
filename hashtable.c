@@ -166,17 +166,19 @@ hashtable_put(struct hashtable *hashtable,
   for (size_t i = 0, j = index; i < hashtable->capacity; ++i, ++j) {
     if (j == hashtable->capacity) j = 0;
     
-    if (ENTRY_IN_USE & hashtable->entries[j].flags) {
-      if (hashtable->equal_keys(key, hashtable->entries[j].key)) {
-        if (previous_value_out) *previous_value_out = hashtable->entries[j].value;
-        hashtable->entries[j].value = value;
-        return 0;
-      }
-    } else {
+    if ( ! (ENTRY_IN_USE & hashtable->entries[j].flags)) {
       hashtable->entries[j].flags = ENTRY_IN_USE;
       hashtable->entries[j].key = key;
       hashtable->entries[j].value = value;
       ++hashtable->count;
+      return 0;
+    }
+    
+    if (   ENTRY_IN_USE & hashtable->entries[j].flags
+        && hashtable->equal_keys(key, hashtable->entries[j].key))
+    {
+      if (previous_value_out) *previous_value_out = hashtable->entries[j].value;
+      hashtable->entries[j].value = value;
       return 0;
     }
   }
