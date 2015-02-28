@@ -105,6 +105,9 @@ hashtable_alloc_keys(struct hashtable const *hashtable);
 union ht_value *
 hashtable_alloc_values(struct hashtable const *hashtable);
 
+struct ht_entry *
+hashtable_alloc_entries(struct hashtable const *hashtable);
+
 
 /* Functions to make keys. */
 
@@ -136,7 +139,7 @@ inline union ht_value
 ht_uint_value(ht_uint_t value);
 
 
-/* Functions to dynamically allocate string keys and values. */
+/* Functions to dynamically allocate and free string keys and values. */
 
 inline struct ht_key
 ht_alloc_str_key(char const *value);

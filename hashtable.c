@@ -22,11 +22,9 @@ hashtable_alloc_keys(struct hashtable const *hashtable)
   if ( ! keys) return NULL;
   
   size_t iterator = 0;
-  struct ht_key key;
   size_t i = 0;
-  while (hashtable_next(hashtable, &iterator, &key, NULL)) {
-    keys[i++] = key;
-  }
+  while (hashtable_next(hashtable, &iterator, &keys[i++], NULL))
+    ;
   
   return keys;
 }
@@ -39,13 +37,27 @@ hashtable_alloc_values(struct hashtable const *hashtable)
   if ( ! values) return NULL;
   
   size_t iterator = 0;
-  union ht_value value;
   size_t i = 0;
-  while (hashtable_next(hashtable, &iterator, NULL, &value)) {
-    values[i++] = value;
-  }
+  while (hashtable_next(hashtable, &iterator, NULL, &values[i++]))
+    ;
   
   return values;
+}
+
+
+struct ht_entry *
+hashtable_alloc_entries(struct hashtable const *hashtable)
+{
+  struct ht_entry *entries = calloc(hashtable->count, sizeof(struct ht_entry));
+  if ( ! entries) return NULL;
+  
+  size_t iterator = 0;
+  size_t i = 0;
+  while (hashtable_next(hashtable, &iterator, &entries[i].key, &entries[i].value)) {
+    ++i;
+  }
+  
+  return entries;
 }
 
 

@@ -14,6 +14,14 @@ assert_keys_and_values(struct hashtable *hashtable,
                        ht_equal_values_func equal_values);
 
 bool
+entries_contains_key_and_value(struct ht_entry *entries,
+                               size_t count,
+                               struct ht_key key,
+                               ht_equal_keys_func equal_keys,
+                               union ht_value value,
+                               ht_equal_values_func equal_values);
+
+bool
 keys_contains_key(struct ht_key *keys,
                   size_t count,
                   struct ht_key key,
