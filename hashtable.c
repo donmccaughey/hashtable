@@ -145,7 +145,7 @@ hashtable_set(struct hashtable *hashtable,
 int
 hashtable_remove(struct hashtable *hashtable,
                  struct ht_key key,
-                 union ht_value *previous_value_out)
+                 struct ht_entry *entry_out)
 {
   size_t index = key.hash % hashtable->capacity;
   bool removed = false;
@@ -157,7 +157,7 @@ hashtable_remove(struct hashtable *hashtable,
     
     if ( ! removed) {
       if (hashtable->equal_keys(key, hashtable->buckets[j].entry.key)) {
-        if (previous_value_out) *previous_value_out = hashtable->buckets[j].entry.value;
+        if (entry_out) *entry_out = hashtable->buckets[j].entry;
         hashtable->buckets[j].in_use = false;
         --hashtable->count;
         removed = true;

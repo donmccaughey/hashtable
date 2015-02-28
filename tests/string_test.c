@@ -101,15 +101,15 @@ string_test(void)
   
   struct ht_key key4 = ht_alloc_str_key("alpha");
   assert(key4.value.str_value);
-  union ht_value removed_value;
-  result = hashtable_remove(hashtable, key4, &removed_value);
+  result = hashtable_remove(hashtable, key4, NULL);
   assert(-1 == result);
   assert(3 == hashtable->count);
   
   
-  result = hashtable_remove(hashtable, key3, &removed_value);
+  struct ht_entry removed_entry;
+  result = hashtable_remove(hashtable, key3, &removed_entry);
   assert(0 == result);
-  assert(value3b.str_value == removed_value.str_value);
+  assert(value3b.str_value == removed_entry.value.str_value);
   assert(2 == hashtable->count);
   assert_keys_and_values(hashtable,
                          (struct ht_key[]){ key1, key2, },
@@ -119,9 +119,9 @@ string_test(void)
                          ht_equal_str_values);
   
   
-  result = hashtable_remove(hashtable, key1, &removed_value);
+  result = hashtable_remove(hashtable, key1, &removed_entry);
   assert(0 == result);
-  assert(value1.str_value == removed_value.str_value);
+  assert(value1.str_value == removed_entry.value.str_value);
   assert(1 == hashtable->count);
   assert_keys_and_values(hashtable,
                          (struct ht_key[]){ key2, },
@@ -131,9 +131,9 @@ string_test(void)
                          ht_equal_str_values);
   
   
-  hashtable_remove(hashtable, key2, &removed_value);
+  hashtable_remove(hashtable, key2, &removed_entry);
   assert(0 == result);
-  assert(value2.str_value == removed_value.str_value);
+  assert(value2.str_value == removed_entry.value.str_value);
   assert(0 == hashtable->count);
   assert_keys_and_values(hashtable,
                          (struct ht_key[]){},

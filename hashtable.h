@@ -89,7 +89,7 @@ hashtable_set(struct hashtable *hashtable,
 int
 hashtable_remove(struct hashtable *hashtable,
                  struct ht_key key,
-                 union ht_value *previous_value_out);
+                 struct ht_entry *entry_out);
 
 
 /* Functions to iterate over keys and values in the hash table. */

@@ -45,9 +45,9 @@ full_table_test(void)
   assert(-1 == hashtable_set(hashtable, ht_int_key(0), ht_int_value(0 * 0), NULL, NULL));
   
   for (int i = 1; i < 11; ++i) {
-    union ht_value previous_value;
-    assert(0 == hashtable_remove(hashtable, ht_int_key(i), &previous_value));
-    assert(i * i == previous_value.int_value);
+    struct ht_entry entry;
+    assert(0 == hashtable_remove(hashtable, ht_int_key(i), &entry));
+    assert(i * i == entry.value.int_value);
   }
   assert(0 == hashtable->count);
   
