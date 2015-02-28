@@ -109,10 +109,11 @@ hashtable_next(struct hashtable const *hashtable,
 
 
 int
-hashtable_put(struct hashtable *hashtable,
+hashtable_set(struct hashtable *hashtable,
               struct ht_key key,
               union ht_value value,
-              union ht_value *previous_value_out)
+              bool *had_entry,
+              struct ht_entry *entry_out)
 {
   size_t index = key.hash % hashtable->capacity;
   
@@ -124,11 +125,14 @@ hashtable_put(struct hashtable *hashtable,
       hashtable->buckets[j].entry.key = key;
       hashtable->buckets[j].entry.value = value;
       ++hashtable->count;
+      if (had_entry) *had_entry = false;
       return 0;
     }
     
     if (hashtable->equal_keys(key, hashtable->buckets[j].entry.key)) {
-      if (previous_value_out) *previous_value_out = hashtable->buckets[j].entry.value;
+      if (had_entry) *had_entry = true;
+      if (entry_out) *entry_out = hashtable->buckets[j].entry;
+      hashtable->buckets[j].entry.key = key;
       hashtable->buckets[j].entry.value = value;
       return 0;
     }
@@ -161,7 +165,11 @@ hashtable_remove(struct hashtable *hashtable,
     } else {
       hashtable->buckets[j].in_use = false;
       --hashtable->count;
-      hashtable_put(hashtable, hashtable->buckets[j].entry.key, hashtable->buckets[j].entry.value, NULL);
+      hashtable_set(hashtable,
+                    hashtable->buckets[j].entry.key,
+                    hashtable->buckets[j].entry.value,
+                    NULL,
+                    NULL);
     }
   }
   

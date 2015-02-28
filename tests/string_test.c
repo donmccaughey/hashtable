@@ -25,9 +25,11 @@ string_test(void)
   assert(value1.str_value);
   assert(-1 == hashtable_get(hashtable, key1, NULL));
   
-  union ht_value previous_value;
-  int result = hashtable_put(hashtable, key1, value1, &previous_value);
+  bool had_entry;
+  struct ht_entry entry;
+  int result = hashtable_set(hashtable, key1, value1, &had_entry, &entry);
   assert(0 == result);
+  assert( ! had_entry);
   assert(1 == hashtable->count);
   union ht_value value;
   assert(0 == hashtable_get(hashtable, key1, &value));
@@ -46,8 +48,9 @@ string_test(void)
   assert(value2.str_value);
   assert(-1 == hashtable_get(hashtable, key2, NULL));
   
-  result = hashtable_put(hashtable, key2, value2, &previous_value);
+  result = hashtable_set(hashtable, key2, value2, &had_entry, &entry);
   assert(0 == result);
+  assert( ! had_entry);
   assert(2 == hashtable->count);
   assert(0 == hashtable_get(hashtable, key2, &value));
   assert(value2.str_value == value.str_value);
@@ -65,8 +68,9 @@ string_test(void)
   assert(value3a.str_value);
   assert(-1 == hashtable_get(hashtable, key3, NULL));
   
-  result = hashtable_put(hashtable, key3, value3a, &previous_value);
+  result = hashtable_set(hashtable, key3, value3a, &had_entry, &entry);
   assert(0 == result);
+  assert( ! had_entry);
   assert(3 == hashtable->count);
   assert(0 == hashtable_get(hashtable, key3, &value));
   assert(value3a.str_value == value.str_value);
@@ -80,10 +84,11 @@ string_test(void)
   
   union ht_value value3b = ht_alloc_str_value("33");
   assert(value3b.str_value);
-  result = hashtable_put(hashtable, key3, value3b, &previous_value);
+  result = hashtable_set(hashtable, key3, value3b, &had_entry, &entry);
   assert(0 == result);
+  assert(had_entry);
   assert(3 == hashtable->count);
-  assert(value3a.str_value == previous_value.str_value);
+  assert(value3a.str_value == entry.value.str_value);
   assert(0 == hashtable_get(hashtable, key3, &value));
   assert(value3b.str_value == value.str_value);
   assert_keys_and_values(hashtable,

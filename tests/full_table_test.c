@@ -12,11 +12,11 @@ full_table_test(void)
   assert(0 == hashtable->count);
   
   for (int i = 0; i < 10; ++i) {
-    assert(0 == hashtable_put(hashtable, ht_int_key(i), ht_int_value(i), NULL));
+    assert(0 == hashtable_set(hashtable, ht_int_key(i), ht_int_value(i), NULL, NULL));
   }
   assert(10 == hashtable->count);
   
-  assert(-1 == hashtable_put(hashtable, ht_int_key(11), ht_int_value(11), NULL));
+  assert(-1 == hashtable_set(hashtable, ht_int_key(11), ht_int_value(11), NULL, NULL));
   
   for (int i = 0; i < 10; ++i) {
     union ht_value value;
@@ -25,9 +25,11 @@ full_table_test(void)
   }
   
   for (int i = 0; i < 10; ++i) {
-    union ht_value previous_value;
-    assert(0 == hashtable_put(hashtable, ht_int_key(i), ht_int_value(i * i), &previous_value));
-    assert(i == previous_value.int_value);
+    bool had_entry;
+    struct ht_entry entry;
+    assert(0 == hashtable_set(hashtable, ht_int_key(i), ht_int_value(i * i), &had_entry, &entry));
+    assert(had_entry);
+    assert(i == entry.value.int_value);
   }
   
   for (int i = 0; i < 10; ++i) {
@@ -38,9 +40,9 @@ full_table_test(void)
   
   assert(0 == hashtable_remove(hashtable, ht_int_key(0), NULL));
   assert(9 == hashtable->count);
-  assert(0 == hashtable_put(hashtable, ht_int_key(10), ht_int_value(10 * 10), NULL));
+  assert(0 == hashtable_set(hashtable, ht_int_key(10), ht_int_value(10 * 10), NULL, NULL));
   assert(10 == hashtable->count);
-  assert(-1 == hashtable_put(hashtable, ht_int_key(0), ht_int_value(0 * 0), NULL));
+  assert(-1 == hashtable_set(hashtable, ht_int_key(0), ht_int_value(0 * 0), NULL, NULL));
   
   for (int i = 1; i < 11; ++i) {
     union ht_value previous_value;

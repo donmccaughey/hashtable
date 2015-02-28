@@ -80,10 +80,11 @@ hashtable_get(struct hashtable const *hashtable,
               union ht_value *value_out);
 
 int
-hashtable_put(struct hashtable *hashtable,
+hashtable_set(struct hashtable *hashtable,
               struct ht_key key,
               union ht_value value,
-              union ht_value *previous_value_out);
+              bool *had_entry,
+              struct ht_entry *entry_out);
 
 int
 hashtable_remove(struct hashtable *hashtable,
