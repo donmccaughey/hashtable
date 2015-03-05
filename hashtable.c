@@ -22,9 +22,11 @@ hashtable_alloc_keys(struct hashtable const *hashtable)
   if ( ! keys) return NULL;
   
   size_t iterator = 0;
-  size_t i = 0;
-  while (hashtable_next(hashtable, &iterator, &keys[i++], NULL))
-    ;
+  struct ht_entry entry;
+  for (size_t i = 0; i < hashtable->count; ++i) {
+    hashtable_next(hashtable, &iterator, &entry);
+    keys[i] = entry.key;
+  }
   
   return keys;
 }
@@ -37,9 +39,11 @@ hashtable_alloc_values(struct hashtable const *hashtable)
   if ( ! values) return NULL;
   
   size_t iterator = 0;
-  size_t i = 0;
-  while (hashtable_next(hashtable, &iterator, NULL, &values[i++]))
-    ;
+  struct ht_entry entry;
+  for (size_t i = 0; i < hashtable->count; ++i) {
+    hashtable_next(hashtable, &iterator, &entry);
+    values[i] = entry.value;
+  }
   
   return values;
 }
@@ -52,9 +56,8 @@ hashtable_alloc_entries(struct hashtable const *hashtable)
   if ( ! entries) return NULL;
   
   size_t iterator = 0;
-  size_t i = 0;
-  while (hashtable_next(hashtable, &iterator, &entries[i].key, &entries[i].value)) {
-    ++i;
+  for (size_t i = 0; i < hashtable->count; ++i) {
+    hashtable_next(hashtable, &iterator, &entries[i]);
   }
   
   return entries;
@@ -93,14 +96,12 @@ hashtable_get(struct hashtable const *hashtable,
 bool
 hashtable_next(struct hashtable const *hashtable,
                size_t *iterator,
-               struct ht_key *key_out,
-               union ht_value *value_out)
+               struct ht_entry *entry_out)
 {
   while (*iterator < hashtable->capacity) {
     size_t i = (*iterator)++;
     if (hashtable->buckets[i].in_use) {
-      if (key_out) *key_out = hashtable->buckets[i].entry.key;
-      if (value_out) *value_out = hashtable->buckets[i].entry.value;
+      if (entry_out) *entry_out = hashtable->buckets[i].entry;
       return true;
     }
   }

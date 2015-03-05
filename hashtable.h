@@ -97,8 +97,7 @@ hashtable_remove(struct hashtable *hashtable,
 bool
 hashtable_next(struct hashtable const *hashtable,
                size_t *iterator,
-               struct ht_key *key_out,
-               union ht_value *value_out);
+               struct ht_entry *entry_out);
 
 struct ht_key *
 hashtable_alloc_keys(struct hashtable const *hashtable);
