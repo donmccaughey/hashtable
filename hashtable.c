@@ -71,7 +71,7 @@ hashtable_free(struct hashtable *hashtable)
 int
 hashtable_get(struct hashtable const *hashtable,
               struct ht_key key,
-              union ht_value *value_out)
+              struct ht_entry *entry_out)
 {
   size_t index = key.hash % hashtable->capacity;
   
@@ -81,7 +81,7 @@ hashtable_get(struct hashtable const *hashtable,
     if ( ! hashtable->buckets[j].in_use) break;
     
     if (hashtable->equal_keys(key, hashtable->buckets[j].entry.key)) {
-      if (value_out) *value_out = hashtable->buckets[j].entry.value;
+      if (entry_out) *entry_out = hashtable->buckets[j].entry;
       return 0;
     }
   }

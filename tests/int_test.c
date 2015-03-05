@@ -29,9 +29,8 @@ int_test(void)
   assert(0 == result);
   assert( ! had_entry);
   assert(1 == hashtable->count);
-  union ht_value value;
-  assert(0 == hashtable_get(hashtable, key1, &value));
-  assert(value1.int_value == value.int_value);
+  assert(0 == hashtable_get(hashtable, key1, &entry));
+  assert(value1.int_value == entry.value.int_value);
   assert_keys_and_values(hashtable,
                          (struct ht_key[]){ key1, },
                          (union ht_value[]){ value1, },
@@ -48,8 +47,8 @@ int_test(void)
   assert(0 == result);
   assert( ! had_entry);
   assert(2 == hashtable->count);
-  assert(0 == hashtable_get(hashtable, key2, &value));
-  assert(value2.int_value == value.int_value);
+  assert(0 == hashtable_get(hashtable, key2, &entry));
+  assert(value2.int_value == entry.value.int_value);
   assert_keys_and_values(hashtable,
                          (struct ht_key[]){ key1, key2, },
                          (union ht_value[]){ value1, value2, },
@@ -66,8 +65,8 @@ int_test(void)
   assert(0 == result);
   assert( ! had_entry);
   assert(3 == hashtable->count);
-  assert(0 == hashtable_get(hashtable, key3, &value));
-  assert(value3a.int_value == value.int_value);
+  assert(0 == hashtable_get(hashtable, key3, &entry));
+  assert(value3a.int_value == entry.value.int_value);
   assert_keys_and_values(hashtable,
                          (struct ht_key[]){ key1, key2, key3, },
                          (union ht_value[]){ value1, value2, value3a, },
@@ -82,8 +81,8 @@ int_test(void)
   assert(had_entry);
   assert(3 == hashtable->count);
   assert(value3a.int_value == entry.value.int_value);
-  assert(0 == hashtable_get(hashtable, key3, &value));
-  assert(value3b.int_value == value.int_value);
+  assert(0 == hashtable_get(hashtable, key3, &entry));
+  assert(value3b.int_value == entry.value.int_value);
   assert_keys_and_values(hashtable,
                          (struct ht_key[]){ key1, key2, key3, },
                          (union ht_value[]){ value1, value2, value3b, },

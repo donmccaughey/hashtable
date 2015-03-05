@@ -77,7 +77,7 @@ hashtable_free(struct hashtable *hashtable);
 int
 hashtable_get(struct hashtable const *hashtable,
               struct ht_key key,
-              union ht_value *value_out);
+              struct ht_entry *entry_out);
 
 int
 hashtable_set(struct hashtable *hashtable,

@@ -19,9 +19,9 @@ full_table_test(void)
   assert(-1 == hashtable_set(hashtable, ht_int_key(11), ht_int_value(11), NULL, NULL));
   
   for (int i = 0; i < 10; ++i) {
-    union ht_value value;
-    assert(0 == hashtable_get(hashtable, ht_int_key(i), &value));
-    assert(i == value.int_value);
+    struct ht_entry entry;
+    assert(0 == hashtable_get(hashtable, ht_int_key(i), &entry));
+    assert(i == entry.value.int_value);
   }
   
   for (int i = 0; i < 10; ++i) {
@@ -33,9 +33,9 @@ full_table_test(void)
   }
   
   for (int i = 0; i < 10; ++i) {
-    union ht_value value;
-    assert(0 == hashtable_get(hashtable, ht_int_key(i), &value));
-    assert(i * i == value.int_value);
+    struct ht_entry entry;
+    assert(0 == hashtable_get(hashtable, ht_int_key(i), &entry));
+    assert(i * i == entry.value.int_value);
   }
   
   assert(0 == hashtable_remove(hashtable, ht_int_key(0), NULL));
