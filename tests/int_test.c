@@ -21,16 +21,17 @@ int_test(void)
   
   struct ht_key key1 = ht_int_key(1);
   union ht_value value1 = ht_int_value(10);
-  assert(-1 == hashtable_get(hashtable, key1, NULL));
+  assert( ! hashtable_get(hashtable, key1));
   
   bool had_entry;
-  struct ht_entry entry;
-  int result = hashtable_set(hashtable, key1, value1, &had_entry, &entry);
+  struct ht_entry previous_entry;
+  int result = hashtable_set(hashtable, key1, value1, &had_entry, &previous_entry);
   assert(0 == result);
   assert( ! had_entry);
   assert(1 == hashtable->count);
-  assert(0 == hashtable_get(hashtable, key1, &entry));
-  assert(value1.int_value == entry.value.int_value);
+  struct ht_entry const *entry = hashtable_get(hashtable, key1);
+  assert(entry);
+  assert(value1.int_value == entry->value.int_value);
   assert_keys_and_values(hashtable,
                          (struct ht_key[]){ key1, },
                          (union ht_value[]){ value1, },
@@ -41,14 +42,15 @@ int_test(void)
   
   struct ht_key key2 = ht_int_key(2);
   union ht_value value2 = ht_int_value(20);
-  assert(-1 == hashtable_get(hashtable, key2, NULL));
+  assert( ! hashtable_get(hashtable, key2));
   
-  result = hashtable_set(hashtable, key2, value2, &had_entry, &entry);
+  result = hashtable_set(hashtable, key2, value2, &had_entry, &previous_entry);
   assert(0 == result);
   assert( ! had_entry);
   assert(2 == hashtable->count);
-  assert(0 == hashtable_get(hashtable, key2, &entry));
-  assert(value2.int_value == entry.value.int_value);
+  entry = hashtable_get(hashtable, key2);
+  assert(entry);
+  assert(value2.int_value == entry->value.int_value);
   assert_keys_and_values(hashtable,
                          (struct ht_key[]){ key1, key2, },
                          (union ht_value[]){ value1, value2, },
@@ -59,14 +61,15 @@ int_test(void)
   
   struct ht_key key3 = ht_int_key(3);
   union ht_value value3a = ht_int_value(30);
-  assert(-1 == hashtable_get(hashtable, key3, NULL));
+  assert( ! hashtable_get(hashtable, key3));
   
-  result = hashtable_set(hashtable, key3, value3a, &had_entry, &entry);
+  result = hashtable_set(hashtable, key3, value3a, &had_entry, &previous_entry);
   assert(0 == result);
   assert( ! had_entry);
   assert(3 == hashtable->count);
-  assert(0 == hashtable_get(hashtable, key3, &entry));
-  assert(value3a.int_value == entry.value.int_value);
+  entry = hashtable_get(hashtable, key3);
+  assert(entry);
+  assert(value3a.int_value == entry->value.int_value);
   assert_keys_and_values(hashtable,
                          (struct ht_key[]){ key1, key2, key3, },
                          (union ht_value[]){ value1, value2, value3a, },
@@ -76,13 +79,14 @@ int_test(void)
   
   
   union ht_value value3b = ht_int_value(33);
-  result = hashtable_set(hashtable, key3, value3b, &had_entry, &entry);
+  result = hashtable_set(hashtable, key3, value3b, &had_entry, &previous_entry);
   assert(0 == result);
   assert(had_entry);
   assert(3 == hashtable->count);
-  assert(value3a.int_value == entry.value.int_value);
-  assert(0 == hashtable_get(hashtable, key3, &entry));
-  assert(value3b.int_value == entry.value.int_value);
+  assert(value3a.int_value == previous_entry.value.int_value);
+  entry = hashtable_get(hashtable, key3);
+  assert(entry);
+  assert(value3b.int_value == entry->value.int_value);
   assert_keys_and_values(hashtable,
                          (struct ht_key[]){ key1, key2, key3, },
                          (union ht_value[]){ value1, value2, value3b, },

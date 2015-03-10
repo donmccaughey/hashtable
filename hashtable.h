@@ -75,10 +75,8 @@ hashtable_free(struct hashtable *hashtable);
 
 /* Functions to read, write and delete entries in the hash table. */
 
-int
-hashtable_get(struct hashtable const *hashtable,
-              struct ht_key key,
-              struct ht_entry *entry_out);
+struct ht_entry const *
+hashtable_get(struct hashtable const *hashtable, struct ht_key key);
 
 int
 hashtable_set(struct hashtable *hashtable,
