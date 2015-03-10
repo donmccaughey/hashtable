@@ -59,6 +59,7 @@ struct hashtable {
   size_t capacity;
   size_t count;
   ht_equal_keys_func *equal_keys;
+  void *user_data;
   struct ht_bucket buckets[];
 };
 
