@@ -93,10 +93,8 @@ hashtable_remove(struct hashtable *hashtable,
 
 /* Functions to iterate over keys and values in the hash table. */
 
-bool
-hashtable_next(struct hashtable const *hashtable,
-               size_t *iterator,
-               struct ht_entry *entry_out);
+struct ht_entry const *
+hashtable_next(struct hashtable const *hashtable, size_t *iterator);
 
 struct ht_key *
 hashtable_alloc_keys(struct hashtable const *hashtable);

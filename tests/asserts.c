@@ -21,7 +21,7 @@ assert_keys_and_values(struct hashtable *hashtable,
   assert(entries);
   
   size_t iterator = 0;
-  struct ht_entry next_entry;
+  struct ht_entry const *next_entry;
   
   for (size_t i = 0; i < expected_count; ++i) {
     assert(entries_contains_key_and_value(entries,
@@ -39,35 +39,36 @@ assert_keys_and_values(struct hashtable *hashtable,
                                  expected_values[i],
                                  equal_values));
     
-    assert(hashtable_next(hashtable, &iterator, &next_entry));
+    next_entry = hashtable_next(hashtable, &iterator);
+    assert(next_entry);
     
     assert(entries_contains_key_and_value(entries,
                                           hashtable->count,
-                                          next_entry.key,
+                                          next_entry->key,
                                           equal_keys,
-                                          next_entry.value,
+                                          next_entry->value,
                                           equal_values));
     assert(keys_contains_key(keys,
                              hashtable->count,
-                             next_entry.key,
+                             next_entry->key,
                              equal_keys));
     assert(values_contains_value(values,
                                  hashtable->count,
-                                 next_entry.value,
+                                 next_entry->value,
                                  equal_values));
     
     assert(keys_contains_key(expected_keys,
                              expected_count,
-                             next_entry.key,
+                             next_entry->key,
                              equal_keys));
     assert(values_contains_value(expected_values,
                                  expected_count,
-                                 next_entry.value,
+                                 next_entry->value,
                                  equal_values));
   }
   
-  assert( ! hashtable_next(hashtable, &iterator, NULL));
-  assert( ! hashtable_next(hashtable, &iterator, NULL));
+  assert( ! hashtable_next(hashtable, &iterator));
+  assert( ! hashtable_next(hashtable, &iterator));
   
   free(keys);
   free(values);
