@@ -11,8 +11,8 @@ string_test(void);
 
 
 int
-main(int argc, char const *argv[])
-{
+main(void)
+{  
   full_table_test();
   int_test();
   string_test();
