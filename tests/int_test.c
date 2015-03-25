@@ -12,8 +12,8 @@ int_test(void)
   assert(10 == hashtable->capacity);
   assert(0 == hashtable->count);
   assert_keys_and_values(hashtable,
-                         (struct ht_key[]){},
-                         (union ht_value[]){},
+                         NULL,
+                         NULL,
                          0,
                          ht_equal_int_keys,
                          ht_equal_int_values);
@@ -131,8 +131,8 @@ int_test(void)
   assert(value2.int_value == removed_entry.value.int_value);
   assert(0 == hashtable->count);
   assert_keys_and_values(hashtable,
-                         (struct ht_key[]){},
-                         (union ht_value[]){},
+                         NULL,
+                         NULL,
                          0,
                          ht_equal_int_keys,
                          ht_equal_int_values);
