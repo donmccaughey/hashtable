@@ -7,7 +7,7 @@ void
 assert_keys_and_values(struct hashtable *hashtable,
                        struct ht_key expected_keys[],
                        union ht_value expected_values[],
-                       size_t expected_count,
+                       int expected_count,
                        ht_equal_keys_func equal_keys,
                        ht_equal_values_func equal_values)
 {
@@ -20,10 +20,10 @@ assert_keys_and_values(struct hashtable *hashtable,
   struct ht_entry *entries = hashtable_alloc_entries(hashtable);
   assert(entries);
   
-  size_t iterator = 0;
+  int iterator = 0;
   struct ht_entry const *next_entry;
   
-  for (size_t i = 0; i < expected_count; ++i) {
+  for (int i = 0; i < expected_count; ++i) {
     assert(entries_contains_key_and_value(entries,
                                           hashtable->count,
                                           expected_keys[i],
@@ -78,13 +78,13 @@ assert_keys_and_values(struct hashtable *hashtable,
 
 bool
 entries_contains_key_and_value(struct ht_entry *entries,
-                               size_t count,
+                               int count,
                                struct ht_key key,
                                ht_equal_keys_func equal_keys,
                                union ht_value value,
                                ht_equal_values_func equal_values)
 {
-  for (size_t i = 0; i < count; ++i) {
+  for (int i = 0; i < count; ++i) {
     if (   equal_keys(key, entries[i].key)
         && equal_values(value, entries[i].value))
     {
@@ -97,11 +97,11 @@ entries_contains_key_and_value(struct ht_entry *entries,
 
 bool
 keys_contains_key(struct ht_key *keys,
-                  size_t count,
+                  int count,
                   struct ht_key key,
                   ht_equal_keys_func equal_keys)
 {
-  for (size_t i = 0; i < count; ++i) {
+  for (int i = 0; i < count; ++i) {
     if (equal_keys(key, keys[i])) return true;
   }
   return false;
@@ -110,11 +110,11 @@ keys_contains_key(struct ht_key *keys,
 
 bool
 values_contains_value(union ht_value *values,
-                      size_t count,
+                      int count,
                       union ht_value value,
                       ht_equal_values_func equal_values)
 {
-  for (size_t i = 0; i < count; ++i) {
+  for (int i = 0; i < count; ++i) {
     if (equal_values(value, values[i])) return true;
   }
   return false;

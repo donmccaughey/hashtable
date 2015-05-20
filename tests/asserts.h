@@ -9,13 +9,13 @@ void
 assert_keys_and_values(struct hashtable *hashtable,
                        struct ht_key expected_keys[],
                        union ht_value expected_values[],
-                       size_t expected_count,
+                       int expected_count,
                        ht_equal_keys_func equal_keys,
                        ht_equal_values_func equal_values);
 
 bool
 entries_contains_key_and_value(struct ht_entry *entries,
-                               size_t count,
+                               int count,
                                struct ht_key key,
                                ht_equal_keys_func equal_keys,
                                union ht_value value,
@@ -23,13 +23,13 @@ entries_contains_key_and_value(struct ht_entry *entries,
 
 bool
 keys_contains_key(struct ht_key *keys,
-                  size_t count,
+                  int count,
                   struct ht_key key,
                   ht_equal_keys_func equal_keys);
 
 bool
 values_contains_value(union ht_value *values,
-                      size_t count,
+                      int count,
                       union ht_value value,
                       ht_equal_values_func equal_values);
 

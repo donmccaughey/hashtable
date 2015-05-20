@@ -3,30 +3,25 @@
 
 
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-
-
-/* Pointer-sized integers. */
-
-typedef intptr_t ht_int_t;
-typedef uintptr_t ht_uint_t;
 
 
 /* A value contains a pointer-sized type. */
 union ht_value {
   void const *const_ptr_value;
   char const *const_str_value;
-  ht_int_t int_value;
+  long int_value;
   void *ptr_value;
   char *str_value;
-  ht_uint_t uint_value;
+  unsigned long uint_value;
 };
 
 
 /* A key contains a value and the computed hash of that value. */
 struct ht_key {
-  size_t hash;
+  uint32_t hash;
   union ht_value value;
 };
 
@@ -56,8 +51,8 @@ ht_equal_values_func(union ht_value first, union ht_value second);
 
 /* The hash table. */
 struct hashtable {
-  size_t capacity;
-  size_t count;
+  int capacity;
+  int count;
   ht_equal_keys_func *equal_keys;
   void *user_data;
   struct ht_bucket buckets[];
@@ -67,18 +62,18 @@ struct hashtable {
 /* Hash table creation and destruction functions. */
 
 inline struct hashtable *
-hashtable_alloc(size_t capacity, ht_equal_keys_func *equal_keys);
+hashtable_alloc(int capacity, ht_equal_keys_func *equal_keys);
 
 inline void
 hashtable_free(struct hashtable *hashtable);
 
 void
 hashtable_init(struct hashtable *hashtable,
-               size_t capacity,
+               int capacity,
                ht_equal_keys_func *equal_keys);
 
 inline size_t
-hashtable_size(size_t capacity);
+hashtable_size(int capacity);
 
 
 /* Functions to read, write and delete entries in the hash table. */
@@ -102,7 +97,7 @@ hashtable_remove(struct hashtable *hashtable,
 /* Functions to iterate over keys and values in the hash table. */
 
 struct ht_entry const *
-hashtable_next(struct hashtable const *hashtable, size_t *iterator);
+hashtable_next(struct hashtable const *hashtable, int *iterator);
 
 inline struct ht_key *
 hashtable_alloc_keys(struct hashtable const *hashtable);
@@ -113,21 +108,21 @@ hashtable_alloc_values(struct hashtable const *hashtable);
 inline struct ht_entry *
 hashtable_alloc_entries(struct hashtable const *hashtable);
 
-size_t
+int
 hashtable_copy_keys(struct hashtable const *hashtable,
                     struct ht_key *keys,
-                    size_t keys_count);
+                    int keys_count);
 
-size_t
+int
 hashtable_copy_values(struct hashtable const *hashtable,
                       union ht_value *values,
-                      size_t values_count);
+                      int values_count);
 
 
-size_t
+int
 hashtable_copy_entries(struct hashtable const *hashtable,
                        struct ht_entry *entries,
-                       size_t entries_count);
+                       int entries_count);
 
 
 /* Functions to make keys. */
@@ -136,13 +131,13 @@ inline struct ht_key
 ht_const_str_key(char const *value);
 
 inline struct ht_key
-ht_int_key(ht_int_t value);
+ht_int_key(long value);
 
 inline struct ht_key
 ht_str_key(char *value);
 
 inline struct ht_key
-ht_uint_key(ht_uint_t value);
+ht_uint_key(unsigned long value);
 
 
 /* Functions to make values. */
@@ -151,13 +146,13 @@ inline union ht_value
 ht_const_str_value(char const *value);
 
 inline union ht_value
-ht_int_value(ht_int_t value);
+ht_int_value(long value);
 
 inline union ht_value
 ht_str_value(char *value);
 
 inline union ht_value
-ht_uint_value(ht_uint_t value);
+ht_uint_value(unsigned long value);
 
 
 /* Functions to dynamically allocate and free string keys and values. */
@@ -207,23 +202,23 @@ ht_equal_uint_values(union ht_value first, union ht_value second);
 
 /* Hash functions. */
 
-size_t
+uint32_t
 ht_hash_of_const_str(char const *value);
 
-inline size_t
-ht_hash_of_int(ht_int_t value);
+inline uint32_t
+ht_hash_of_int(long value);
 
-inline size_t
+inline uint32_t
 ht_hash_of_str(char *value);
 
-inline size_t
-ht_hash_of_uint(ht_uint_t value);
+inline uint32_t
+ht_hash_of_uint(unsigned long value);
 
 
 /* Definitions of inline functions. */
 
 inline struct hashtable *
-hashtable_alloc(size_t capacity, ht_equal_keys_func *equal_keys)
+hashtable_alloc(int capacity, ht_equal_keys_func *equal_keys)
 {
   struct hashtable *hashtable = malloc(hashtable_size(capacity));
   if (hashtable) hashtable_init(hashtable, capacity, equal_keys);
@@ -266,7 +261,7 @@ hashtable_free(struct hashtable *hashtable)
 
 
 inline size_t
-hashtable_size(size_t capacity)
+hashtable_size(int capacity)
 {
   return sizeof(struct hashtable) + sizeof(struct ht_bucket[capacity]);
 }
@@ -376,29 +371,29 @@ ht_free_str_value(union ht_value value)
 }
 
 
-inline size_t
-ht_hash_of_int(ht_int_t value)
+inline uint32_t
+ht_hash_of_int(long value)
 {
-  return (ht_uint_t)value % SIZE_MAX;
+  return (unsigned long)value % UINT32_MAX;
 }
 
 
-inline size_t
+inline uint32_t
 ht_hash_of_str(char *value)
 {
   return ht_hash_of_const_str(value);
 }
 
 
-inline size_t
-ht_hash_of_uint(ht_uint_t value)
+inline uint32_t
+ht_hash_of_uint(unsigned long value)
 {
-  return value % SIZE_MAX;
+  return value % UINT32_MAX;
 }
 
 
 inline struct ht_key
-ht_int_key(ht_int_t value)
+ht_int_key(long value)
 {
   return (struct ht_key){
     .hash=ht_hash_of_int(value),
@@ -408,7 +403,7 @@ ht_int_key(ht_int_t value)
 
 
 inline union ht_value
-ht_int_value(ht_int_t value)
+ht_int_value(long value)
 {
   return (union ht_value){.int_value=value,};
 }
@@ -432,7 +427,7 @@ ht_str_value(char *value)
 
 
 inline struct ht_key
-ht_uint_key(ht_uint_t value)
+ht_uint_key(unsigned long value)
 {
   return (struct ht_key){
     .hash=ht_hash_of_uint(value),
@@ -442,7 +437,7 @@ ht_uint_key(ht_uint_t value)
 
 
 inline union ht_value
-ht_uint_value(ht_uint_t value)
+ht_uint_value(unsigned long value)
 {
   return (union ht_value){.uint_value=value,};
 }
