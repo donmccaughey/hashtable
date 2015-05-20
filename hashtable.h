@@ -2,13 +2,13 @@
 #define HASHTABLE_H_INCLUDED
 
 
+#include <limits.h>
 #include <stdbool.h>
-#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
 
-/* A value contains a pointer-sized type. */
+/* A value contains a pointer type or a long integer type. */
 union ht_value {
   void const *const_ptr_value;
   char const *const_str_value;
@@ -21,7 +21,7 @@ union ht_value {
 
 /* A key contains a value and the computed hash of that value. */
 struct ht_key {
-  uint32_t hash;
+  unsigned hash;
   union ht_value value;
 };
 
@@ -202,16 +202,16 @@ ht_equal_ulong_values(union ht_value first, union ht_value second);
 
 /* Hash functions. */
 
-uint32_t
+unsigned
 ht_hash_of_const_str(char const *value);
 
-inline uint32_t
+inline unsigned
 ht_hash_of_long(long value);
 
-inline uint32_t
+inline unsigned
 ht_hash_of_str(char *value);
 
-inline uint32_t
+inline unsigned
 ht_hash_of_ulong(unsigned long value);
 
 
@@ -371,24 +371,24 @@ ht_free_str_value(union ht_value value)
 }
 
 
-inline uint32_t
+inline unsigned
 ht_hash_of_long(long value)
 {
-  return (unsigned long)value % UINT32_MAX;
+  return ht_hash_of_ulong((unsigned long)value);
 }
 
 
-inline uint32_t
+inline unsigned
 ht_hash_of_str(char *value)
 {
   return ht_hash_of_const_str(value);
 }
 
 
-inline uint32_t
+inline unsigned
 ht_hash_of_ulong(unsigned long value)
 {
-  return value % UINT32_MAX;
+  return value % UINT_MAX;
 }
 
 

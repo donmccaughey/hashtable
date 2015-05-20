@@ -233,12 +233,12 @@ extern inline void
 ht_free_str_value(union ht_value value);
 
 
-uint32_t
+unsigned
 ht_hash_of_const_str(char const *value)
 {
   if ( ! value) return 0;
   
-  uint32_t hash = 0;
+  unsigned hash = 0;
   while (*value) {
     hash = 31 * hash + *value;
     ++value;
@@ -247,15 +247,15 @@ ht_hash_of_const_str(char const *value)
 }
 
 
-extern inline uint32_t
+extern inline unsigned
 ht_hash_of_long(long value);
 
 
-extern inline uint32_t
+extern inline unsigned
 ht_hash_of_str(char *value);
 
 
-extern inline uint32_t
+extern inline unsigned
 ht_hash_of_ulong(unsigned long value);
 
 
