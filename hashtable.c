@@ -1,69 +1,49 @@
 #include "hashtable.h"
 
 
-struct hashtable *
-hashtable_alloc(size_t capacity, ht_equal_keys_func *equal_keys)
+size_t
+hashtable_copy_entries(struct hashtable const *hashtable,
+                       struct ht_entry *entries,
+                       size_t entries_count)
 {
-  size_t size = sizeof(struct hashtable) + sizeof(struct ht_bucket[capacity]);
-  struct hashtable *hashtable = calloc(1, size);
-  if ( ! hashtable) return NULL;
-  
-  hashtable->capacity = capacity;
-  hashtable->equal_keys = equal_keys;
-  
-  return hashtable;
+  size_t iterator = 0;
+  size_t count = entries_count < hashtable->count
+               ? entries_count
+               : hashtable->count;
+  for (size_t i = 0; i < count; ++i) {
+    entries[i] = *hashtable_next(hashtable, &iterator);
+  }
+  return count;
 }
 
 
-struct ht_key *
-hashtable_alloc_keys(struct hashtable const *hashtable)
+size_t
+hashtable_copy_keys(struct hashtable const *hashtable,
+                    struct ht_key *keys,
+                    size_t keys_count)
 {
-  struct ht_key *keys = calloc(hashtable->count, sizeof(struct ht_key));
-  if ( ! keys) return NULL;
-  
   size_t iterator = 0;
-  for (size_t i = 0; i < hashtable->count; ++i) {
+  size_t count = keys_count < hashtable->count ? keys_count : hashtable->count;
+  for (size_t i = 0; i < count; ++i) {
     keys[i] = hashtable_next(hashtable, &iterator)->key;
   }
-  
-  return keys;
+  return count;
 }
 
 
-union ht_value *
-hashtable_alloc_values(struct hashtable const *hashtable)
+size_t
+hashtable_copy_values(struct hashtable const *hashtable,
+                      union ht_value *values,
+                      size_t values_count)
 {
-  union ht_value *values = calloc(hashtable->count, sizeof(union ht_value));
-  if ( ! values) return NULL;
-  
   size_t iterator = 0;
-  for (size_t i = 0; i < hashtable->count; ++i) {
+  size_t count = values_count < hashtable->count
+               ? values_count
+               : hashtable->count;
+  for (size_t i = 0; i < count; ++i) {
     values[i] = hashtable_next(hashtable, &iterator)->value;
   }
-  
-  return values;
-}
-
-
-struct ht_entry *
-hashtable_alloc_entries(struct hashtable const *hashtable)
-{
-  struct ht_entry *entries = calloc(hashtable->count, sizeof(struct ht_entry));
-  if ( ! entries) return NULL;
-  
-  size_t iterator = 0;
-  for (size_t i = 0; i < hashtable->count; ++i) {
-    entries[i] = *(hashtable_next(hashtable, &iterator));
-  }
-  
-  return entries;
-}
-
-
-void
-hashtable_free(struct hashtable *hashtable)
-{
-  free(hashtable);
+  return count;
 }
 
 
@@ -83,6 +63,21 @@ hashtable_get(struct hashtable const *hashtable, struct ht_key key)
   }
   
   return NULL;
+}
+
+
+void
+hashtable_init(struct hashtable *hashtable,
+               size_t capacity,
+               ht_equal_keys_func *equal_keys)
+{
+  hashtable->capacity = capacity;
+  hashtable->count = 0;
+  hashtable->equal_keys = equal_keys;
+  hashtable->user_data = NULL;
+  for (size_t i = 0; i < hashtable->capacity; ++i) {
+    hashtable->buckets[i].in_use = false;
+  }
 }
 
 
@@ -164,6 +159,30 @@ hashtable_remove(struct hashtable *hashtable,
   
   return removed ? 0 : -1;
 }
+
+
+extern inline struct hashtable *
+hashtable_alloc(size_t capacity, ht_equal_keys_func *equal_keys);
+
+
+extern inline struct ht_entry *
+hashtable_alloc_entries(struct hashtable const *hashtable);
+
+
+extern inline struct ht_key *
+hashtable_alloc_keys(struct hashtable const *hashtable);
+
+
+extern inline union ht_value *
+hashtable_alloc_values(struct hashtable const *hashtable);
+
+
+extern inline void
+hashtable_free(struct hashtable *hashtable);
+
+
+extern inline size_t
+hashtable_size(size_t capacity);
 
 
 extern inline struct ht_key

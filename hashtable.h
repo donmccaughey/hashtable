@@ -66,11 +66,19 @@ struct hashtable {
 
 /* Hash table creation and destruction functions. */
 
-struct hashtable *
+inline struct hashtable *
 hashtable_alloc(size_t capacity, ht_equal_keys_func *equal_keys);
 
-void
+inline void
 hashtable_free(struct hashtable *hashtable);
+
+void
+hashtable_init(struct hashtable *hashtable,
+               size_t capacity,
+               ht_equal_keys_func *equal_keys);
+
+inline size_t
+hashtable_size(size_t capacity);
 
 
 /* Functions to read, write and delete entries in the hash table. */
@@ -96,14 +104,30 @@ hashtable_remove(struct hashtable *hashtable,
 struct ht_entry const *
 hashtable_next(struct hashtable const *hashtable, size_t *iterator);
 
-struct ht_key *
+inline struct ht_key *
 hashtable_alloc_keys(struct hashtable const *hashtable);
 
-union ht_value *
+inline union ht_value *
 hashtable_alloc_values(struct hashtable const *hashtable);
 
-struct ht_entry *
+inline struct ht_entry *
 hashtable_alloc_entries(struct hashtable const *hashtable);
+
+size_t
+hashtable_copy_keys(struct hashtable const *hashtable,
+                    struct ht_key *keys,
+                    size_t keys_count);
+
+size_t
+hashtable_copy_values(struct hashtable const *hashtable,
+                      union ht_value *values,
+                      size_t values_count);
+
+
+size_t
+hashtable_copy_entries(struct hashtable const *hashtable,
+                       struct ht_entry *entries,
+                       size_t entries_count);
 
 
 /* Functions to make keys. */
@@ -197,6 +221,56 @@ ht_hash_of_uint(ht_uint_t value);
 
 
 /* Definitions of inline functions. */
+
+inline struct hashtable *
+hashtable_alloc(size_t capacity, ht_equal_keys_func *equal_keys)
+{
+  struct hashtable *hashtable = malloc(hashtable_size(capacity));
+  if (hashtable) hashtable_init(hashtable, capacity, equal_keys);
+  return hashtable;
+}
+
+
+inline struct ht_entry *
+hashtable_alloc_entries(struct hashtable const *hashtable)
+{
+  struct ht_entry *entries = malloc(hashtable->count * sizeof(struct ht_entry));
+  if (entries) hashtable_copy_entries(hashtable, entries, hashtable->count);
+  return entries;
+}
+
+
+inline struct ht_key *
+hashtable_alloc_keys(struct hashtable const *hashtable)
+{
+  struct ht_key *keys = malloc(hashtable->count * sizeof(struct ht_key));
+  if (keys) hashtable_copy_keys(hashtable, keys, hashtable->count);
+  return keys;
+}
+
+
+inline union ht_value *
+hashtable_alloc_values(struct hashtable const *hashtable)
+{
+  union ht_value *values = malloc(hashtable->count * sizeof(union ht_value));
+  if (values) hashtable_copy_values(hashtable, values, hashtable->count);
+  return values;
+}
+
+
+inline void
+hashtable_free(struct hashtable *hashtable)
+{
+  free(hashtable);
+}
+
+
+inline size_t
+hashtable_size(size_t capacity)
+{
+  return sizeof(struct hashtable) + sizeof(struct ht_bucket[capacity]);
+}
+
 
 inline struct ht_key
 ht_alloc_str_key(char const *value)
