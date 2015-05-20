@@ -202,11 +202,11 @@ ht_equal_const_str_values(union ht_value first, union ht_value second);
 
 
 extern inline bool
-ht_equal_int_keys(struct ht_key first, struct ht_key second);
+ht_equal_long_keys(struct ht_key first, struct ht_key second);
 
 
 extern inline bool
-ht_equal_int_values(union ht_value first, union ht_value second);
+ht_equal_long_values(union ht_value first, union ht_value second);
 
 
 extern inline bool
@@ -218,11 +218,11 @@ ht_equal_str_values(union ht_value first, union ht_value second);
 
 
 extern inline bool
-ht_equal_uint_keys(struct ht_key first, struct ht_key second);
+ht_equal_ulong_keys(struct ht_key first, struct ht_key second);
 
 
 extern inline bool
-ht_equal_uint_values(union ht_value first, union ht_value second);
+ht_equal_ulong_values(union ht_value first, union ht_value second);
 
 
 extern inline void
@@ -248,7 +248,7 @@ ht_hash_of_const_str(char const *value)
 
 
 extern inline uint32_t
-ht_hash_of_int(long value);
+ht_hash_of_long(long value);
 
 
 extern inline uint32_t
@@ -256,20 +256,20 @@ ht_hash_of_str(char *value);
 
 
 extern inline uint32_t
-ht_hash_of_uint(unsigned long value);
+ht_hash_of_ulong(unsigned long value);
 
 
 extern inline struct ht_key
-ht_int_key(long value);
+ht_long_key(long value);
 
 
 extern inline union ht_value
-ht_int_value(long value);
+ht_long_value(long value);
 
 
 extern inline struct ht_key
-ht_uint_key(unsigned long value);
+ht_ulong_key(unsigned long value);
 
 
 extern inline union ht_value
-ht_uint_value(unsigned long value);
+ht_ulong_value(unsigned long value);

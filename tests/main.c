@@ -4,7 +4,7 @@ int
 full_table_test(void);
 
 int
-int_test(void);
+long_test(void);
 
 int
 string_test(void);
@@ -14,7 +14,7 @@ int
 main(void)
 {  
   full_table_test();
-  int_test();
+  long_test();
   string_test();
   
   return EXIT_SUCCESS;

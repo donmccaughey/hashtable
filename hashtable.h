@@ -12,10 +12,10 @@
 union ht_value {
   void const *const_ptr_value;
   char const *const_str_value;
-  long int_value;
+  long long_value;
   void *ptr_value;
   char *str_value;
-  unsigned long uint_value;
+  unsigned long ulong_value;
 };
 
 
@@ -131,13 +131,13 @@ inline struct ht_key
 ht_const_str_key(char const *value);
 
 inline struct ht_key
-ht_int_key(long value);
+ht_long_key(long value);
 
 inline struct ht_key
 ht_str_key(char *value);
 
 inline struct ht_key
-ht_uint_key(unsigned long value);
+ht_ulong_key(unsigned long value);
 
 
 /* Functions to make values. */
@@ -146,13 +146,13 @@ inline union ht_value
 ht_const_str_value(char const *value);
 
 inline union ht_value
-ht_int_value(long value);
+ht_long_value(long value);
 
 inline union ht_value
 ht_str_value(char *value);
 
 inline union ht_value
-ht_uint_value(unsigned long value);
+ht_ulong_value(unsigned long value);
 
 
 /* Functions to dynamically allocate and free string keys and values. */
@@ -176,13 +176,13 @@ inline bool
 ht_equal_const_str_keys(struct ht_key first, struct ht_key second);
 
 inline bool
-ht_equal_int_keys(struct ht_key first, struct ht_key second);
+ht_equal_long_keys(struct ht_key first, struct ht_key second);
 
 inline bool
 ht_equal_str_keys(struct ht_key first, struct ht_key second);
 
 inline bool
-ht_equal_uint_keys(struct ht_key first, struct ht_key second);
+ht_equal_ulong_keys(struct ht_key first, struct ht_key second);
 
 
 /* Equality functions for values. */
@@ -191,13 +191,13 @@ inline bool
 ht_equal_const_str_values(union ht_value first, union ht_value second);
 
 inline bool
-ht_equal_int_values(union ht_value first, union ht_value second);
+ht_equal_long_values(union ht_value first, union ht_value second);
 
 inline bool
 ht_equal_str_values(union ht_value first, union ht_value second);
 
 inline bool
-ht_equal_uint_values(union ht_value first, union ht_value second);
+ht_equal_ulong_values(union ht_value first, union ht_value second);
 
 
 /* Hash functions. */
@@ -206,13 +206,13 @@ uint32_t
 ht_hash_of_const_str(char const *value);
 
 inline uint32_t
-ht_hash_of_int(long value);
+ht_hash_of_long(long value);
 
 inline uint32_t
 ht_hash_of_str(char *value);
 
 inline uint32_t
-ht_hash_of_uint(unsigned long value);
+ht_hash_of_ulong(unsigned long value);
 
 
 /* Definitions of inline functions. */
@@ -316,16 +316,16 @@ ht_equal_const_str_values(union ht_value first, union ht_value second)
 
 
 inline bool
-ht_equal_int_keys(struct ht_key first, struct ht_key second)
+ht_equal_long_keys(struct ht_key first, struct ht_key second)
 {
-  return ht_equal_int_values(first.value, second.value);
+  return ht_equal_long_values(first.value, second.value);
 }
 
 
 inline bool
-ht_equal_int_values(union ht_value first, union ht_value second)
+ht_equal_long_values(union ht_value first, union ht_value second)
 {
-  return first.int_value == second.int_value;
+  return first.long_value == second.long_value;
 }
 
 
@@ -344,16 +344,16 @@ ht_equal_str_values(union ht_value first, union ht_value second)
 
 
 inline bool
-ht_equal_uint_keys(struct ht_key first, struct ht_key second)
+ht_equal_ulong_keys(struct ht_key first, struct ht_key second)
 {
-  return ht_equal_uint_values(first.value, second.value);
+  return ht_equal_ulong_values(first.value, second.value);
 }
 
 
 inline bool
-ht_equal_uint_values(union ht_value first, union ht_value second)
+ht_equal_ulong_values(union ht_value first, union ht_value second)
 {
-  return first.uint_value == second.uint_value;
+  return first.ulong_value == second.ulong_value;
 }
 
 
@@ -372,7 +372,7 @@ ht_free_str_value(union ht_value value)
 
 
 inline uint32_t
-ht_hash_of_int(long value)
+ht_hash_of_long(long value)
 {
   return (unsigned long)value % UINT32_MAX;
 }
@@ -386,26 +386,26 @@ ht_hash_of_str(char *value)
 
 
 inline uint32_t
-ht_hash_of_uint(unsigned long value)
+ht_hash_of_ulong(unsigned long value)
 {
   return value % UINT32_MAX;
 }
 
 
 inline struct ht_key
-ht_int_key(long value)
+ht_long_key(long value)
 {
   return (struct ht_key){
-    .hash=ht_hash_of_int(value),
-    .value=ht_int_value(value),
+    .hash=ht_hash_of_long(value),
+    .value=ht_long_value(value),
   };
 }
 
 
 inline union ht_value
-ht_int_value(long value)
+ht_long_value(long value)
 {
-  return (union ht_value){.int_value=value,};
+  return (union ht_value){.long_value=value,};
 }
 
 
@@ -427,19 +427,19 @@ ht_str_value(char *value)
 
 
 inline struct ht_key
-ht_uint_key(unsigned long value)
+ht_ulong_key(unsigned long value)
 {
   return (struct ht_key){
-    .hash=ht_hash_of_uint(value),
-    .value=ht_uint_value(value),
+    .hash=ht_hash_of_ulong(value),
+    .value=ht_ulong_value(value),
   };
 }
 
 
 inline union ht_value
-ht_uint_value(unsigned long value)
+ht_ulong_value(unsigned long value)
 {
-  return (union ht_value){.uint_value=value,};
+  return (union ht_value){.ulong_value=value,};
 }
 
 
