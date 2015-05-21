@@ -161,78 +161,6 @@ hashtable_remove(struct hashtable *hashtable,
 }
 
 
-extern inline struct hashtable *
-hashtable_alloc(int capacity, ht_equal_keys_func *equal_keys);
-
-
-extern inline struct ht_entry *
-hashtable_alloc_entries(struct hashtable const *hashtable);
-
-
-extern inline struct ht_key *
-hashtable_alloc_keys(struct hashtable const *hashtable);
-
-
-extern inline union ht_value *
-hashtable_alloc_values(struct hashtable const *hashtable);
-
-
-extern inline void
-hashtable_free(struct hashtable *hashtable);
-
-
-extern inline size_t
-hashtable_size(int capacity);
-
-
-extern inline struct ht_key
-ht_alloc_str_key(char const *value);
-
-
-extern inline union ht_value
-ht_alloc_str_value(char const *value);
-
-
-extern inline bool
-ht_equal_const_str_keys(struct ht_key first, struct ht_key second);
-
-
-extern inline bool
-ht_equal_const_str_values(union ht_value first, union ht_value second);
-
-
-extern inline bool
-ht_equal_long_keys(struct ht_key first, struct ht_key second);
-
-
-extern inline bool
-ht_equal_long_values(union ht_value first, union ht_value second);
-
-
-extern inline bool
-ht_equal_str_keys(struct ht_key first, struct ht_key second);
-
-
-extern inline bool
-ht_equal_str_values(union ht_value first, union ht_value second);
-
-
-extern inline bool
-ht_equal_ulong_keys(struct ht_key first, struct ht_key second);
-
-
-extern inline bool
-ht_equal_ulong_values(union ht_value first, union ht_value second);
-
-
-extern inline void
-ht_free_str_key(struct ht_key key);
-
-
-extern inline void
-ht_free_str_value(union ht_value value);
-
-
 unsigned
 ht_hash_of_const_str(char const *value)
 {
@@ -247,29 +175,79 @@ ht_hash_of_const_str(char const *value)
 }
 
 
+/* inline function extern declarations */
+
+extern inline struct hashtable *
+hashtable_alloc(int capacity, ht_equal_keys_func *equal_keys);
+
+extern inline struct ht_entry *
+hashtable_alloc_entries(struct hashtable const *hashtable);
+
+extern inline struct ht_key *
+hashtable_alloc_keys(struct hashtable const *hashtable);
+
+extern inline union ht_value *
+hashtable_alloc_values(struct hashtable const *hashtable);
+
+extern inline void
+hashtable_free(struct hashtable *hashtable);
+
+extern inline size_t
+hashtable_size(int capacity);
+
+extern inline struct ht_key
+ht_const_str_key(char const *value);
+
+extern inline union ht_value
+ht_const_str_value(char const *value);
+
+extern inline bool
+ht_equal_const_str_keys(struct ht_key first, struct ht_key second);
+
+extern inline bool
+ht_equal_const_str_values(union ht_value first, union ht_value second);
+
+extern inline bool
+ht_equal_long_keys(struct ht_key first, struct ht_key second);
+
+extern inline bool
+ht_equal_long_values(union ht_value first, union ht_value second);
+
+extern inline bool
+ht_equal_str_keys(struct ht_key first, struct ht_key second);
+
+extern inline bool
+ht_equal_str_values(union ht_value first, union ht_value second);
+
+extern inline bool
+ht_equal_ulong_keys(struct ht_key first, struct ht_key second);
+
+extern inline bool
+ht_equal_ulong_values(union ht_value first, union ht_value second);
+
 extern inline unsigned
 ht_hash_of_long(long value);
-
 
 extern inline unsigned
 ht_hash_of_str(char *value);
 
-
 extern inline unsigned
 ht_hash_of_ulong(unsigned long value);
-
 
 extern inline struct ht_key
 ht_long_key(long value);
 
-
 extern inline union ht_value
 ht_long_value(long value);
 
+extern inline struct ht_key
+ht_str_key(char *value);
+
+extern inline union ht_value
+ht_str_value(char *value);
 
 extern inline struct ht_key
 ht_ulong_key(unsigned long value);
-
 
 extern inline union ht_value
 ht_ulong_value(unsigned long value);

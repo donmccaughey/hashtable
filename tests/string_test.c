@@ -19,9 +19,9 @@ string_test(void)
                          ht_equal_str_values);
   
   
-  struct ht_key key1 = ht_alloc_str_key("red");
+  struct ht_key key1 = ht_str_key(strdup("red"));
   assert(key1.value.str_value);
-  union ht_value value1 = ht_alloc_str_value("10");
+  union ht_value value1 = ht_str_value(strdup("10"));
   assert(value1.str_value);
   assert( ! hashtable_get(hashtable, key1));
   
@@ -43,9 +43,9 @@ string_test(void)
                          ht_equal_str_values);
   
   
-  struct ht_key key2 = ht_alloc_str_key("green");
+  struct ht_key key2 = ht_str_key(strdup("green"));
   assert(key2.value.str_value);
-  union ht_value value2 = ht_alloc_str_value("20");
+  union ht_value value2 = ht_str_value(strdup("20"));
   assert(value2.str_value);
   assert( ! hashtable_get(hashtable, key2));
   
@@ -64,9 +64,9 @@ string_test(void)
                          ht_equal_str_values);
   
   
-  struct ht_key key3 = ht_alloc_str_key("blue");
+  struct ht_key key3 = ht_str_key(strdup("blue"));
   assert(key3.value.str_value);
-  union ht_value value3a = ht_alloc_str_value("30");
+  union ht_value value3a = ht_str_value(strdup("30"));
   assert(value3a.str_value);
   assert( ! hashtable_get(hashtable, key3));
   
@@ -85,7 +85,7 @@ string_test(void)
                          ht_equal_str_values);
   
   
-  union ht_value value3b = ht_alloc_str_value("33");
+  union ht_value value3b = ht_str_value(strdup("33"));
   assert(value3b.str_value);
   result = hashtable_set(hashtable, key3, value3b, &had_entry, &previous_entry);
   assert(0 == result);
@@ -103,7 +103,7 @@ string_test(void)
                          ht_equal_str_values);
   
   
-  struct ht_key key4 = ht_alloc_str_key("alpha");
+  struct ht_key key4 = ht_str_key(strdup("alpha"));
   assert(key4.value.str_value);
   result = hashtable_remove(hashtable, key4, NULL);
   assert(-1 == result);
@@ -147,14 +147,14 @@ string_test(void)
                          ht_equal_str_values);
   
   
-  ht_free_str_key(key1);
-  ht_free_str_value(value1);
-  ht_free_str_key(key2);
-  ht_free_str_value(value2);
-  ht_free_str_key(key3);
-  ht_free_str_value(value3a);
-  ht_free_str_value(value3b);
-  ht_free_str_key(key4);
+  free(key1.value.str_value);
+  free(value1.str_value);
+  free(key2.value.str_value);
+  free(value2.str_value);
+  free(key3.value.str_value);
+  free(value3a.str_value);
+  free(value3b.str_value);
+  free(key4.value.str_value);
   
   hashtable_free(hashtable);
   return 0;
