@@ -96,8 +96,8 @@ int
 hashtable_set(struct hashtable *hashtable,
               struct ht_key key,
               union ht_value value,
-              bool *had_entry,
-              struct ht_entry *entry_out)
+              bool *replaced,
+              struct ht_entry *entry)
 {
   int index = key.hash % hashtable->capacity;
   
@@ -109,13 +109,13 @@ hashtable_set(struct hashtable *hashtable,
       hashtable->buckets[i].entry.key = key;
       hashtable->buckets[i].entry.value = value;
       ++hashtable->count;
-      if (had_entry) *had_entry = false;
+      if (replaced) *replaced = false;
       return 0;
     }
     
     if (hashtable->equal_keys(key, hashtable->buckets[i].entry.key)) {
-      if (had_entry) *had_entry = true;
-      if (entry_out) *entry_out = hashtable->buckets[i].entry;
+      if (replaced) *replaced = true;
+      if (entry) *entry = hashtable->buckets[i].entry;
       hashtable->buckets[i].entry.key = key;
       hashtable->buckets[i].entry.value = value;
       return 0;
@@ -129,7 +129,7 @@ hashtable_set(struct hashtable *hashtable,
 int
 hashtable_remove(struct hashtable *hashtable,
                  struct ht_key key,
-                 struct ht_entry *entry_out)
+                 struct ht_entry *entry)
 {
   int index = key.hash % hashtable->capacity;
   bool removed = false;
@@ -141,7 +141,7 @@ hashtable_remove(struct hashtable *hashtable,
     
     if ( ! removed) {
       if (hashtable->equal_keys(key, hashtable->buckets[i].entry.key)) {
-        if (entry_out) *entry_out = hashtable->buckets[i].entry;
+        if (entry) *entry = hashtable->buckets[i].entry;
         hashtable->buckets[i].in_use = false;
         --hashtable->count;
         removed = true;

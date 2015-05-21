@@ -85,13 +85,13 @@ int
 hashtable_set(struct hashtable *hashtable,
               struct ht_key key,
               union ht_value value,
-              bool *had_entry,
-              struct ht_entry *entry_out);
+              bool *replaced,
+              struct ht_entry *entry);
 
 int
 hashtable_remove(struct hashtable *hashtable,
                  struct ht_key key,
-                 struct ht_entry *entry_out);
+                 struct ht_entry *entry);
 
 
 /* Functions to iterate over keys and values in the hash table. */
