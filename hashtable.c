@@ -52,13 +52,13 @@ hashtable_get(struct hashtable const *hashtable, struct ht_key key)
 {
   int index = key.hash % hashtable->capacity;
   
-  for (int i = 0, j = index; i < hashtable->capacity; ++i, ++j) {
-    if (j == hashtable->capacity) j = 0;
+  for (int count = 0, i = index; count < hashtable->capacity; ++count, ++i) {
+    if (i == hashtable->capacity) i = 0;
     
-    if ( ! hashtable->buckets[j].in_use) break;
+    if ( ! hashtable->buckets[i].in_use) break;
     
-    if (hashtable->equal_keys(key, hashtable->buckets[j].entry.key)) {
-      return &hashtable->buckets[j].entry;
+    if (hashtable->equal_keys(key, hashtable->buckets[i].entry.key)) {
+      return &hashtable->buckets[i].entry;
     }
   }
   
@@ -101,23 +101,23 @@ hashtable_set(struct hashtable *hashtable,
 {
   int index = key.hash % hashtable->capacity;
   
-  for (int i = 0, j = index; i < hashtable->capacity; ++i, ++j) {
-    if (j == hashtable->capacity) j = 0;
+  for (int count = 0, i = index; count < hashtable->capacity; ++count, ++i) {
+    if (i == hashtable->capacity) i = 0;
     
-    if ( ! hashtable->buckets[j].in_use) {
-      hashtable->buckets[j].in_use = true;
-      hashtable->buckets[j].entry.key = key;
-      hashtable->buckets[j].entry.value = value;
+    if ( ! hashtable->buckets[i].in_use) {
+      hashtable->buckets[i].in_use = true;
+      hashtable->buckets[i].entry.key = key;
+      hashtable->buckets[i].entry.value = value;
       ++hashtable->count;
       if (had_entry) *had_entry = false;
       return 0;
     }
     
-    if (hashtable->equal_keys(key, hashtable->buckets[j].entry.key)) {
+    if (hashtable->equal_keys(key, hashtable->buckets[i].entry.key)) {
       if (had_entry) *had_entry = true;
-      if (entry_out) *entry_out = hashtable->buckets[j].entry;
-      hashtable->buckets[j].entry.key = key;
-      hashtable->buckets[j].entry.value = value;
+      if (entry_out) *entry_out = hashtable->buckets[i].entry;
+      hashtable->buckets[i].entry.key = key;
+      hashtable->buckets[i].entry.value = value;
       return 0;
     }
   }
@@ -134,24 +134,24 @@ hashtable_remove(struct hashtable *hashtable,
   int index = key.hash % hashtable->capacity;
   bool removed = false;
   
-  for (int i = 0, j = index; i < hashtable->capacity; ++i, ++j) {
-    if (j == hashtable->capacity) j = 0;
+  for (int count = 0, i = index; count < hashtable->capacity; ++count, ++i) {
+    if (i == hashtable->capacity) i = 0;
     
-    if ( ! hashtable->buckets[j].in_use) break;
+    if ( ! hashtable->buckets[i].in_use) break;
     
     if ( ! removed) {
-      if (hashtable->equal_keys(key, hashtable->buckets[j].entry.key)) {
-        if (entry_out) *entry_out = hashtable->buckets[j].entry;
-        hashtable->buckets[j].in_use = false;
+      if (hashtable->equal_keys(key, hashtable->buckets[i].entry.key)) {
+        if (entry_out) *entry_out = hashtable->buckets[i].entry;
+        hashtable->buckets[i].in_use = false;
         --hashtable->count;
         removed = true;
       }
     } else {
-      hashtable->buckets[j].in_use = false;
+      hashtable->buckets[i].in_use = false;
       --hashtable->count;
       hashtable_set(hashtable,
-                    hashtable->buckets[j].entry.key,
-                    hashtable->buckets[j].entry.value,
+                    hashtable->buckets[i].entry.key,
+                    hashtable->buckets[i].entry.value,
                     NULL,
                     NULL);
     }
