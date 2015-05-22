@@ -8,6 +8,10 @@
 #include <string.h>
 
 
+/************************
+ * Structs and typedefs *
+ ************************/
+
 // A value contains a pointer type or a long integer type.
 union ht_value {
   void const *const_ptr_value;
@@ -46,6 +50,18 @@ ht_equal_keys_func(struct ht_key first, struct ht_key second);
 
 
 // The hash table.
+//
+// `capacity' is the maximum number of entries that the hash table will hold.
+// Performance of the hash table decreases significantly when the number of
+// entries exceeds about 70% of `capacity'.
+//
+// `count' is the number of entries in the hash table.
+//
+// `equal_keys' is the function used to compare two keys for equality.
+//
+// `user_data' is place to store user defined additional data.
+//
+// `buckets' is an array of `capacity' items where entries are stored.
 struct hashtable {
   int capacity;
   int count;
@@ -55,11 +71,11 @@ struct hashtable {
 };
 
 
+/****************************
+ * Creation and destruction *
+ ****************************/
+
 // Initialize a hash table.
-//
-// `capacity' is the maximum number of entries that the hashtable will hold.
-// Performance of the hash table decreases significantly when the number of
-// entries stored exceeds about 70% of `capacity'.
 void
 hashtable_init(struct hashtable *hashtable,
                int capacity,
@@ -95,6 +111,10 @@ hashtable_free(struct hashtable *hashtable)
   free(hashtable);
 }
 
+
+/**********************************
+ * Read, write and delete entries *
+ **********************************/
 
 // Read an entry from a hash table.
 //
@@ -133,6 +153,10 @@ hashtable_remove(struct hashtable *hashtable,
                  struct ht_entry *entry);
 
 
+/*************
+ * Iteration *
+ *************/
+
 // Iterate over entries in a hash table.
 //
 // Do not modify the hash table while iterating.
@@ -145,6 +169,10 @@ hashtable_remove(struct hashtable *hashtable,
 struct ht_entry const *
 hashtable_next(struct hashtable const *hashtable, int *iterator);
 
+
+/************************************
+ * Get all keys, values and entries *
+ ************************************/
 
 // Copy the keys from a hash table into an array.
 //
@@ -221,29 +249,9 @@ hashtable_alloc_entries(struct hashtable const *hashtable)
 }
 
 
-// Make a value from a const string.
-inline union ht_value
-ht_const_str_value(char const *value)
-{
-  return (union ht_value){ .const_str_value = value };
-}
-
-
-// Make a value from a long int.
-inline union ht_value
-ht_long_value(long value)
-{
-  return (union ht_value){ .long_value = value };
-}
-
-
-// Make a value from a string.
-inline union ht_value
-ht_str_value(char *value)
-{
-  return (union ht_value){ .str_value = value };
-}
-
+/*************************************
+ * Unsigned long int keys and values *
+ *************************************/
 
 // Make a value from an unsigned long int.
 inline union ht_value
@@ -261,35 +269,42 @@ ht_hash_of_ulong(unsigned long value)
 }
 
 
+// Make a key from an unsigned long int.
+inline struct ht_key
+ht_ulong_key(unsigned long value)
+{
+  return (struct ht_key){
+    .hash = ht_hash_of_ulong(value),
+    .value = ht_ulong_value(value)
+  };
+}
+
+
+// Compare two unsigned long int keys for equality.
+inline bool
+ht_equal_ulong_keys(struct ht_key first, struct ht_key second)
+{
+  return first.value.ulong_value == second.value.ulong_value;
+}
+
+
+/****************************
+ * Long int keys and values *
+ ****************************/
+
+// Make a value from a long int.
+inline union ht_value
+ht_long_value(long value)
+{
+  return (union ht_value){ .long_value = value };
+}
+
+
 // Calculate the hash for a long int.
 inline unsigned
 ht_hash_of_long(long value)
 {
   return ht_hash_of_ulong((unsigned long)value);
-}
-
-
-// Calculate the hash for a const string.
-unsigned
-ht_hash_of_const_str(char const *value);
-
-
-// Calculate the hash for a string.
-inline unsigned
-ht_hash_of_str(char *value)
-{
-  return ht_hash_of_const_str(value);
-}
-
-
-// Make a key from a const string.
-inline struct ht_key
-ht_const_str_key(char const *value)
-{
-  return (struct ht_key){
-    .hash = ht_hash_of_const_str(value),
-    .value = ht_const_str_value(value)
-  };
 }
 
 
@@ -304,24 +319,38 @@ ht_long_key(long value)
 }
 
 
-// Make a key from a string.
-inline struct ht_key
-ht_str_key(char *value)
+// Compare two long int keys for equality.
+inline bool
+ht_equal_long_keys(struct ht_key first, struct ht_key second)
 {
-  return (struct ht_key){
-    .hash = ht_hash_of_str(value),
-    .value = ht_str_value(value)
-  };
+  return first.value.long_value == second.value.long_value;
 }
 
 
-// Make a key from an unsigned long.
+/********************************
+ * Const string keys and values *
+ ********************************/
+
+// Make a value from a const string.
+inline union ht_value
+ht_const_str_value(char const *value)
+{
+  return (union ht_value){ .const_str_value = value };
+}
+
+
+// Calculate the hash for a const string.
+unsigned
+ht_hash_of_const_str(char const *value);
+
+
+// Make a key from a const string.
 inline struct ht_key
-ht_ulong_key(unsigned long value)
+ht_const_str_key(char const *value)
 {
   return (struct ht_key){
-    .hash = ht_hash_of_ulong(value),
-    .value = ht_ulong_value(value)
+    .hash = ht_hash_of_const_str(value),
+    .value = ht_const_str_value(value)
   };
 }
 
@@ -335,11 +364,34 @@ ht_equal_const_str_keys(struct ht_key first, struct ht_key second)
 }
 
 
-// Compare two long int keys for equality.
-inline bool
-ht_equal_long_keys(struct ht_key first, struct ht_key second)
+/**************************
+ * String keys and values *
+ **************************/
+
+// Make a value from a string.
+inline union ht_value
+ht_str_value(char *value)
 {
-  return first.value.long_value == second.value.long_value;
+  return (union ht_value){ .str_value = value };
+}
+
+
+// Calculate the hash for a string.
+inline unsigned
+ht_hash_of_str(char *value)
+{
+  return ht_hash_of_const_str(value);
+}
+
+
+// Make a key from a string.
+inline struct ht_key
+ht_str_key(char *value)
+{
+  return (struct ht_key){
+    .hash = ht_hash_of_str(value),
+    .value = ht_str_value(value)
+  };
 }
 
 
@@ -349,14 +401,6 @@ ht_equal_str_keys(struct ht_key first, struct ht_key second)
 {
   return first.hash == second.hash
       && 0 == strcmp(first.value.str_value, second.value.str_value);
-}
-
-
-// Compare two unsigned long int keys for equality.
-inline bool
-ht_equal_ulong_keys(struct ht_key first, struct ht_key second)
-{
-  return first.value.ulong_value == second.value.ulong_value;
 }
 
 
