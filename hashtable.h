@@ -8,7 +8,7 @@
 #include <string.h>
 
 
-/* A value contains a pointer type or a long integer type. */
+// A value contains a pointer type or a long integer type.
 union ht_value {
   void const *const_ptr_value;
   char const *const_str_value;
@@ -19,33 +19,33 @@ union ht_value {
 };
 
 
-/* A key contains a value and the computed hash of that value. */
+// A key contains a value and the computed hash of that value.
 struct ht_key {
   unsigned hash;
   union ht_value value;
 };
 
 
-/* An entry contains an key and corresponding value. */
+// An entry contains an key and corresponding value.
 struct ht_entry {
   struct ht_key key;
   union ht_value value;
 };
 
 
-/* A space for an entry in the hash table, which may be used or unused. */
+// A space for an entry in the hash table, which may be used or unused.
 struct ht_bucket {
   bool in_use;
   struct ht_entry entry;
 };
 
 
-/* Equality function type for keys. */
+// Equality function type for keys.
 typedef bool
 ht_equal_keys_func(struct ht_key first, struct ht_key second);
 
 
-/* The hash table. */
+// The hash table.
 struct hashtable {
   int capacity;
   int count;
@@ -55,13 +55,18 @@ struct hashtable {
 };
 
 
-/* Initialize a hash table. */
-
+// Initialize a hash table.
+//
+// `capacity' is the maximum number of entries that the hashtable will hold.
+// Performance of the hash table decreases significantly when the number of
+// entries stored exceeds about 70% of `capacity'.
 void
 hashtable_init(struct hashtable *hashtable,
                int capacity,
                ht_equal_keys_func *equal_keys);
 
+
+// Compute the size in bytes required for a hash table of a given capacity.
 inline size_t
 hashtable_size(int capacity)
 {
@@ -69,8 +74,9 @@ hashtable_size(int capacity)
 }
 
 
-/* Allocate and free a hash table. */
-
+// Allocate and initialize a hash table.
+//
+// Returns NULL if memory cannot be allocated.
 inline struct hashtable *
 hashtable_alloc(int capacity, ht_equal_keys_func *equal_keys)
 {
@@ -79,6 +85,10 @@ hashtable_alloc(int capacity, ht_equal_keys_func *equal_keys)
   return hashtable;
 }
 
+
+// Free a previously allocated hash table.
+//
+// `hashtable' may be NULL.
 inline void
 hashtable_free(struct hashtable *hashtable)
 {
@@ -86,11 +96,22 @@ hashtable_free(struct hashtable *hashtable)
 }
 
 
-/* Read, write and delete entries. */
-
+// Read an entry from a hash table.
+//
+// Returns NULL if the hash table does not contain an entry for the key.
 struct ht_entry const *
 hashtable_get(struct hashtable const *hashtable, struct ht_key key);
 
+
+// Write an entry to a hash table.
+//
+// `replaced' and `entry' may be NULL. If the hash table did not contain an
+// entry for the key, on return `replaced' contains false; if the hash table
+// contained an entry for the key, on return `replaced' contains true and
+// `entry' contains the original key and value.
+//
+// Returns 0 if an entry was written to the hash table, or -1 if the hash table
+// is full.
 int
 hashtable_set(struct hashtable *hashtable,
               struct ht_key key,
@@ -98,33 +119,69 @@ hashtable_set(struct hashtable *hashtable,
               bool *replaced,
               struct ht_entry *entry);
 
+
+// Delete an entry in a hash table.
+//
+// `entry' may be NULL. If the hash table contained an entry for the key, on
+// return `entry' contains the original key and value.
+//
+// Returns 0 if the entry was deleted, or -1 if the hash table does not contain
+// an entry for the key.
 int
 hashtable_remove(struct hashtable *hashtable,
                  struct ht_key key,
                  struct ht_entry *entry);
 
 
-/* Iterate over keys and values. */
-
+// Iterate over entries in a hash table.
+//
+// Do not modify the hash table while iterating.
+//
+// `iterator' must point to an int value. Set the int value to 0 before the
+// first call to the function.
+//
+// Returns a pointer to the next entry in the hash table, or NULL when there
+// are no more entries.
 struct ht_entry const *
 hashtable_next(struct hashtable const *hashtable, int *iterator);
 
+
+// Copy the keys from a hash table into an array.
+//
+// Returns the count if items copied into the `keys' array, which will not be
+// more than `keys_count'.
 int
 hashtable_copy_keys(struct hashtable const *hashtable,
                     struct ht_key *keys,
                     int keys_count);
 
+
+// Copy the values from a hash table into an array.
+//
+// Returns the count if items copied into the `values' array, which will not be
+// more than `values_count'.
 int
 hashtable_copy_values(struct hashtable const *hashtable,
                       union ht_value *values,
                       int values_count);
 
 
+// Copy the entries from a hash table into an array.
+//
+// Returns the count if items copied into the `entries' array, which will not
+// be more than `entries_count'.
 int
 hashtable_copy_entries(struct hashtable const *hashtable,
                        struct ht_entry *entries,
                        int entries_count);
 
+
+// Allocate an array containing the keys from a hash table.
+//
+// The array will contain `hashtable->count' items. The caller is responsible
+// for freeing the array.
+//
+// Returns NULL if memory cannot be allocated.
 inline struct ht_key *
 hashtable_alloc_keys(struct hashtable const *hashtable)
 {
@@ -133,6 +190,13 @@ hashtable_alloc_keys(struct hashtable const *hashtable)
   return keys;
 }
 
+
+// Allocate an array containing the values from a hash table.
+//
+// The array will contain `hashtable->count' items. The caller is responsible
+// for freeing the array.
+//
+// Returns NULL if memory cannot be allocated.
 inline union ht_value *
 hashtable_alloc_values(struct hashtable const *hashtable)
 {
@@ -141,6 +205,13 @@ hashtable_alloc_values(struct hashtable const *hashtable)
   return values;
 }
 
+
+// Allocate an array containing the entries from a hash table.
+//
+// The array will contain `hashtable->count' items. The caller is responsible
+// for freeing the array.
+//
+// Returns NULL if memory cannot be allocated.
 inline struct ht_entry *
 hashtable_alloc_entries(struct hashtable const *hashtable)
 {
@@ -150,26 +221,31 @@ hashtable_alloc_entries(struct hashtable const *hashtable)
 }
 
 
-/* Make values. */
-
+// Make a value from a const string.
 inline union ht_value
 ht_const_str_value(char const *value)
 {
   return (union ht_value){ .const_str_value = value };
 }
 
+
+// Make a value from a long int.
 inline union ht_value
 ht_long_value(long value)
 {
   return (union ht_value){ .long_value = value };
 }
 
+
+// Make a value from a string.
 inline union ht_value
 ht_str_value(char *value)
 {
   return (union ht_value){ .str_value = value };
 }
 
+
+// Make a value from an unsigned long int.
 inline union ht_value
 ht_ulong_value(unsigned long value)
 {
@@ -177,23 +253,28 @@ ht_ulong_value(unsigned long value)
 }
 
 
-/* Hash functions. */
-
+// Calculate the hash for an unsigned long int.
 inline unsigned
 ht_hash_of_ulong(unsigned long value)
 {
   return value % UINT_MAX;
 }
 
+
+// Calculate the hash for a long int.
 inline unsigned
 ht_hash_of_long(long value)
 {
   return ht_hash_of_ulong((unsigned long)value);
 }
 
+
+// Calculate the hash for a const string.
 unsigned
 ht_hash_of_const_str(char const *value);
 
+
+// Calculate the hash for a string.
 inline unsigned
 ht_hash_of_str(char *value)
 {
@@ -201,8 +282,7 @@ ht_hash_of_str(char *value)
 }
 
 
-/* Make keys. */
-
+// Make a key from a const string.
 inline struct ht_key
 ht_const_str_key(char const *value)
 {
@@ -212,6 +292,8 @@ ht_const_str_key(char const *value)
   };
 }
 
+
+// Make a key from a long int.
 inline struct ht_key
 ht_long_key(long value)
 {
@@ -221,6 +303,8 @@ ht_long_key(long value)
   };
 }
 
+
+// Make a key from a string.
 inline struct ht_key
 ht_str_key(char *value)
 {
@@ -230,6 +314,8 @@ ht_str_key(char *value)
   };
 }
 
+
+// Make a key from an unsigned long.
 inline struct ht_key
 ht_ulong_key(unsigned long value)
 {
@@ -240,8 +326,7 @@ ht_ulong_key(unsigned long value)
 }
 
 
-/* Equality functions for keys. */
-
+// Compare two const string keys for equality.
 inline bool
 ht_equal_const_str_keys(struct ht_key first, struct ht_key second)
 {
@@ -249,12 +334,16 @@ ht_equal_const_str_keys(struct ht_key first, struct ht_key second)
       && 0 == strcmp(first.value.const_str_value, second.value.const_str_value);
 }
 
+
+// Compare two long int keys for equality.
 inline bool
 ht_equal_long_keys(struct ht_key first, struct ht_key second)
 {
   return first.value.long_value == second.value.long_value;
 }
 
+
+// Compare two string keys for equality.
 inline bool
 ht_equal_str_keys(struct ht_key first, struct ht_key second)
 {
@@ -262,6 +351,8 @@ ht_equal_str_keys(struct ht_key first, struct ht_key second)
       && 0 == strcmp(first.value.str_value, second.value.str_value);
 }
 
+
+// Compare two unsigned long int keys for equality.
 inline bool
 ht_equal_ulong_keys(struct ht_key first, struct ht_key second)
 {
