@@ -40,7 +40,7 @@ struct ht_bucket {
 };
 
 
-/* Equality function type keys. */
+/* Equality function type for keys. */
 typedef bool
 ht_equal_keys_func(struct ht_key first, struct ht_key second);
 
@@ -86,7 +86,7 @@ hashtable_free(struct hashtable *hashtable)
 }
 
 
-/* Read, write and delete entries in a hash table. */
+/* Read, write and delete entries. */
 
 struct ht_entry const *
 hashtable_get(struct hashtable const *hashtable, struct ht_key key);
@@ -104,7 +104,7 @@ hashtable_remove(struct hashtable *hashtable,
                  struct ht_entry *entry);
 
 
-/* Iterate over keys and values in a hash table. */
+/* Iterate over keys and values. */
 
 struct ht_entry const *
 hashtable_next(struct hashtable const *hashtable, int *iterator);
@@ -249,13 +249,11 @@ ht_equal_const_str_keys(struct ht_key first, struct ht_key second)
       && 0 == strcmp(first.value.const_str_value, second.value.const_str_value);
 }
 
-
 inline bool
 ht_equal_long_keys(struct ht_key first, struct ht_key second)
 {
   return first.value.long_value == second.value.long_value;
 }
-
 
 inline bool
 ht_equal_str_keys(struct ht_key first, struct ht_key second)
@@ -263,7 +261,6 @@ ht_equal_str_keys(struct ht_key first, struct ht_key second)
   return first.hash == second.hash
       && 0 == strcmp(first.value.str_value, second.value.str_value);
 }
-
 
 inline bool
 ht_equal_ulong_keys(struct ht_key first, struct ht_key second)
