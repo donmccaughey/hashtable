@@ -205,25 +205,13 @@ extern inline bool
 ht_equal_const_str_keys(struct ht_key first, struct ht_key second);
 
 extern inline bool
-ht_equal_const_str_values(union ht_value first, union ht_value second);
-
-extern inline bool
 ht_equal_long_keys(struct ht_key first, struct ht_key second);
-
-extern inline bool
-ht_equal_long_values(union ht_value first, union ht_value second);
 
 extern inline bool
 ht_equal_str_keys(struct ht_key first, struct ht_key second);
 
 extern inline bool
-ht_equal_str_values(union ht_value first, union ht_value second);
-
-extern inline bool
 ht_equal_ulong_keys(struct ht_key first, struct ht_key second);
-
-extern inline bool
-ht_equal_ulong_values(union ht_value first, union ht_value second);
 
 extern inline unsigned
 ht_hash_of_long(long value);

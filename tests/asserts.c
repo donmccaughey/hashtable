@@ -9,7 +9,7 @@ assert_keys_and_values(struct hashtable *hashtable,
                        union ht_value expected_values[],
                        int expected_count,
                        ht_equal_keys_func equal_keys,
-                       ht_equal_values_func equal_values)
+                       equal_values_func equal_values)
 {
   struct ht_key *keys = hashtable_alloc_keys(hashtable);
   assert(keys);
@@ -82,7 +82,7 @@ entries_contains_key_and_value(struct ht_entry *entries,
                                struct ht_key key,
                                ht_equal_keys_func equal_keys,
                                union ht_value value,
-                               ht_equal_values_func equal_values)
+                               equal_values_func equal_values)
 {
   for (int i = 0; i < count; ++i) {
     if (   equal_keys(key, entries[i].key)
@@ -112,7 +112,7 @@ bool
 values_contains_value(union ht_value *values,
                       int count,
                       union ht_value value,
-                      ht_equal_values_func equal_values)
+                      equal_values_func equal_values)
 {
   for (int i = 0; i < count; ++i) {
     if (equal_values(value, values[i])) return true;

@@ -40,13 +40,9 @@ struct ht_bucket {
 };
 
 
-/* Function types for comparing keys and values. */
-
+/* Equality function type keys. */
 typedef bool
 ht_equal_keys_func(struct ht_key first, struct ht_key second);
-
-typedef bool
-ht_equal_values_func(union ht_value first, union ht_value second);
 
 
 /* The hash table. */
@@ -244,60 +240,35 @@ ht_ulong_key(unsigned long value)
 }
 
 
-/* Equality functions for values. */
-
-inline bool
-ht_equal_const_str_values(union ht_value first, union ht_value second)
-{
-  return 0 == strcmp(first.const_str_value, second.const_str_value);
-}
-
-inline bool
-ht_equal_long_values(union ht_value first, union ht_value second)
-{
-  return first.long_value == second.long_value;
-}
-
-inline bool
-ht_equal_str_values(union ht_value first, union ht_value second)
-{
-  return 0 == strcmp(first.str_value, second.str_value);
-}
-
-inline bool
-ht_equal_ulong_values(union ht_value first, union ht_value second)
-{
-  return first.ulong_value == second.ulong_value;
-}
-
-
 /* Equality functions for keys. */
 
 inline bool
 ht_equal_const_str_keys(struct ht_key first, struct ht_key second)
 {
-  return ht_equal_const_str_values(first.value, second.value);
+  return first.hash == second.hash
+      && 0 == strcmp(first.value.const_str_value, second.value.const_str_value);
 }
 
 
 inline bool
 ht_equal_long_keys(struct ht_key first, struct ht_key second)
 {
-  return ht_equal_long_values(first.value, second.value);
+  return first.value.long_value == second.value.long_value;
 }
 
 
 inline bool
 ht_equal_str_keys(struct ht_key first, struct ht_key second)
 {
-  return ht_equal_str_values(first.value, second.value);
+  return first.hash == second.hash
+      && 0 == strcmp(first.value.str_value, second.value.str_value);
 }
 
 
 inline bool
 ht_equal_ulong_keys(struct ht_key first, struct ht_key second)
 {
-  return ht_equal_ulong_values(first.value, second.value);
+  return first.value.ulong_value == second.value.ulong_value;
 }
 
 

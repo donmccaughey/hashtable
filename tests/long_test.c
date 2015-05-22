@@ -4,6 +4,13 @@
 #include "hashtable.h"
 
 
+static bool
+equal_long_values(union ht_value first, union ht_value second)
+{
+  return first.long_value == second.long_value;
+}
+
+
 int
 long_test(void)
 {
@@ -16,7 +23,7 @@ long_test(void)
                          NULL,
                          0,
                          ht_equal_long_keys,
-                         ht_equal_long_values);
+                         equal_long_values);
   
   
   struct ht_key key1 = ht_long_key(1);
@@ -37,7 +44,7 @@ long_test(void)
                          (union ht_value[]){ value1, },
                          1,
                          ht_equal_long_keys,
-                         ht_equal_long_values);
+                         equal_long_values);
   
   
   struct ht_key key2 = ht_long_key(2);
@@ -56,7 +63,7 @@ long_test(void)
                          (union ht_value[]){ value1, value2, },
                          2,
                          ht_equal_long_keys,
-                         ht_equal_long_values);
+                         equal_long_values);
   
   
   struct ht_key key3 = ht_long_key(3);
@@ -75,7 +82,7 @@ long_test(void)
                          (union ht_value[]){ value1, value2, value3a, },
                          3,
                          ht_equal_long_keys,
-                         ht_equal_long_values);
+                         equal_long_values);
   
   
   union ht_value value3b = ht_long_value(33);
@@ -92,7 +99,7 @@ long_test(void)
                          (union ht_value[]){ value1, value2, value3b, },
                          3,
                          ht_equal_long_keys,
-                         ht_equal_long_values);
+                         equal_long_values);
   
   
   struct ht_key key4 = ht_long_key(4);
@@ -111,7 +118,7 @@ long_test(void)
                          (union ht_value[]){ value1, value2, },
                          2,
                          ht_equal_long_keys,
-                         ht_equal_long_values);
+                         equal_long_values);
 
   
   result = hashtable_remove(hashtable, key1, &removed_entry);
@@ -123,7 +130,7 @@ long_test(void)
                          (union ht_value[]){ value2, },
                          1,
                          ht_equal_long_keys,
-                         ht_equal_long_values);
+                         equal_long_values);
   
   
   result = hashtable_remove(hashtable, key2, &removed_entry);
@@ -135,7 +142,7 @@ long_test(void)
                          NULL,
                          0,
                          ht_equal_long_keys,
-                         ht_equal_long_values);
+                         equal_long_values);
   
   
   hashtable_free(hashtable);

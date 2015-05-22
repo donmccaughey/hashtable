@@ -4,6 +4,9 @@
 
 #include "hashtable.h"
 
+typedef bool
+equal_values_func(union ht_value first, union ht_value second);
+
 
 void
 assert_keys_and_values(struct hashtable *hashtable,
@@ -11,7 +14,7 @@ assert_keys_and_values(struct hashtable *hashtable,
                        union ht_value expected_values[],
                        int expected_count,
                        ht_equal_keys_func equal_keys,
-                       ht_equal_values_func equal_values);
+                       equal_values_func equal_values);
 
 bool
 entries_contains_key_and_value(struct ht_entry *entries,
@@ -19,7 +22,7 @@ entries_contains_key_and_value(struct ht_entry *entries,
                                struct ht_key key,
                                ht_equal_keys_func equal_keys,
                                union ht_value value,
-                               ht_equal_values_func equal_values);
+                               equal_values_func equal_values);
 
 bool
 keys_contains_key(struct ht_key *keys,
@@ -31,7 +34,7 @@ bool
 values_contains_value(union ht_value *values,
                       int count,
                       union ht_value value,
-                      ht_equal_values_func equal_values);
+                      equal_values_func equal_values);
 
 
 #endif

@@ -4,6 +4,13 @@
 #include "hashtable.h"
 
 
+static bool
+equal_str_values(union ht_value first, union ht_value second)
+{
+  return 0 == strcmp(first.str_value, second.str_value);
+}
+
+
 int
 string_test(void)
 {
@@ -16,7 +23,7 @@ string_test(void)
                          NULL,
                          0,
                          ht_equal_str_keys,
-                         ht_equal_str_values);
+                         equal_str_values);
   
   
   struct ht_key key1 = ht_str_key(strdup("red"));
@@ -40,7 +47,7 @@ string_test(void)
                          (union ht_value[]){ value1, },
                          1,
                          ht_equal_str_keys,
-                         ht_equal_str_values);
+                         equal_str_values);
   
   
   struct ht_key key2 = ht_str_key(strdup("green"));
@@ -61,7 +68,7 @@ string_test(void)
                          (union ht_value[]){ value1, value2, },
                          2,
                          ht_equal_str_keys,
-                         ht_equal_str_values);
+                         equal_str_values);
   
   
   struct ht_key key3 = ht_str_key(strdup("blue"));
@@ -82,7 +89,7 @@ string_test(void)
                          (union ht_value[]){ value1, value2, value3a, },
                          3,
                          ht_equal_str_keys,
-                         ht_equal_str_values);
+                         equal_str_values);
   
   
   union ht_value value3b = ht_str_value(strdup("33"));
@@ -100,7 +107,7 @@ string_test(void)
                          (union ht_value[]){ value1, value2, value3b, },
                          3,
                          ht_equal_str_keys,
-                         ht_equal_str_values);
+                         equal_str_values);
   
   
   struct ht_key key4 = ht_str_key(strdup("alpha"));
@@ -120,7 +127,7 @@ string_test(void)
                          (union ht_value[]){ value1, value2, },
                          2,
                          ht_equal_str_keys,
-                         ht_equal_str_values);
+                         equal_str_values);
   
   
   result = hashtable_remove(hashtable, key1, &removed_entry);
@@ -132,7 +139,7 @@ string_test(void)
                          (union ht_value[]){ value2, },
                          1,
                          ht_equal_str_keys,
-                         ht_equal_str_values);
+                         equal_str_values);
   
   
   hashtable_remove(hashtable, key2, &removed_entry);
@@ -144,7 +151,7 @@ string_test(void)
                          NULL,
                          0,
                          ht_equal_str_keys,
-                         ht_equal_str_values);
+                         equal_str_values);
   
   
   free(key1.value.str_value);
