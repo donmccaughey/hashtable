@@ -8,9 +8,9 @@
 #include <string.h>
 
 
-/************************
- * Structs and typedefs *
- ************************/
+/***********
+ * Structs *
+ ***********/
 
 // A value contains a pointer type or a long integer type.
 union ht_value {
@@ -37,7 +37,7 @@ struct ht_entry {
 };
 
 
-// A space for an entry in the hash table, which may be used or unused.
+// A bucket is a space for an entry in the hash table.
 struct ht_bucket {
   bool in_use;
   struct ht_entry entry;
@@ -59,7 +59,7 @@ ht_equal_keys_func(struct ht_key first, struct ht_key second);
 //
 // `equal_keys' is the function used to compare two keys for equality.
 //
-// `user_data' is place to store user defined additional data.
+// `user_data' is a place to store user defined additional data.
 //
 // `buckets' is an array of `capacity' items where entries are stored.
 struct hashtable {
@@ -170,13 +170,13 @@ struct ht_entry const *
 hashtable_next(struct hashtable const *hashtable, int *iterator);
 
 
-/************************************
- * Get all keys, values and entries *
- ************************************/
+/***********************************
+ * Get all keys, values or entries *
+ ***********************************/
 
 // Copy the keys from a hash table into an array.
 //
-// Returns the count if items copied into the `keys' array, which will not be
+// Returns the count of items copied into the `keys' array, which will not be
 // more than `keys_count'.
 int
 hashtable_copy_keys(struct hashtable const *hashtable,
@@ -186,7 +186,7 @@ hashtable_copy_keys(struct hashtable const *hashtable,
 
 // Copy the values from a hash table into an array.
 //
-// Returns the count if items copied into the `values' array, which will not be
+// Returns the count of items copied into the `values' array, which will not be
 // more than `values_count'.
 int
 hashtable_copy_values(struct hashtable const *hashtable,
@@ -196,7 +196,7 @@ hashtable_copy_values(struct hashtable const *hashtable,
 
 // Copy the entries from a hash table into an array.
 //
-// Returns the count if items copied into the `entries' array, which will not
+// Returns the count of items copied into the `entries' array, which will not
 // be more than `entries_count'.
 int
 hashtable_copy_entries(struct hashtable const *hashtable,
