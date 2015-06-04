@@ -30,7 +30,7 @@ struct ht_key {
 };
 
 
-// An entry contains an key and corresponding value.
+// An entry contains a key and corresponding value.
 struct ht_entry {
   struct ht_key key;
   union ht_value value;
@@ -125,10 +125,9 @@ hashtable_get(struct hashtable const *hashtable, struct ht_key key);
 
 // Write an entry to a hash table.
 //
-// `replaced' and `entry' may be NULL. If the hash table did not contain an
-// entry for the key, on return `replaced' contains false; if the hash table
-// contained an entry for the key, on return `replaced' contains true and
-// `entry' contains the original key and value.
+// If the hash table contains an entry for the key, true is stored in
+// `*replaced' and the previous entry is stored in `*entry'; otherwise false is
+// stored in `*replaced'. `replaced' and/or `entry' may be NULL if not needed.
 //
 // Returns 0 if an entry was written to the hash table, or -1 if the hash table
 // is full.
@@ -142,8 +141,8 @@ hashtable_set(struct hashtable *hashtable,
 
 // Delete an entry in a hash table.
 //
-// `entry' may be NULL. If the hash table contained an entry for the key, on
-// return `entry' contains the original key and value.
+// If the hash table contained an entry for the key, the deleted entry is
+// stored in `*entry'. `entry' may be NULL if not needed.
 //
 // Returns 0 if the entry was deleted, or -1 if the hash table does not contain
 // an entry for the key.
@@ -159,10 +158,10 @@ hashtable_remove(struct hashtable *hashtable,
 
 // Iterate over entries in a hash table.
 //
-// Do not modify the hash table while iterating.
-//
-// `iterator' must point to an int value. Set the int value to 0 before the
-// first call to the function.
+// Do not modify the hash table while iterating. `*iterator' must contain 0
+// before the first call to the function. Do not modify the value of
+// `*iterator' between calls, except to set it to 0 to restart iteration from
+// the beginning.
 //
 // Returns a pointer to the next entry in the hash table, or NULL when there
 // are no more entries.

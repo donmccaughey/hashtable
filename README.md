@@ -11,9 +11,9 @@ entries are inserted or removed. Because it uses open addressing, performance
 decreases significantly when the number of entries in the hash table exceeds 
 about 70% of capacity.
 
-Keys may be `long` or `unsigned long` integers, string pointers or custom types (as 
-`void` pointers). The user is responsible for managing the lifetime of items 
-referenced by string and `void` pointer keys. Hash functions and equality 
+Keys may be `long` or `unsigned long` integers, string pointers or custom types 
+(as `void` pointers). The user is responsible for managing the lifetime of 
+items referenced by string and `void` pointer keys. Hash functions and equality 
 functions for `long`, `unsigned long` and string pointer keys are included; the 
 user must provide hash and equality functions for custom types. Within a hash 
 table, keys must all be of the same type.
