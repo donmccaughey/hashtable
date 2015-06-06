@@ -13,6 +13,7 @@
 		D45564A51A8F23C30081AB73 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = D45564A41A8F23C30081AB73 /* main.c */; };
 		D45564A81A8F23FE0081AB73 /* libhashtable.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D45564791A8EF31E0081AB73 /* libhashtable.a */; };
 		D48C2CF51B2024C2005D5817 /* update_test.c in Sources */ = {isa = PBXBuildFile; fileRef = D48C2CF41B2024C2005D5817 /* update_test.c */; };
+		D48C2CF71B23792C005D5817 /* collision_test.c in Sources */ = {isa = PBXBuildFile; fileRef = D48C2CF61B23792C005D5817 /* collision_test.c */; };
 		D48E437C1A907FD00065D4A4 /* long_test.c in Sources */ = {isa = PBXBuildFile; fileRef = D48E437B1A907FD00065D4A4 /* long_test.c */; };
 		D48E437F1A90805F0065D4A4 /* string_test.c in Sources */ = {isa = PBXBuildFile; fileRef = D48E437D1A90805F0065D4A4 /* string_test.c */; };
 		D4EEA0E21AA0EF090086468D /* asserts.c in Sources */ = {isa = PBXBuildFile; fileRef = D4EEA0E01AA0EF090086468D /* asserts.c */; };
@@ -48,6 +49,7 @@
 		D455649C1A8F237B0081AB73 /* tests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = tests; sourceTree = BUILT_PRODUCTS_DIR; };
 		D45564A41A8F23C30081AB73 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		D48C2CF41B2024C2005D5817 /* update_test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = update_test.c; sourceTree = "<group>"; };
+		D48C2CF61B23792C005D5817 /* collision_test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = collision_test.c; sourceTree = "<group>"; };
 		D48E437B1A907FD00065D4A4 /* long_test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = long_test.c; sourceTree = "<group>"; };
 		D48E437D1A90805F0065D4A4 /* string_test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = string_test.c; sourceTree = "<group>"; };
 		D4D547541B10075C0088EB9F /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
@@ -101,6 +103,7 @@
 			children = (
 				D4EEA0E11AA0EF090086468D /* asserts.h */,
 				D4EEA0E01AA0EF090086468D /* asserts.c */,
+				D48C2CF61B23792C005D5817 /* collision_test.c */,
 				D420FDEA1AA04DB000B4AC26 /* full_table_test.c */,
 				D48E437B1A907FD00065D4A4 /* long_test.c */,
 				D45564A41A8F23C30081AB73 /* main.c */,
@@ -209,6 +212,7 @@
 			files = (
 				D48C2CF51B2024C2005D5817 /* update_test.c in Sources */,
 				D45564A51A8F23C30081AB73 /* main.c in Sources */,
+				D48C2CF71B23792C005D5817 /* collision_test.c in Sources */,
 				D48E437C1A907FD00065D4A4 /* long_test.c in Sources */,
 				D48E437F1A90805F0065D4A4 /* string_test.c in Sources */,
 				D4EEA0E21AA0EF090086468D /* asserts.c in Sources */,

@@ -1,5 +1,9 @@
 #include <stdlib.h>
 
+
+void
+collision_test(void);
+
 void
 full_table_test(void);
 
@@ -15,7 +19,8 @@ update_test(void);
 
 int
 main(void)
-{  
+{
+  collision_test();
   full_table_test();
   long_test();
   string_test();
