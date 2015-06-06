@@ -10,6 +10,14 @@ equal_str_values(union ht_value first, union ht_value second)
   return 0 == strcmp(first.str_value, second.str_value);
 }
 
+static void
+free_str_entry(struct hashtable *hashtable, struct ht_entry entry)
+{
+  ((void)hashtable);
+  free(entry.key.value.str_value);
+  free(entry.value.str_value);
+}
+
 
 int
 string_test(void)
@@ -154,15 +162,6 @@ string_test(void)
                          equal_str_values);
   
   
-  free(key1.value.str_value);
-  free(value1.str_value);
-  free(key2.value.str_value);
-  free(value2.str_value);
-  free(key3.value.str_value);
-  free(value3a.str_value);
-  free(value3b.str_value);
-  free(key4.value.str_value);
-  
-  hashtable_free(hashtable);
+  hashtable_free(hashtable, free_str_entry);
   return 0;
 }

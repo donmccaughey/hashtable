@@ -1,6 +1,21 @@
 #include "hashtable.h"
 
 
+void
+hashtable_clear(struct hashtable *hashtable, ht_free_entry *free_entry)
+{
+  int i = 0;
+  while (hashtable->count) {
+    if (hashtable->buckets[i].in_use) {
+      if (free_entry) free_entry(hashtable, hashtable->buckets[i].entry);
+      hashtable->buckets[i].in_use = false;
+      --hashtable->count;
+    }
+    ++i;
+  }
+}
+
+
 int
 hashtable_copy_entries(struct hashtable const *hashtable,
                        struct ht_entry *entries,
@@ -190,7 +205,7 @@ extern inline union ht_value *
 hashtable_alloc_values(struct hashtable const *hashtable);
 
 extern inline void
-hashtable_free(struct hashtable *hashtable);
+hashtable_free(struct hashtable *hashtable, ht_free_entry *free_entry);
 
 extern inline size_t
 hashtable_size(int capacity);

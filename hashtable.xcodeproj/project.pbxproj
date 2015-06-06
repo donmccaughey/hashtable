@@ -14,7 +14,6 @@
 		D45564A81A8F23FE0081AB73 /* libhashtable.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D45564791A8EF31E0081AB73 /* libhashtable.a */; };
 		D48E437C1A907FD00065D4A4 /* long_test.c in Sources */ = {isa = PBXBuildFile; fileRef = D48E437B1A907FD00065D4A4 /* long_test.c */; };
 		D48E437F1A90805F0065D4A4 /* string_test.c in Sources */ = {isa = PBXBuildFile; fileRef = D48E437D1A90805F0065D4A4 /* string_test.c */; };
-		D4D547561B10075C0088EB9F /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = D4D547551B10075C0088EB9F /* README.md */; };
 		D4EEA0E21AA0EF090086468D /* asserts.c in Sources */ = {isa = PBXBuildFile; fileRef = D4EEA0E01AA0EF090086468D /* asserts.c */; };
 /* End PBXBuildFile section */
 
@@ -197,7 +196,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D4D547561B10075C0088EB9F /* README.md in Sources */,
 				D4451CFD1A9EEF0500765DDF /* hashtable.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -49,6 +49,6 @@ full_table_test(void)
   }
   assert(0 == hashtable->count);
   
-  hashtable_free(hashtable);
+  hashtable_free(hashtable, NULL);
   return 0;
 }

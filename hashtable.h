@@ -8,9 +8,9 @@
 #include <string.h>
 
 
-/***********
- * Structs *
- ***********/
+/************************
+ * Structs and typedefs *
+ ************************/
 
 // A value contains a pointer type or a long integer type.
 union ht_value {
@@ -71,6 +71,11 @@ struct hashtable {
 };
 
 
+// Function to free an entry.
+typedef void
+ht_free_entry(struct hashtable *hashtable, struct ht_entry entry);
+
+
 /****************************
  * Creation and destruction *
  ****************************/
@@ -90,6 +95,13 @@ hashtable_size(int capacity)
 }
 
 
+// Delete all entries in a hash table.
+//
+// `free_entry' may be NULL.
+void
+hashtable_clear(struct hashtable *hashtable, ht_free_entry *free_entry);
+
+
 // Allocate and initialize a hash table.
 //
 // Returns NULL if memory cannot be allocated.
@@ -102,12 +114,13 @@ hashtable_alloc(int capacity, ht_equal_keys_func *equal_keys)
 }
 
 
-// Free a previously allocated hash table.
+// Delete all entries and free an allocated hash table.
 //
-// `hashtable' may be NULL.
+// `hashtable' and `free_entry' may be NULL.
 inline void
-hashtable_free(struct hashtable *hashtable)
+hashtable_free(struct hashtable *hashtable, ht_free_entry *free_entry)
 {
+  if (hashtable && free_entry) hashtable_clear(hashtable, free_entry);
   free(hashtable);
 }
 

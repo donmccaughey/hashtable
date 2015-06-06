@@ -145,6 +145,6 @@ long_test(void)
                          equal_long_values);
   
   
-  hashtable_free(hashtable);
+  hashtable_free(hashtable, NULL);
   return 0;
 }
