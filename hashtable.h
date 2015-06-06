@@ -71,6 +71,13 @@ struct hashtable {
 };
 
 
+// Function to copy an entry.
+typedef int
+ht_copy_entry(struct hashtable *destination,
+              struct ht_entry *destination_entry,
+              struct ht_entry source_entry);
+
+
 // Function to free an entry.
 typedef void
 ht_free_entry(struct hashtable *hashtable, struct ht_entry entry);
@@ -163,6 +170,26 @@ int
 hashtable_remove(struct hashtable *hashtable,
                  struct ht_key key,
                  struct ht_entry *entry);
+
+
+// Write entries from one hash table into another.
+//
+// Entries with equal keys from `source' replace entries in `destination'.
+// If `source' will not fit into `destination', then `destination' is not
+// modified.
+//
+// If `free_entry' is not NULL, it is called for each entry in `destination'
+// that is replaced. If `copy_entry' is not NULL, it is called for each entry
+// from `source' that is written to `destination'. If `copy_entry' fails,
+// `destination' is left in an indeterminate state.
+//
+// Returns 0 if all entries in `source' are copied into `destination, or -1 if
+// `source' will not fit into `destination' or `copy_entry' fails.
+int
+hashtable_update(struct hashtable *destination,
+                 struct hashtable const *source,
+                 ht_copy_entry copy_entry,
+                 ht_free_entry *free_entry);
 
 
 /*************

@@ -3,7 +3,7 @@
 #include "hashtable.h"
 
 
-int
+void
 full_table_test(void)
 {
   struct hashtable *hashtable = hashtable_alloc(10, ht_equal_long_keys);
@@ -50,5 +50,4 @@ full_table_test(void)
   assert(0 == hashtable->count);
   
   hashtable_free(hashtable, NULL);
-  return 0;
 }

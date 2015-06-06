@@ -1,13 +1,16 @@
 #include <stdlib.h>
 
-int
+void
 full_table_test(void);
 
-int
+void
 long_test(void);
 
-int
+void
 string_test(void);
+
+void
+update_test(void);
 
 
 int
@@ -16,6 +19,7 @@ main(void)
   full_table_test();
   long_test();
   string_test();
+  update_test();
   
   return EXIT_SUCCESS;
 }

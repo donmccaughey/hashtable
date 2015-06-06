@@ -176,6 +176,49 @@ hashtable_remove(struct hashtable *hashtable,
 }
 
 
+int
+hashtable_update(struct hashtable *destination,
+                 struct hashtable const *source,
+                 ht_copy_entry copy_entry,
+                 ht_free_entry *free_entry)
+{
+  if (source->count > destination->capacity) return -1;
+  
+  int available = destination->capacity - destination->count;
+  if (source->count > available) {
+    int iterator = 0;
+    for (int i = 0; i < source->count; ++i) {
+      struct ht_entry const *source_entry = hashtable_next(source, &iterator);
+      if (hashtable_get(destination, source_entry->key)) ++available;
+      if (source->count == available) break;
+    }
+  }
+  if (source->count > available) return -1;
+  
+  int iterator = 0;
+  for (int i = 0; i < source->count; ++i) {
+    struct ht_entry const *source_entry = hashtable_next(source, &iterator);
+    struct ht_entry destination_entry;
+    if (copy_entry) {
+      int result = copy_entry(destination, &destination_entry, *source_entry);
+      if (-1 == result) return -1;
+    } else {
+      destination_entry = *source_entry;
+    }
+    bool replaced;
+    struct ht_entry entry;
+    int result = hashtable_set(destination,
+                               destination_entry.key,
+                               destination_entry.value,
+                               &replaced,
+                               &entry);
+    if (-1 == result) return -1;
+    if (replaced && free_entry) free_entry(destination, entry);
+  }
+  return 0;
+}
+
+
 unsigned
 ht_hash_of_const_str(char const *value)
 {

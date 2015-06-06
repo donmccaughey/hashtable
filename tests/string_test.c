@@ -19,7 +19,7 @@ free_str_entry(struct hashtable *hashtable, struct ht_entry entry)
 }
 
 
-int
+void
 string_test(void)
 {
   struct hashtable *hashtable = hashtable_alloc(10, ht_equal_str_keys);
@@ -163,5 +163,4 @@ string_test(void)
   
   
   hashtable_free(hashtable, free_str_entry);
-  return 0;
 }

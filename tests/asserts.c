@@ -1,10 +1,53 @@
 #include "asserts.h"
 
 #include <assert.h>
+#include <stdio.h>
+#include <string.h>
 
 
 void
-assert_keys_and_values(struct hashtable *hashtable,
+assert_contains_long_values_for_long_keys_in_sequence(struct hashtable const *hashtable,
+                                                      long key_start,
+                                                      long value_start,
+                                                      int count)
+{
+  long end = key_start + count;
+  for (long key = key_start, value = value_start; key < end; ++key, ++value) {
+    struct ht_entry const *entry = hashtable_get(hashtable, ht_long_key(key));
+    assert(entry);
+    assert(value == entry->value.long_value);
+  }
+}
+
+
+void
+assert_contains_str_values_for_str_keys_in_sequence(struct hashtable const *hashtable,
+                                                    int key_start,
+                                                    int value_start,
+                                                    int count)
+{
+  int end = key_start + count;
+  for (int key = key_start, value = value_start; key < end; ++key, ++value) {
+    char *key_str;
+    int chars_printed = asprintf(&key_str, "%i", key);
+    assert(chars_printed > 0);
+    
+    char *value_str;
+    chars_printed = asprintf(&value_str, "%i", value);
+    assert(chars_printed > 0);
+    
+    struct ht_entry const *entry = hashtable_get(hashtable, ht_str_key(key_str));
+    assert(entry);
+    assert(0 == strcmp(value_str, entry->value.str_value));
+    
+    free(value_str);
+    free(key_str);
+  }
+}
+
+
+void
+assert_keys_and_values(struct hashtable const *hashtable,
                        struct ht_key expected_keys[],
                        union ht_value expected_values[],
                        int expected_count,
@@ -77,7 +120,7 @@ assert_keys_and_values(struct hashtable *hashtable,
 
 
 bool
-entries_contains_key_and_value(struct ht_entry *entries,
+entries_contains_key_and_value(struct ht_entry const *entries,
                                int count,
                                struct ht_key key,
                                ht_equal_keys_func equal_keys,
@@ -96,7 +139,7 @@ entries_contains_key_and_value(struct ht_entry *entries,
 
 
 bool
-keys_contains_key(struct ht_key *keys,
+keys_contains_key(struct ht_key const *keys,
                   int count,
                   struct ht_key key,
                   ht_equal_keys_func equal_keys)
@@ -109,7 +152,7 @@ keys_contains_key(struct ht_key *keys,
 
 
 bool
-values_contains_value(union ht_value *values,
+values_contains_value(union ht_value const *values,
                       int count,
                       union ht_value value,
                       equal_values_func equal_values)

@@ -11,7 +11,7 @@ equal_long_values(union ht_value first, union ht_value second)
 }
 
 
-int
+void
 long_test(void)
 {
   struct hashtable *hashtable = hashtable_alloc(10, ht_equal_long_keys);
@@ -146,5 +146,4 @@ long_test(void)
   
   
   hashtable_free(hashtable, NULL);
-  return 0;
 }
