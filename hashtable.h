@@ -104,7 +104,7 @@ hashtable_size(int capacity)
 
 // Delete all entries in a hash table.
 //
-// `free_entry' may be NULL.
+// If `free_entry' is not NULL, it is called for each entry in the hash table.
 void
 hashtable_clear(struct hashtable *hashtable, ht_free_entry *free_entry);
 
