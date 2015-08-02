@@ -172,7 +172,7 @@ hashtable_remove(struct hashtable *hashtable,
                  struct ht_entry *entry);
 
 
-// Write entries from one hash table into another.
+// Copy entries from one hash table into another.
 //
 // Entries with equal keys from `source' replace entries in `destination'.
 // If `source' will not fit into `destination', then `destination' is not
