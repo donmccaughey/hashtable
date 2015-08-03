@@ -14,6 +14,9 @@ void
 string_test(void);
 
 void
+stringtable_test(void);
+
+void
 update_test(void);
 
 
@@ -24,6 +27,7 @@ main(void)
   full_table_test();
   long_test();
   string_test();
+  stringtable_test();
   update_test();
   
   return EXIT_SUCCESS;

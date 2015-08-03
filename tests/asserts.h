@@ -4,6 +4,7 @@
 
 #include "hashtable.h"
 
+
 typedef bool
 equal_values_func(union ht_value first, union ht_value second);
 

@@ -23,6 +23,46 @@ Value types are the same as for keys (`long`, `unsigned long`, strings and
 referenced by string and `void` pointer values. Within a hash table, values 
 must all be of the same type (which may be different than the key type).
 
+Simple Example
+--------------
+Here is a short code snippet that allocates a `hashtable` with a capacity of
+ten entries, then adds three entries and does a lookup.  Note that in this 
+example, keys and values are `const` strings; the `hashtable` expects them to
+remain valid and unchanged while they are in use.
+
+    struct hashtable *hashtable = hashtable_alloc(10, ht_equal_const_str_keys);
+
+    int result = hashtable_set(hashtable, 
+                               ht_const_str_key("rat"),
+                               ht_const_str_value("Rattus norvegicus"),
+                               NULL, 
+                               NULL);
+    assert(result == 0);
+
+    result = hashtable_set(hashtable, 
+                           ht_const_str_key("cat"),
+                           ht_const_str_value("Felis catus"), 
+                           NULL, 
+                           NULL);
+    assert(result == 0);
+
+    result = hashtable_set(hashtable, 
+                           ht_const_str_key("dog"),
+                           ht_const_str_value("Canis familiaris"), 
+                           NULL, 
+                           NULL);
+    assert(result == 0);
+
+    struct ht_entry const *entry = hashtable_get(hashtable,
+                                                 ht_const_str_key("cat"));
+    printf("The %s is species %s.\n",
+           entry->key.value.const_str_value, 
+           entry->value.const_str_value);
+    // prints "The cat is species Felis catus."
+    
+    hashtable_free(hashtable, NULL);
+
+
 License
 -------
 `hashtable` is made available under a BSD-style license; see the LICENSE file 
