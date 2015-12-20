@@ -13,15 +13,15 @@ about 70% of capacity.
 
 Keys may be `long` or `unsigned long` integers, string pointers or custom types 
 (as `void` pointers). The user is responsible for managing the lifetime of 
-items referenced by string and `void` pointer keys. Hash functions and equality 
-functions for `long`, `unsigned long` and string pointer keys are included; the 
-user must provide hash and equality functions for custom types. Within a hash 
-table, keys must all be of the same type.
+string and `void` pointer keys. Hash functions and equality functions for 
+`long`, `unsigned long` and string pointer keys are included; the user must 
+provide hash and equality functions for custom types. Within a hash table, keys 
+must all be of the same type.
 
 Value types are the same as for keys (`long`, `unsigned long`, strings and 
-`void` pointers). The user is responsible for managing the lifetime of items
-referenced by string and `void` pointer values. Within a hash table, values 
-must all be of the same type (which may be different than the key type).
+`void` pointers). The user is responsible for managing the lifetime of string 
+and `void` pointer values. Within a hash table, values must all be of the same 
+type (which may be different than the key type).
 
 Simple Example
 --------------
@@ -29,8 +29,12 @@ Here is a short code snippet that allocates a `hashtable` with a capacity of
 ten entries, then adds three entries and does a lookup.  Note that in this 
 example, keys and values are `const` strings; the `hashtable` expects them to
 remain valid and unchanged while they are in use.
-
+    
+    #include <hashtable.h>
+    #include <assert.h>
+    
     struct hashtable *hashtable = hashtable_alloc(10, ht_equal_const_str_keys);
+    assert(hashtable);
 
     int result = hashtable_set(hashtable, 
                                ht_const_str_key("rat"),

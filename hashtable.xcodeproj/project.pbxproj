@@ -70,7 +70,7 @@
 		D455649C1A8F237B0081AB73 /* tests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = tests; sourceTree = BUILT_PRODUCTS_DIR; };
 		D45564A41A8F23C30081AB73 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		D45D5D751B6F056400D28922 /* const_str_hashtable.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = const_str_hashtable.c; sourceTree = "<group>"; };
-		D45D5D7A1B6F05EE00D28922 /* const_str_table */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = const_str_table; sourceTree = BUILT_PRODUCTS_DIR; };
+		D45D5D7A1B6F05EE00D28922 /* const_str_hashtable */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = const_str_hashtable; sourceTree = BUILT_PRODUCTS_DIR; };
 		D48C2CF41B2024C2005D5817 /* update_test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = update_test.c; sourceTree = "<group>"; };
 		D48C2CF61B23792C005D5817 /* collision_test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = collision_test.c; sourceTree = "<group>"; };
 		D48C2CF81B2A48C6005D5817 /* stringtable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = stringtable.c; sourceTree = "<group>"; };
@@ -131,7 +131,7 @@
 			children = (
 				D45564791A8EF31E0081AB73 /* libhashtable.a */,
 				D455649C1A8F237B0081AB73 /* tests */,
-				D45D5D7A1B6F05EE00D28922 /* const_str_table */,
+				D45D5D7A1B6F05EE00D28922 /* const_str_hashtable */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -225,7 +225,7 @@
 			);
 			name = const_str_hashtable;
 			productName = const_str_table;
-			productReference = D45D5D7A1B6F05EE00D28922 /* const_str_table */;
+			productReference = D45D5D7A1B6F05EE00D28922 /* const_str_hashtable */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -234,7 +234,7 @@
 		D45564711A8EF31E0081AB73 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0630;
+				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = "Able Pear Software";
 				TargetAttributes = {
 					D45564781A8EF31E0081AB73 = {
@@ -335,6 +335,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -501,6 +502,7 @@
 				D45D5D801B6F05EE00D28922 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
