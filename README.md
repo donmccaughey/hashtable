@@ -8,7 +8,7 @@ collisions. It may be used without dynamic memory allocation, though
 convenience `alloc` functions are included. The capacity of the hash table is 
 determined when it is initialized; it does not automatically grow or shrink as 
 entries are inserted or removed. Because it uses open addressing, performance 
-decreases significantly when the number of entries in the hash table exceeds 
+may decrease significantly when the number of entries in the hash table exceeds 
 about 70% of capacity.
 
 Keys may be `long` or `unsigned long` integers, string pointers or custom types 
@@ -70,7 +70,7 @@ Hash Algorithm
 --------------
 The caller is responsible for calculating the hash for keys in a `hashtable`.
 An implementation of the public domain [FNV-1a hash algorithm][2] is provided.
-The provided hashing functions (`ht_hash_of_bytes()`, `ht_hash_of_long()`,
+The provided hashing functions (`ht_hash_of()`, `ht_hash_of_long()`,
 `ht_hash_of_str()`, etc.) and key functions (`ht_long_key()`, `ht_str_key()`, 
 etc.) use the FNV-1a hash algorithm.
 
