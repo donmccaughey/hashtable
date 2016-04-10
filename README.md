@@ -66,6 +66,13 @@ remain valid and unchanged while they are in use.
     
     hashtable_free(hashtable, NULL);
 
+Hash Algorithm
+--------------
+The caller is responsible for calculating the hash for keys in a `hashtable`.
+An implementation of the public domain [FNV-1a hash algorithm][2] is provided.
+The provided hashing functions (`ht_hash_of_bytes()`, `ht_hash_of_long()`,
+`ht_hash_of_str()`, etc.) and key functions (`ht_long_key()`, `ht_str_key()`, 
+etc.) use the FNV-1a hash algorithm.
 
 License
 -------
@@ -74,3 +81,4 @@ for details.
 
 
 [1]: https://en.wikipedia.org/wiki/Hash_table#Open_addressing "Open Addressing"
+[2]: http://www.isthe.com/chongo/tech/comp/fnv/index.html "FNV Hash"

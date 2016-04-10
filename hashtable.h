@@ -83,6 +83,19 @@ typedef void
 ht_free_entry(struct hashtable *hashtable, struct ht_entry entry);
 
 
+/**************************
+ * FNV-1a hash algorithms *
+ **************************/
+
+// Initialize the FNV-1a hash.
+unsigned
+ht_fnv1a_init(void);
+
+// Append bytes to the hash. Repeat for each non-contiguous range of bytes.
+unsigned
+ht_fnv1a_append(unsigned hash, void const *start, size_t size);
+
+
 /****************************
  * Creation and destruction *
  ****************************/
@@ -288,6 +301,52 @@ hashtable_alloc_entries(struct hashtable const *hashtable)
 }
 
 
+/******************
+ * Calculate hash *
+ ******************/
+
+// Calculate the hash for a single contiguous range of bytes.
+inline unsigned
+ht_hash_of(void const *start, size_t size)
+{
+  unsigned hash = ht_fnv1a_init();
+  return ht_fnv1a_append(hash, start, size);
+}
+
+
+// Calculate the hash for a const string.
+inline unsigned
+ht_hash_of_const_str(char const *value)
+{
+  size_t size = value ? 1 + strlen(value) : 0;
+  return ht_hash_of(value, size);
+}
+
+
+// Calculate the hash for a long int.
+inline unsigned
+ht_hash_of_long(long value)
+{
+  return ht_hash_of(&value, sizeof value);
+}
+
+
+// Calculate the hash for a string.
+inline unsigned
+ht_hash_of_str(char *value)
+{
+  return ht_hash_of_const_str(value);
+}
+
+
+// Calculate the hash for an unsigned long int.
+inline unsigned
+ht_hash_of_ulong(unsigned long value)
+{
+  return ht_hash_of(&value, sizeof value);
+}
+
+
 /*************************************
  * Unsigned long int keys and values *
  *************************************/
@@ -297,14 +356,6 @@ inline union ht_value
 ht_ulong_value(unsigned long value)
 {
   return (union ht_value){ .ulong_value = value };
-}
-
-
-// Calculate the hash for an unsigned long int.
-inline unsigned
-ht_hash_of_ulong(unsigned long value)
-{
-  return value % UINT_MAX;
 }
 
 
@@ -339,14 +390,6 @@ ht_long_value(long value)
 }
 
 
-// Calculate the hash for a long int.
-inline unsigned
-ht_hash_of_long(long value)
-{
-  return ht_hash_of_ulong((unsigned long)value);
-}
-
-
 // Make a key from a long int.
 inline struct ht_key
 ht_long_key(long value)
@@ -378,11 +421,6 @@ ht_const_str_value(char const *value)
 }
 
 
-// Calculate the hash for a const string.
-unsigned
-ht_hash_of_const_str(char const *value);
-
-
 // Make a key from a const string.
 inline struct ht_key
 ht_const_str_key(char const *value)
@@ -412,14 +450,6 @@ inline union ht_value
 ht_str_value(char *value)
 {
   return (union ht_value){ .str_value = value };
-}
-
-
-// Calculate the hash for a string.
-inline unsigned
-ht_hash_of_str(char *value)
-{
-  return ht_hash_of_const_str(value);
 }
 
 

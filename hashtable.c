@@ -220,14 +220,19 @@ hashtable_update(struct hashtable *destination,
 
 
 unsigned
-ht_hash_of_const_str(char const *value)
+ht_fnv1a_init(void)
 {
-  if ( ! value) return 0;
-  
-  unsigned hash = 0;
-  while (*value) {
-    hash = 31 * hash + *value;
-    ++value;
+  return 0x811c9dc5u;
+}
+
+
+unsigned
+ht_fnv1a_append(unsigned hash, void const *start, size_t size)
+{
+  unsigned char const *octets = start;
+  for (size_t i = 0; i < size; ++i) {
+    hash ^= (unsigned)octets[i];
+    hash *= 0x01000193u;
   }
   return hash;
 }
@@ -270,6 +275,12 @@ ht_equal_str_keys(struct ht_key first, struct ht_key second);
 
 extern inline bool
 ht_equal_ulong_keys(struct ht_key first, struct ht_key second);
+
+extern inline unsigned
+ht_hash_of(void const *hash_data, size_t hash_data_size);
+
+extern inline unsigned
+ht_hash_of_const_str(char const *value);
 
 extern inline unsigned
 ht_hash_of_long(long value);

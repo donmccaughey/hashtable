@@ -5,6 +5,9 @@ void
 collision_test(void);
 
 void
+fnv1a_test(void);
+
+void
 full_table_test(void);
 
 void
@@ -24,6 +27,7 @@ int
 main(void)
 {
   collision_test();
+  fnv1a_test();
   full_table_test();
   long_test();
   string_test();
