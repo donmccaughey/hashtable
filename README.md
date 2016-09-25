@@ -74,6 +74,11 @@ The provided hashing functions (`ht_hash_of()`, `ht_hash_of_long()`,
 `ht_hash_of_str()`, etc.) and key functions (`ht_long_key()`, `ht_str_key()`, 
 etc.) use the FNV-1a hash algorithm.
 
+Influences
+----------
+In [A Probing Hash Table Framework][3], Chase Geigle describes the development of a hash table framework in C++.
+In [Types Don't Know #][4], the authors describe a technique in C++ to decouple hashing algorithms from types.
+
 License
 -------
 `hashtable` is made available under a BSD-style license; see the LICENSE file 
@@ -82,3 +87,5 @@ for details.
 
 [1]: https://en.wikipedia.org/wiki/Hash_table#Open_addressing "Open Addressing"
 [2]: http://www.isthe.com/chongo/tech/comp/fnv/index.html "FNV Hash"
+[3]: https://chara.cs.illinois.edu/sites/cgeigle/blog/2016/01/29/a-probing-hash-table-framework/ "A Probing Hash Table Framework"
+[4]: https://isocpp.org/files/papers/n3980.html#generalpurpose "Types Don't Know #"
