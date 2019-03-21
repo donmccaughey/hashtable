@@ -87,5 +87,5 @@ for details.
 
 [1]: https://en.wikipedia.org/wiki/Hash_table#Open_addressing "Open Addressing"
 [2]: http://www.isthe.com/chongo/tech/comp/fnv/index.html "FNV Hash"
-[3]: https://chara.cs.illinois.edu/sites/cgeigle/blog/2016/01/29/a-probing-hash-table-framework/ "A Probing Hash Table Framework"
-[4]: https://isocpp.org/files/papers/n3980.html#generalpurpose "Types Don't Know #"
+[3]: https://skystrife.github.io/blog/2016/01/29/a-probing-hash-table-framework/ "A Probing Hash Table Framework"
+[4]: https://isocpp.org/files/papers/n3980.html "Types Don't Know #"
