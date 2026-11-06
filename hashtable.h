@@ -4,13 +4,34 @@
 
 #include <limits.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
 
+/* Use 64-bit hashes by default on LP64 platforms. */
+
+#if __LP64__
+#ifndef HASHTABLE_BITS
+#define HASHTABLE_BITS 64
+#endif
+#else
+#ifndef HASHTABLE_BITS
+#define HASHTABLE_BITS 32
+#endif
+#endif
+
 /************************
  * Structs and typedefs *
  ************************/
+
+// A hash.
+#if HASHTABLE_BITS == 64
+typedef uint64_t ht_hash;
+#else
+typedef uint32_t ht_hash;
+#endif
+
 
 // A value contains a pointer type or a long integer type.
 union ht_value {
@@ -25,7 +46,7 @@ union ht_value {
 
 // A key contains a value and the computed hash of that value.
 struct ht_key {
-  unsigned hash;
+  ht_hash hash;
   union ht_value value;
 };
 
@@ -63,8 +84,8 @@ ht_equal_keys_func(struct ht_key first, struct ht_key second);
 //
 // `buckets' is an array of `capacity' items where entries are stored.
 struct hashtable {
-  int capacity;
-  int count;
+  size_t capacity;
+  size_t count;
   ht_equal_keys_func *equal_keys;
   void *user_data;
   struct ht_bucket buckets[];
@@ -88,12 +109,12 @@ ht_free_entry(struct hashtable *hashtable, struct ht_entry entry);
  **************************/
 
 // Initialize the FNV-1a hash.
-unsigned
+ht_hash
 ht_fnv1a_init(void);
 
 // Append bytes to the hash. Repeat for each non-contiguous range of bytes.
-unsigned
-ht_fnv1a_append(unsigned hash, void const *start, size_t size);
+ht_hash
+ht_fnv1a_append(ht_hash hash, void const *start, size_t size);
 
 
 /****************************
@@ -103,13 +124,13 @@ ht_fnv1a_append(unsigned hash, void const *start, size_t size);
 // Initialize a hash table.
 void
 hashtable_init(struct hashtable *hashtable,
-               int capacity,
+               size_t capacity,
                ht_equal_keys_func *equal_keys);
 
 
 // Compute the size in bytes required for a hash table of a given capacity.
 inline size_t
-hashtable_size(int capacity)
+hashtable_size(size_t capacity)
 {
   return sizeof(struct hashtable) + sizeof(struct ht_bucket[capacity]);
 }
@@ -126,7 +147,7 @@ hashtable_clear(struct hashtable *hashtable, ht_free_entry *free_entry);
 //
 // Returns NULL if memory cannot be allocated.
 inline struct hashtable *
-hashtable_alloc(int capacity, ht_equal_keys_func *equal_keys)
+hashtable_alloc(size_t capacity, ht_equal_keys_func *equal_keys)
 {
   struct hashtable *hashtable = malloc(hashtable_size(capacity));
   if (hashtable) hashtable_init(hashtable, capacity, equal_keys);
@@ -219,7 +240,7 @@ hashtable_update(struct hashtable *destination,
 // Returns a pointer to the next entry in the hash table, or NULL when there
 // are no more entries.
 struct ht_entry const *
-hashtable_next(struct hashtable const *hashtable, int *iterator);
+hashtable_next(struct hashtable const *hashtable, size_t *iterator);
 
 
 /***********************************
@@ -230,30 +251,30 @@ hashtable_next(struct hashtable const *hashtable, int *iterator);
 //
 // Returns the count of items copied into the `keys' array, which will not be
 // more than `keys_count'.
-int
+size_t
 hashtable_copy_keys(struct hashtable const *hashtable,
                     struct ht_key *keys,
-                    int keys_count);
+                    size_t keys_count);
 
 
 // Copy the values from a hash table into an array.
 //
 // Returns the count of items copied into the `values' array, which will not be
 // more than `values_count'.
-int
+size_t
 hashtable_copy_values(struct hashtable const *hashtable,
                       union ht_value *values,
-                      int values_count);
+                      size_t values_count);
 
 
 // Copy the entries from a hash table into an array.
 //
 // Returns the count of items copied into the `entries' array, which will not
 // be more than `entries_count'.
-int
+size_t
 hashtable_copy_entries(struct hashtable const *hashtable,
                        struct ht_entry *entries,
-                       int entries_count);
+                       size_t entries_count);
 
 
 // Allocate an array containing the keys from a hash table.
@@ -306,16 +327,16 @@ hashtable_alloc_entries(struct hashtable const *hashtable)
  ******************/
 
 // Calculate the hash for a single contiguous range of bytes.
-inline unsigned
+inline ht_hash
 ht_hash_of(void const *start, size_t size)
 {
-  unsigned hash = ht_fnv1a_init();
+  ht_hash hash = ht_fnv1a_init();
   return ht_fnv1a_append(hash, start, size);
 }
 
 
 // Calculate the hash for a const string.
-inline unsigned
+inline ht_hash
 ht_hash_of_const_str(char const *value)
 {
   size_t size = value ? 1 + strlen(value) : 0;
@@ -324,7 +345,7 @@ ht_hash_of_const_str(char const *value)
 
 
 // Calculate the hash for a long int.
-inline unsigned
+inline ht_hash
 ht_hash_of_long(long value)
 {
   return ht_hash_of(&value, sizeof value);
@@ -332,7 +353,7 @@ ht_hash_of_long(long value)
 
 
 // Calculate the hash for a string.
-inline unsigned
+inline ht_hash
 ht_hash_of_str(char *value)
 {
   return ht_hash_of_const_str(value);
@@ -340,7 +361,7 @@ ht_hash_of_str(char *value)
 
 
 // Calculate the hash for an unsigned long int.
-inline unsigned
+inline ht_hash
 ht_hash_of_ulong(unsigned long value)
 {
   return ht_hash_of(&value, sizeof value);

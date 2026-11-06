@@ -44,7 +44,7 @@ free_str_entry(struct hashtable *hashtable, struct ht_entry entry)
 
 
 struct stringtable *
-stringtable_alloc(int initial_capacity)
+stringtable_alloc(size_t initial_capacity)
 {
     struct stringtable *stringtable = malloc(sizeof(struct stringtable));
     if (!stringtable) return NULL;
@@ -68,8 +68,8 @@ stringtable_alloc_entries(struct stringtable const *stringtable)
     if (!entries) return NULL;
     
     struct ht_entry const *entry;
-    int iterator = 0;
-    for (int i = 0; i < stringtable->hashtable->count; ++i) {
+    size_t iterator = 0;
+    for (size_t i = 0; i < stringtable->hashtable->count; ++i) {
         entry = hashtable_next(stringtable->hashtable, &iterator);
         entries[i][0] = strdup(entry->key.value.str_value);
         entries[i][1] = strdup(entry->value.str_value);
@@ -95,8 +95,8 @@ stringtable_alloc_keys(struct stringtable const *stringtable)
     if (!keys) return NULL;
     
     struct ht_entry const *entry;
-    int iterator = 0;
-    for (int i = 0; i < stringtable->hashtable->count; ++i) {
+    size_t iterator = 0;
+    for (size_t i = 0; i < stringtable->hashtable->count; ++i) {
         entry = hashtable_next(stringtable->hashtable, &iterator);
         keys[i] = strdup(entry->key.value.str_value);
         if (!keys[i]) {
@@ -117,8 +117,8 @@ stringtable_alloc_values(struct stringtable const *stringtable)
     if (!values) return NULL;
     
     struct ht_entry const *entry;
-    int iterator = 0;
-    for (int i = 0; i < stringtable->hashtable->count; ++i) {
+    size_t iterator = 0;
+    for (size_t i = 0; i < stringtable->hashtable->count; ++i) {
         entry = hashtable_next(stringtable->hashtable, &iterator);
         values[i] = strdup(entry->value.str_value);
         if (!values[i]) {
@@ -132,7 +132,7 @@ stringtable_alloc_values(struct stringtable const *stringtable)
 }
 
 
-int
+size_t
 stringtable_capacity(struct stringtable const *stringtable)
 {
     return stringtable->hashtable->capacity;
@@ -146,7 +146,7 @@ stringtable_clear(struct stringtable *stringtable)
 }
 
 
-int
+size_t
 stringtable_count(struct stringtable const *stringtable)
 {
     return stringtable->hashtable->count;
@@ -172,7 +172,7 @@ stringtable_get(struct stringtable const *stringtable, char const *key)
 
 bool
 stringtable_next(struct stringtable const *stringtable,
-                 int *iterator,
+                 size_t *iterator,
                  char const **key_out,
                  char const **value_out)
 {
@@ -207,11 +207,11 @@ stringtable_set(struct stringtable *stringtable,
 {
     // TODO: extract this test as hashtable_overloaded()
     // TODO: correctly handle overflow
-    int max_count = stringtable->hashtable->capacity / 16 * 11;
+    size_t max_count = stringtable->hashtable->capacity / 16 * 11;
     if (stringtable->hashtable->count > max_count) {
         // TODO: extract this block as hashtable_realloc()
         // TODO: correctly handle overflow
-        int capacity = stringtable->hashtable->capacity / 2 * 3;
+        size_t capacity = stringtable->hashtable->capacity / 2 * 3;
         struct hashtable *hashtable
                 = hashtable_alloc(capacity, stringtable->hashtable->equal_keys);
         if (!hashtable) return -1;
@@ -251,7 +251,7 @@ stringtable_update(struct stringtable *destination,
                    struct stringtable const *source)
 {
     // TODO: reimplement using hashtable_realloc() and hashtable_update()
-    int iterator = 0;
+    size_t iterator = 0;
     char const *key;
     char const *value;
     while (stringtable_next(source, &iterator, &key, &value)) {
