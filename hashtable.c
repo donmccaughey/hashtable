@@ -219,20 +219,28 @@ hashtable_update(struct hashtable *destination,
 }
 
 
-unsigned
+ht_hash
 ht_fnv1a_init(void)
 {
+#if HASHTABLE_BITS == 64
+  return 0xCBF29CE484222325ULL;
+#else
   return 0x811c9dc5u;
+#endif
 }
 
 
-unsigned
-ht_fnv1a_append(unsigned hash, void const *start, size_t size)
+ht_hash
+ht_fnv1a_append(ht_hash hash, void const *start, size_t size)
 {
   unsigned char const *octets = start;
   for (size_t i = 0; i < size; ++i) {
-    hash ^= (unsigned)octets[i];
+    hash ^= (ht_hash)octets[i];
+#if HASHTABLE_BITS == 64
+    hash *= 0x00000100000001B3ULL;
+#else
     hash *= 0x01000193u;
+#endif
   }
   return hash;
 }
@@ -276,19 +284,19 @@ ht_equal_str_keys(struct ht_key first, struct ht_key second);
 extern inline bool
 ht_equal_ulong_keys(struct ht_key first, struct ht_key second);
 
-extern inline unsigned
+extern inline ht_hash
 ht_hash_of(void const *hash_data, size_t hash_data_size);
 
-extern inline unsigned
+extern inline ht_hash
 ht_hash_of_const_str(char const *value);
 
-extern inline unsigned
+extern inline ht_hash
 ht_hash_of_long(long value);
 
-extern inline unsigned
+extern inline ht_hash
 ht_hash_of_str(char *value);
 
-extern inline unsigned
+extern inline ht_hash
 ht_hash_of_ulong(unsigned long value);
 
 extern inline struct ht_key
