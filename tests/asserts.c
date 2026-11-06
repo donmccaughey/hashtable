@@ -128,7 +128,7 @@ entries_contains_key_and_value(struct ht_entry const *entries,
                                equal_values_func equal_values)
 {
   for (size_t i = 0; i < count; ++i) {
-    if (   equal_keys(key, entries[i].key)
+    if (   equal_keys(NULL, key, entries[i].key)
         && equal_values(value, entries[i].value))
     {
       return true;
@@ -145,7 +145,7 @@ keys_contains_key(struct ht_key const *keys,
                   ht_equal_keys_func equal_keys)
 {
   for (size_t i = 0; i < count; ++i) {
-    if (equal_keys(key, keys[i])) return true;
+    if (equal_keys(NULL, key, keys[i])) return true;
   }
   return false;
 }

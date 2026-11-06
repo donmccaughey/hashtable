@@ -42,7 +42,8 @@ alloc_and_fill_hashtable_with_longs(size_t capacity,
                                     long key_start,
                                     long value_start)
 {
-  struct hashtable *hashtable = hashtable_alloc(capacity, ht_equal_long_keys);
+  struct hashtable *hashtable = hashtable_alloc(capacity, ht_equal_long_keys,
+                                                NULL, NULL);
   assert(hashtable);
   assert(capacity == hashtable->capacity);
   for (size_t i = 0; i < count; ++i) {
@@ -63,7 +64,8 @@ alloc_and_fill_hashtable_with_strings(size_t capacity,
                                       size_t key_start,
                                       size_t value_start)
 {
-  struct hashtable *hashtable = hashtable_alloc(capacity, ht_equal_str_keys);
+  struct hashtable *hashtable = hashtable_alloc(capacity, ht_equal_str_keys,
+                                                copy_str_entry, free_str_entry);
   assert(hashtable);
   assert(capacity == hashtable->capacity);
   for (size_t i = 0; i < count; ++i) {
@@ -92,13 +94,13 @@ test_long_source_larger_than_capacity_for_empty_destination(void)
   struct hashtable *source = alloc_and_fill_hashtable_with_longs(30, 16, 0, 1000);
   struct hashtable *destination = alloc_and_fill_hashtable_with_longs(15, 0, 0, 0);
   
-  int result = hashtable_update(destination, source, NULL, NULL);
+  int result = hashtable_update(destination, source);
   
   assert(-1 == result);
   assert(0 == destination->count);
   
-  hashtable_free(destination, NULL);
-  hashtable_free(source, NULL);
+  hashtable_free(destination);
+  hashtable_free(source);
 }
 
 
@@ -110,7 +112,7 @@ test_str_source_larger_than_capacity_for_empty_destination(void)
   struct hashtable *source = alloc_and_fill_hashtable_with_strings(30, 16, 0, 1000);
   struct hashtable *destination = alloc_and_fill_hashtable_with_strings(15, 0, 0, 0);
   
-  int result = hashtable_update(destination, source, copy_str_entry, free_str_entry);
+  int result = hashtable_update(destination, source);
   
   assert(-1 == result);
   assert(0 == destination->count);
@@ -118,11 +120,11 @@ test_str_source_larger_than_capacity_for_empty_destination(void)
   assert(0 == free_count);
   
   free_count = 0;
-  hashtable_free(destination, free_str_entry);
+  hashtable_free(destination);
   assert(0 == free_count);
 
   free_count = 0;
-  hashtable_free(source, free_str_entry);
+  hashtable_free(source);
   assert(16 == free_count);
 }
 
@@ -133,14 +135,14 @@ test_long_source_equals_capacity_for_empty_destination(void)
   struct hashtable *source = alloc_and_fill_hashtable_with_longs(30, 15, 100, 100);
   struct hashtable *destination = alloc_and_fill_hashtable_with_longs(15, 0, 0, 0);
   
-  int result = hashtable_update(destination, source, NULL, NULL);
+  int result = hashtable_update(destination, source);
   
   assert(0 == result);
   assert(15 == destination->count);
   assert_contains_long_values_for_long_keys_in_sequence(destination, 100, 100, 15);
   
-  hashtable_free(destination, NULL);
-  hashtable_free(source, NULL);
+  hashtable_free(destination);
+  hashtable_free(source);
 }
 
 
@@ -153,7 +155,7 @@ test_str_source_equals_capacity_for_empty_destination(void)
   struct hashtable *source = alloc_and_fill_hashtable_with_strings(30, 15, 100, 100);
   struct hashtable *destination = alloc_and_fill_hashtable_with_strings(15, 0, 0, 0);
   
-  int result = hashtable_update(destination, source, copy_str_entry, free_str_entry);
+  int result = hashtable_update(destination, source);
   
   assert(0 == result);
   assert(15 == destination->count);
@@ -163,11 +165,11 @@ test_str_source_equals_capacity_for_empty_destination(void)
   assert(0 == free_count);
   
   free_count = 0;
-  hashtable_free(destination, free_str_entry);
+  hashtable_free(destination);
   assert(15 == free_count);
   
   free_count = 0;
-  hashtable_free(source, free_str_entry);
+  hashtable_free(source);
   assert(15 == free_count);
 }
 
@@ -178,13 +180,13 @@ test_long_source_larger_than_capacity(void)
   struct hashtable *source = alloc_and_fill_hashtable_with_longs(30, 16, 100, 100);
   struct hashtable *destination = alloc_and_fill_hashtable_with_longs(15, 10, 0, 0);
   
-  int result = hashtable_update(destination, source, NULL, NULL);
+  int result = hashtable_update(destination, source);
   
   assert(-1 == result);
   assert(10 == destination->count);
   
-  hashtable_free(destination, NULL);
-  hashtable_free(source, NULL);
+  hashtable_free(destination);
+  hashtable_free(source);
 }
 
 
@@ -197,7 +199,7 @@ test_str_source_larger_than_capacity(void)
   struct hashtable *source = alloc_and_fill_hashtable_with_strings(30, 16, 100, 100);
   struct hashtable *destination = alloc_and_fill_hashtable_with_strings(15, 10, 0, 0);
   
-  int result = hashtable_update(destination, source, copy_str_entry, free_str_entry);
+  int result = hashtable_update(destination, source);
   
   assert(-1 == result);
   assert(10 == destination->count);
@@ -205,11 +207,11 @@ test_str_source_larger_than_capacity(void)
   assert(0 == free_count);
   
   free_count = 0;
-  hashtable_free(destination, free_str_entry);
+  hashtable_free(destination);
   assert(10 == free_count);
   
   free_count = 0;
-  hashtable_free(source, free_str_entry);
+  hashtable_free(source);
   assert(16 == free_count);
 }
 
@@ -220,13 +222,13 @@ test_long_source_larger_than_available_no_overlap(void)
   struct hashtable *source = alloc_and_fill_hashtable_with_longs(15, 6, 100, 100);
   struct hashtable *destination = alloc_and_fill_hashtable_with_longs(15, 10, 0, 0);
   
-  int result = hashtable_update(destination, source, NULL, NULL);
+  int result = hashtable_update(destination, source);
   
   assert(-1 == result);
   assert(10 == destination->count);
   
-  hashtable_free(destination, NULL);
-  hashtable_free(source, NULL);
+  hashtable_free(destination);
+  hashtable_free(source);
 }
 
 
@@ -239,7 +241,7 @@ test_str_source_larger_than_available_no_overlap(void)
   struct hashtable *source = alloc_and_fill_hashtable_with_strings(15, 6, 100, 100);
   struct hashtable *destination = alloc_and_fill_hashtable_with_strings(15, 10, 0, 0);
   
-  int result = hashtable_update(destination, source, copy_str_entry, free_str_entry);
+  int result = hashtable_update(destination, source);
   
   assert(-1 == result);
   assert(10 == destination->count);
@@ -247,11 +249,11 @@ test_str_source_larger_than_available_no_overlap(void)
   assert(0 == free_count);
   
   free_count = 0;
-  hashtable_free(destination, free_str_entry);
+  hashtable_free(destination);
   assert(10 == free_count);
   
   free_count = 0;
-  hashtable_free(source, free_str_entry);
+  hashtable_free(source);
   assert(6 == free_count);
 }
 
@@ -262,15 +264,15 @@ test_long_source_larger_than_available_with_overlap(void)
   struct hashtable *source = alloc_and_fill_hashtable_with_longs(15, 7, 5, 100);
   struct hashtable *destination = alloc_and_fill_hashtable_with_longs(15, 10, 0, 0);
   
-  int result = hashtable_update(destination, source, NULL, NULL);
+  int result = hashtable_update(destination, source);
   
   assert(0 == result);
   assert(12 == destination->count);
   assert_contains_long_values_for_long_keys_in_sequence(destination, 0, 0, 5);
   assert_contains_long_values_for_long_keys_in_sequence(destination, 5, 100, 7);
   
-  hashtable_free(destination, NULL);
-  hashtable_free(source, NULL);
+  hashtable_free(destination);
+  hashtable_free(source);
 }
 
 
@@ -283,7 +285,7 @@ test_string_source_larger_than_available_with_overlap(void)
   struct hashtable *source = alloc_and_fill_hashtable_with_strings(15, 7, 5, 100);
   struct hashtable *destination = alloc_and_fill_hashtable_with_strings(15, 10, 0, 0);
   
-  int result = hashtable_update(destination, source, copy_str_entry, free_str_entry);
+  int result = hashtable_update(destination, source);
   
   assert(0 == result);
   assert(12 == destination->count);
@@ -293,11 +295,11 @@ test_string_source_larger_than_available_with_overlap(void)
   assert_contains_str_values_for_str_keys_in_sequence(destination, 5, 100, 7);
   
   free_count = 0;
-  hashtable_free(destination, free_str_entry);
+  hashtable_free(destination);
   assert(12 == free_count);
   
   free_count = 0;
-  hashtable_free(source, free_str_entry);
+  hashtable_free(source);
   assert(7 == free_count);
 }
 

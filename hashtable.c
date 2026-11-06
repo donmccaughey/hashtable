@@ -2,12 +2,14 @@
 
 
 void
-hashtable_clear(struct hashtable *hashtable, ht_free_entry *free_entry)
+hashtable_clear(struct hashtable *hashtable)
 {
   size_t i = 0;
   while (hashtable->count) {
     if (hashtable->buckets[i].in_use) {
-      if (free_entry) free_entry(hashtable, hashtable->buckets[i].entry);
+      if (hashtable->free_entry) {
+        hashtable->free_entry(hashtable, hashtable->buckets[i].entry);
+      }
       hashtable->buckets[i].in_use = false;
       --hashtable->count;
     }
@@ -72,7 +74,7 @@ hashtable_get(struct hashtable const *hashtable, struct ht_key key)
     
     if ( ! hashtable->buckets[i].in_use) break;
     
-    if (hashtable->equal_keys(key, hashtable->buckets[i].entry.key)) {
+    if (hashtable->equal_keys(hashtable, key, hashtable->buckets[i].entry.key)) {
       return &hashtable->buckets[i].entry;
     }
   }
@@ -84,11 +86,15 @@ hashtable_get(struct hashtable const *hashtable, struct ht_key key)
 void
 hashtable_init(struct hashtable *hashtable,
                size_t capacity,
-               ht_equal_keys_func *equal_keys)
+               ht_equal_keys_func *equal_keys,
+               ht_copy_entry *copy_entry,
+               ht_free_entry *free_entry)
 {
   hashtable->capacity = capacity;
   hashtable->count = 0;
   hashtable->equal_keys = equal_keys;
+  hashtable->copy_entry = copy_entry;
+  hashtable->free_entry = free_entry;
   hashtable->user_data = NULL;
   for (size_t i = 0; i < hashtable->capacity; ++i) {
     hashtable->buckets[i].in_use = false;
@@ -128,9 +134,12 @@ hashtable_set(struct hashtable *hashtable,
       return 0;
     }
     
-    if (hashtable->equal_keys(key, hashtable->buckets[i].entry.key)) {
+    if (hashtable->equal_keys(hashtable, key, hashtable->buckets[i].entry.key)) {
       if (replaced) *replaced = true;
       if (entry) *entry = hashtable->buckets[i].entry;
+      if (!entry && hashtable->free_entry) {
+        hashtable->free_entry(hashtable, hashtable->buckets[i].entry);
+      }
       hashtable->buckets[i].entry.key = key;
       hashtable->buckets[i].entry.value = value;
       return 0;
@@ -155,8 +164,11 @@ hashtable_remove(struct hashtable *hashtable,
     if ( ! hashtable->buckets[i].in_use) break;
     
     if ( ! removed) {
-      if (hashtable->equal_keys(key, hashtable->buckets[i].entry.key)) {
+      if (hashtable->equal_keys(hashtable, key, hashtable->buckets[i].entry.key)) {
         if (entry) *entry = hashtable->buckets[i].entry;
+        if (!entry && hashtable->free_entry) {
+          hashtable->free_entry(hashtable, hashtable->buckets[i].entry);
+        }
         hashtable->buckets[i].in_use = false;
         --hashtable->count;
         removed = true;
@@ -178,12 +190,12 @@ hashtable_remove(struct hashtable *hashtable,
 
 int
 hashtable_update(struct hashtable *destination,
-                 struct hashtable const *source,
-                 ht_copy_entry copy_entry,
-                 ht_free_entry *free_entry)
+                 struct hashtable const *source)
 {
   if (source->count > destination->capacity) return -1;
-  
+  if (source->copy_entry != destination->copy_entry) return -1;
+  if (source->free_entry != destination->free_entry) return -1;
+
   size_t available = destination->capacity - destination->count;
   if (source->count > available) {
     size_t iterator = 0;
@@ -199,8 +211,8 @@ hashtable_update(struct hashtable *destination,
   for (size_t i = 0; i < source->count; ++i) {
     struct ht_entry const *source_entry = hashtable_next(source, &iterator);
     struct ht_entry destination_entry;
-    if (copy_entry) {
-      int result = copy_entry(destination, &destination_entry, *source_entry);
+    if (source->copy_entry) {
+      int result = source->copy_entry(destination, &destination_entry, *source_entry);
       if (-1 == result) return -1;
     } else {
       destination_entry = *source_entry;
@@ -213,7 +225,7 @@ hashtable_update(struct hashtable *destination,
                                &replaced,
                                &entry);
     if (-1 == result) return -1;
-    if (replaced && free_entry) free_entry(destination, entry);
+    if (replaced && destination->free_entry) destination->free_entry(destination, entry);
   }
   return 0;
 }
@@ -249,7 +261,8 @@ ht_fnv1a_append(ht_hash hash, void const *start, size_t size)
 /* inline function extern declarations */
 
 extern inline struct hashtable *
-hashtable_alloc(size_t capacity, ht_equal_keys_func *equal_keys);
+hashtable_alloc(size_t capacity, ht_equal_keys_func *equal_keys,
+                ht_copy_entry *copy_entry, ht_free_entry *free_entry);
 
 extern inline struct ht_entry *
 hashtable_alloc_entries(struct hashtable const *hashtable);
@@ -261,7 +274,7 @@ extern inline union ht_value *
 hashtable_alloc_values(struct hashtable const *hashtable);
 
 extern inline void
-hashtable_free(struct hashtable *hashtable, ht_free_entry *free_entry);
+hashtable_free(struct hashtable *hashtable);
 
 extern inline size_t
 hashtable_size(size_t capacity);
@@ -273,16 +286,20 @@ extern inline union ht_value
 ht_const_str_value(char const *value);
 
 extern inline bool
-ht_equal_const_str_keys(struct ht_key first, struct ht_key second);
+ht_equal_const_str_keys(struct hashtable const *hashtable,
+                        struct ht_key first, struct ht_key second);
 
 extern inline bool
-ht_equal_long_keys(struct ht_key first, struct ht_key second);
+ht_equal_long_keys(struct hashtable const *hashtable,
+                   struct ht_key first, struct ht_key second);
 
 extern inline bool
-ht_equal_str_keys(struct ht_key first, struct ht_key second);
+ht_equal_str_keys(struct hashtable const *hashtable,
+                  struct ht_key first, struct ht_key second);
 
 extern inline bool
-ht_equal_ulong_keys(struct ht_key first, struct ht_key second);
+ht_equal_ulong_keys(struct hashtable const *hashtable,
+                    struct ht_key first, struct ht_key second);
 
 extern inline ht_hash
 ht_hash_of(void const *hash_data, size_t hash_data_size);

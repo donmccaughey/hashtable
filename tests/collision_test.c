@@ -16,7 +16,8 @@ colliding_long_key(long value)
 void
 collision_test(void)
 {
-  struct hashtable *hashtable = hashtable_alloc(10, ht_equal_long_keys);
+  struct hashtable *hashtable = hashtable_alloc(10, ht_equal_long_keys,
+                                                NULL, NULL);
   assert(hashtable);
   assert(10 == hashtable->capacity);
   assert(0 == hashtable->count);
@@ -73,5 +74,5 @@ collision_test(void)
     assert(i == hashtable_get(hashtable, colliding_long_key(i))->value.long_value);
   }
   
-  hashtable_free(hashtable, NULL);
+  hashtable_free(hashtable);
 }

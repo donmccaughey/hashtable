@@ -43,6 +43,21 @@ free_str_entry(struct hashtable *hashtable, struct ht_entry entry)
 }
 
 
+static inline int
+copy_str_entry(struct hashtable *destination,
+               struct ht_entry *destination_entry,
+               struct ht_entry source_entry)
+{
+  destination_entry->value = alloc_str_value(source_entry.value.const_str_value);
+  destination_entry->key = alloc_str_key(destination_entry->key.value.const_str_value);
+  if (!destination_entry->key.value.ptr_value || !destination_entry->value.ptr_value) {
+    free_str_entry(destination, *destination_entry);
+    return -1;
+  }
+  return 0;
+}
+
+
 struct stringtable *
 stringtable_alloc(size_t initial_capacity)
 {
@@ -50,7 +65,9 @@ stringtable_alloc(size_t initial_capacity)
     if (!stringtable) return NULL;
     
     stringtable->hashtable = hashtable_alloc(initial_capacity,
-                                             ht_equal_str_keys);
+                                             ht_equal_str_keys,
+                                             copy_str_entry,
+                                             free_str_entry);
     if (!stringtable->hashtable) {
         free(stringtable);
         return NULL;
@@ -142,7 +159,7 @@ stringtable_capacity(struct stringtable const *stringtable)
 void
 stringtable_clear(struct stringtable *stringtable)
 {
-    hashtable_clear(stringtable->hashtable, free_str_entry);
+    hashtable_clear(stringtable->hashtable);
 }
 
 
@@ -156,7 +173,7 @@ stringtable_count(struct stringtable const *stringtable)
 void
 stringtable_free(struct stringtable *stringtable)
 {
-    hashtable_free(stringtable->hashtable, free_str_entry);
+    hashtable_free(stringtable->hashtable);
     free(stringtable);
 }
 
@@ -211,14 +228,25 @@ stringtable_set(struct stringtable *stringtable,
     if (stringtable->hashtable->count > max_count) {
         // TODO: extract this block as hashtable_realloc()
         // TODO: correctly handle overflow
+        // Create the table with NULL callbacks and fill them in later
+        // so when growing the table, entries aren't unnecessarily
+        // copied or freed. (The new hash table takes ownership.)
         size_t capacity = stringtable->hashtable->capacity / 2 * 3;
         struct hashtable *hashtable
-                = hashtable_alloc(capacity, stringtable->hashtable->equal_keys);
+                = hashtable_alloc(capacity, stringtable->hashtable->equal_keys,
+                                  NULL, NULL);
         if (!hashtable) return -1;
-        
-        hashtable_update(hashtable, stringtable->hashtable, NULL, NULL);
-        
-        hashtable_free(stringtable->hashtable, NULL);
+
+        stringtable->hashtable->copy_entry = NULL;
+        stringtable->hashtable->free_entry = NULL;
+
+        hashtable_update(hashtable, stringtable->hashtable);
+
+        hashtable_free(stringtable->hashtable);
+
+        hashtable->copy_entry = copy_str_entry;
+        hashtable->free_entry = free_str_entry;
+
         stringtable->hashtable = hashtable;
     }
     
