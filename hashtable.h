@@ -4,13 +4,34 @@
 
 #include <limits.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
 
+/* Use 64-bit hashes by default on LP64 platforms. */
+
+#if __LP64__
+#ifndef HASHTABLE_BITS
+#define HASHTABLE_BITS 64
+#endif
+#else
+#ifndef HASHTABLE_BITS
+#define HASHTABLE_BITS 32
+#endif
+#endif
+
 /************************
  * Structs and typedefs *
  ************************/
+
+// A hash.
+#if HASHTABLE_BITS == 64
+typedef uint64_t ht_hash;
+#else
+typedef uint32_t ht_hash;
+#endif
+
 
 // A value contains a pointer type or a long integer type.
 union ht_value {
@@ -25,7 +46,7 @@ union ht_value {
 
 // A key contains a value and the computed hash of that value.
 struct ht_key {
-  unsigned hash;
+  ht_hash hash;
   union ht_value value;
 };
 
@@ -88,12 +109,12 @@ ht_free_entry(struct hashtable *hashtable, struct ht_entry entry);
  **************************/
 
 // Initialize the FNV-1a hash.
-unsigned
+ht_hash
 ht_fnv1a_init(void);
 
 // Append bytes to the hash. Repeat for each non-contiguous range of bytes.
-unsigned
-ht_fnv1a_append(unsigned hash, void const *start, size_t size);
+ht_hash
+ht_fnv1a_append(ht_hash hash, void const *start, size_t size);
 
 
 /****************************
@@ -306,16 +327,16 @@ hashtable_alloc_entries(struct hashtable const *hashtable)
  ******************/
 
 // Calculate the hash for a single contiguous range of bytes.
-inline unsigned
+inline ht_hash
 ht_hash_of(void const *start, size_t size)
 {
-  unsigned hash = ht_fnv1a_init();
+  ht_hash hash = ht_fnv1a_init();
   return ht_fnv1a_append(hash, start, size);
 }
 
 
 // Calculate the hash for a const string.
-inline unsigned
+inline ht_hash
 ht_hash_of_const_str(char const *value)
 {
   size_t size = value ? 1 + strlen(value) : 0;
@@ -324,7 +345,7 @@ ht_hash_of_const_str(char const *value)
 
 
 // Calculate the hash for a long int.
-inline unsigned
+inline ht_hash
 ht_hash_of_long(long value)
 {
   return ht_hash_of(&value, sizeof value);
@@ -332,7 +353,7 @@ ht_hash_of_long(long value)
 
 
 // Calculate the hash for a string.
-inline unsigned
+inline ht_hash
 ht_hash_of_str(char *value)
 {
   return ht_hash_of_const_str(value);
@@ -340,7 +361,7 @@ ht_hash_of_str(char *value)
 
 
 // Calculate the hash for an unsigned long int.
-inline unsigned
+inline ht_hash
 ht_hash_of_ulong(unsigned long value)
 {
   return ht_hash_of(&value, sizeof value);
