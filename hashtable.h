@@ -84,8 +84,8 @@ ht_equal_keys_func(struct ht_key first, struct ht_key second);
 //
 // `buckets' is an array of `capacity' items where entries are stored.
 struct hashtable {
-  int capacity;
-  int count;
+  size_t capacity;
+  size_t count;
   ht_equal_keys_func *equal_keys;
   void *user_data;
   struct ht_bucket buckets[];
@@ -124,13 +124,13 @@ ht_fnv1a_append(ht_hash hash, void const *start, size_t size);
 // Initialize a hash table.
 void
 hashtable_init(struct hashtable *hashtable,
-               int capacity,
+               size_t capacity,
                ht_equal_keys_func *equal_keys);
 
 
 // Compute the size in bytes required for a hash table of a given capacity.
 inline size_t
-hashtable_size(int capacity)
+hashtable_size(size_t capacity)
 {
   return sizeof(struct hashtable) + sizeof(struct ht_bucket[capacity]);
 }
@@ -147,7 +147,7 @@ hashtable_clear(struct hashtable *hashtable, ht_free_entry *free_entry);
 //
 // Returns NULL if memory cannot be allocated.
 inline struct hashtable *
-hashtable_alloc(int capacity, ht_equal_keys_func *equal_keys)
+hashtable_alloc(size_t capacity, ht_equal_keys_func *equal_keys)
 {
   struct hashtable *hashtable = malloc(hashtable_size(capacity));
   if (hashtable) hashtable_init(hashtable, capacity, equal_keys);
@@ -240,7 +240,7 @@ hashtable_update(struct hashtable *destination,
 // Returns a pointer to the next entry in the hash table, or NULL when there
 // are no more entries.
 struct ht_entry const *
-hashtable_next(struct hashtable const *hashtable, int *iterator);
+hashtable_next(struct hashtable const *hashtable, size_t *iterator);
 
 
 /***********************************
@@ -251,30 +251,30 @@ hashtable_next(struct hashtable const *hashtable, int *iterator);
 //
 // Returns the count of items copied into the `keys' array, which will not be
 // more than `keys_count'.
-int
+size_t
 hashtable_copy_keys(struct hashtable const *hashtable,
                     struct ht_key *keys,
-                    int keys_count);
+                    size_t keys_count);
 
 
 // Copy the values from a hash table into an array.
 //
 // Returns the count of items copied into the `values' array, which will not be
 // more than `values_count'.
-int
+size_t
 hashtable_copy_values(struct hashtable const *hashtable,
                       union ht_value *values,
-                      int values_count);
+                      size_t values_count);
 
 
 // Copy the entries from a hash table into an array.
 //
 // Returns the count of items copied into the `entries' array, which will not
 // be more than `entries_count'.
-int
+size_t
 hashtable_copy_entries(struct hashtable const *hashtable,
                        struct ht_entry *entries,
-                       int entries_count);
+                       size_t entries_count);
 
 
 // Allocate an array containing the keys from a hash table.

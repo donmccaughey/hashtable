@@ -3,6 +3,7 @@
 
 
 #include <stdbool.h>
+#include <unistd.h>
 
 
 struct hashtable;
@@ -27,7 +28,7 @@ typedef char *st_entry_t[2];
 //
 // Returns NULL if memory cannot be allocated.
 struct stringtable *
-stringtable_alloc(int initial_capacity);
+stringtable_alloc(size_t initial_capacity);
 
 // Delete all entries and free a string table.
 void
@@ -39,11 +40,11 @@ stringtable_free(struct stringtable *stringtable);
  ***************/
 
 // Get the current capacity of a string table.
-int
+size_t
 stringtable_capacity(struct stringtable const *stringtable);
 
 // Get the number of entries in a string table.
-int
+size_t
 stringtable_count(struct stringtable const *stringtable);
 
 
@@ -110,7 +111,7 @@ stringtable_update(struct stringtable *destination,
 // Returns `false' when there are no more entries.
 bool
 stringtable_next(struct stringtable const *stringtable,
-                 int *iterator,
+                 size_t *iterator,
                  char const **key_out,
                  char const **value_out);
 

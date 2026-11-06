@@ -5,8 +5,8 @@
 #include "hashtable.h"
 
 
-static int copy_count = 0;
-static int free_count = 0;
+static size_t copy_count = 0;
+static size_t free_count = 0;
 
 
 static int
@@ -37,15 +37,15 @@ free_str_entry(struct hashtable *destination,
 
 
 static struct hashtable *
-alloc_and_fill_hashtable_with_longs(int capacity,
-                                    int count,
+alloc_and_fill_hashtable_with_longs(size_t capacity,
+                                    size_t count,
                                     long key_start,
                                     long value_start)
 {
   struct hashtable *hashtable = hashtable_alloc(capacity, ht_equal_long_keys);
   assert(hashtable);
   assert(capacity == hashtable->capacity);
-  for (int i = 0; i < count; ++i) {
+  for (size_t i = 0; i < count; ++i) {
     assert(0 == hashtable_set(hashtable,
                               ht_long_key(key_start + i),
                               ht_long_value(value_start + i),
@@ -58,21 +58,21 @@ alloc_and_fill_hashtable_with_longs(int capacity,
 
 
 static struct hashtable *
-alloc_and_fill_hashtable_with_strings(int capacity,
-                                      int count,
-                                      int key_start,
-                                      int value_start)
+alloc_and_fill_hashtable_with_strings(size_t capacity,
+                                      size_t count,
+                                      size_t key_start,
+                                      size_t value_start)
 {
   struct hashtable *hashtable = hashtable_alloc(capacity, ht_equal_str_keys);
   assert(hashtable);
   assert(capacity == hashtable->capacity);
-  for (int i = 0; i < count; ++i) {
+  for (size_t i = 0; i < count; ++i) {
     char *key;
-    int chars_printed = asprintf(&key, "%i", key_start + i);
+    int chars_printed = asprintf(&key, "%zd", key_start + i);
     assert(chars_printed > 0);
     
     char *value;
-    chars_printed = asprintf(&value, "%i", value_start + i);
+    chars_printed = asprintf(&value, "%zd", value_start + i);
     assert(chars_printed > 0);
     
     assert(0 == hashtable_set(hashtable,
