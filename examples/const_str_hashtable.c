@@ -8,8 +8,9 @@
 int
 main(void)
 {
-    struct hashtable *hashtable = hashtable_alloc(10, ht_equal_const_str_keys);
-    
+    struct hashtable *hashtable = hashtable_alloc(10, ht_equal_const_str_keys,
+                                                  NULL, NULL);
+
     int result = hashtable_set(hashtable, ht_const_str_key("rat"),
                                ht_const_str_value("Rattus norvegicus"),
                                NULL, NULL);
@@ -28,7 +29,7 @@ main(void)
     printf("The %s is species %s.\n",
            entry->key.value.const_str_value, entry->value.const_str_value);
     
-    hashtable_free(hashtable, NULL);
+    hashtable_free(hashtable);
     
     return EXIT_SUCCESS;
 }

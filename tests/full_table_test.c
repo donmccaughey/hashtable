@@ -6,7 +6,7 @@
 void
 full_table_test(void)
 {
-  struct hashtable *hashtable = hashtable_alloc(10, ht_equal_long_keys);
+  struct hashtable *hashtable = hashtable_alloc(10, ht_equal_long_keys, NULL, NULL);
   assert(hashtable);
   assert(10 == hashtable->capacity);
   assert(0 == hashtable->count);
@@ -49,5 +49,5 @@ full_table_test(void)
   }
   assert(0 == hashtable->count);
   
-  hashtable_free(hashtable, NULL);
+  hashtable_free(hashtable);
 }

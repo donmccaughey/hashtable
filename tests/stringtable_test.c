@@ -30,7 +30,7 @@ test_table_of_two_items(void)
     value = stringtable_get(stringtable, "red");
     assert(0 == strcmp("apple", value));
     
-    int iterator = 0;
+    size_t iterator = 0;
     char const *key;
     assert(stringtable_next(stringtable, &iterator, &key, &value));
     assert(0 == strcmp("red", key));
@@ -76,25 +76,25 @@ test_alloc_entries_keys_and_values(void)
     assert(colors_count == stringtable_count(stringtable));
     
     char **keys = stringtable_alloc_keys(stringtable);
-    for (int i = 0; i < stringtable_count(stringtable); ++i) {
+    for (size_t i = 0; i < stringtable_count(stringtable); ++i) {
         void *found = bsearch(&keys[i], colors,
                               colors_count, sizeof(char const *), compare);
         assert(found);
     }
-    for (int i = 0; i < stringtable_count(stringtable); ++i) free(keys[i]);
+    for (size_t i = 0; i < stringtable_count(stringtable); ++i) free(keys[i]);
     free(keys);
     
     char **values = stringtable_alloc_values(stringtable);
-    for (int i = 0; i < stringtable_count(stringtable); ++i) {
+    for (size_t i = 0; i < stringtable_count(stringtable); ++i) {
         void *found = bsearch(&values[i], flavors,
                               flavor_count, sizeof(char const *), compare);
         assert(found);
     }
-    for (int i = 0; i < stringtable_count(stringtable); ++i) free(values[i]);
+    for (size_t i = 0; i < stringtable_count(stringtable); ++i) free(values[i]);
     free(values);
     
     st_entry_t *entries = stringtable_alloc_entries(stringtable);
-    for (int i = 0; i < stringtable_count(stringtable); ++i) {
+    for (size_t i = 0; i < stringtable_count(stringtable); ++i) {
         void *found = bsearch(&entries[i][0], colors,
                               colors_count, sizeof(char const *), compare);
         assert(found);
@@ -103,7 +103,7 @@ test_alloc_entries_keys_and_values(void)
                         flavor_count, sizeof(char const *), compare);
         assert(found);
     }
-    for (int i = 0; i < stringtable_count(stringtable); ++i) {
+    for (size_t i = 0; i < stringtable_count(stringtable); ++i) {
         free(entries[i][0]);
         free(entries[i][1]);
     }
