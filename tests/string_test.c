@@ -22,7 +22,8 @@ free_str_entry(struct hashtable *hashtable, struct ht_entry entry)
 void
 string_test(void)
 {
-  struct hashtable *hashtable = hashtable_alloc(10, ht_equal_str_keys);
+  struct hashtable *hashtable = hashtable_alloc(10, ht_equal_str_keys,
+                                                NULL, free_str_entry);
   assert(hashtable);
   assert(10 == hashtable->capacity);
   assert(0 == hashtable->count);
@@ -161,6 +162,5 @@ string_test(void)
                          ht_equal_str_keys,
                          equal_str_values);
   
-  
-  hashtable_free(hashtable, free_str_entry);
+  hashtable_free(hashtable);
 }

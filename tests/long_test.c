@@ -14,7 +14,8 @@ equal_long_values(union ht_value first, union ht_value second)
 void
 long_test(void)
 {
-  struct hashtable *hashtable = hashtable_alloc(10, ht_equal_long_keys);
+  struct hashtable *hashtable = hashtable_alloc(10, ht_equal_long_keys,
+                                                NULL, NULL);
   assert(hashtable);
   assert(10 == hashtable->capacity);
   assert(0 == hashtable->count);
@@ -145,5 +146,5 @@ long_test(void)
                          equal_long_values);
   
   
-  hashtable_free(hashtable, NULL);
+  hashtable_free(hashtable);
 }
