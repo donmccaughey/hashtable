@@ -25,7 +25,7 @@
  * Structs and typedefs *
  ************************/
 
-// A hash.
+/// A hash.
 #if HASHTABLE_BITS == 64
 typedef uint64_t ht_hash;
 #else
@@ -33,11 +33,11 @@ typedef uint32_t ht_hash;
 #endif
 
 
-// Forward declaration of a hash table.
+/// Forward declaration of a hash table.
 struct hashtable;
 
 
-// A value contains a pointer type or a long integer type.
+/// A value contains a pointer type or a long integer type.
 union ht_value {
   void const *const_ptr_value;
   char const *const_str_value;
@@ -48,62 +48,62 @@ union ht_value {
 };
 
 
-// A key contains a value and the computed hash of that value.
+/// A key contains a value and the computed hash of that value.
 struct ht_key {
   ht_hash hash;
   union ht_value value;
 };
 
 
-// An entry contains a key and corresponding value.
+/// An entry contains a key and corresponding value.
 struct ht_entry {
   struct ht_key key;
   union ht_value value;
 };
 
 
-// A bucket is a space for an entry in the hash table.
+/// A bucket is a space for an entry in the hash table.
 struct ht_bucket {
   bool in_use;
   struct ht_entry entry;
 };
 
 
-// Equality function type for keys.
+/// Equality function type for keys.
 typedef bool
 ht_equal_keys_func(struct hashtable const *hashtable, struct ht_key first,
                    struct ht_key second);
 
 
-// Function to copy an entry.
+/// Function to copy an entry.
 typedef int
 ht_copy_entry(struct hashtable *destination,
               struct ht_entry *destination_entry,
               struct ht_entry source_entry);
 
 
-// Function to free an entry.
+/// Function to free an entry.
 typedef void
 ht_free_entry(struct hashtable *hashtable, struct ht_entry entry);
 
 
-// The hash table.
-//
-// `capacity' is the maximum number of entries that the hash table will hold.
-// Performance of the hash table decreases significantly when the number of
-// entries exceeds about 70% of `capacity'.
-//
-// `count' is the number of entries in the hash table.
-//
-// `equal_keys' is the function used to compare two keys for equality.
-//
-// `copy_entry' is the optional function used to copy an entry.
-//
-// `free_entry' is the optional function used to free an entry.
-//
-// `user_data' is a place to store user defined additional data.
-//
-// `buckets' is an array of `capacity' items where entries are stored.
+/// The hash table.
+///
+/// `capacity` is the maximum number of entries that the hash table will hold.
+/// Performance of the hash table decreases significantly when the number of
+/// entries exceeds about 70% of `capacity`.
+///
+/// `count` is the number of entries in the hash table.
+///
+/// `equal_keys` is the function used to compare two keys for equality.
+///
+/// `copy_entry` is the optional function used to copy an entry.
+///
+/// `free_entry` is the optional function used to free an entry.
+///
+/// `user_data` is a place to store user defined additional data.
+///
+/// `buckets` is an array of `capacity` items where entries are stored.
 struct hashtable {
   size_t capacity;
   size_t count;
@@ -119,11 +119,11 @@ struct hashtable {
  * FNV-1a hash algorithms *
  **************************/
 
-// Initialize the FNV-1a hash.
+/// Initialize the FNV-1a hash.
 ht_hash
 ht_fnv1a_init(void);
 
-// Append bytes to the hash. Repeat for each non-contiguous range of bytes.
+/// Append bytes to the hash. Repeat for each non-contiguous range of bytes.
 ht_hash
 ht_fnv1a_append(ht_hash hash, void const *start, size_t size);
 
@@ -132,7 +132,7 @@ ht_fnv1a_append(ht_hash hash, void const *start, size_t size);
  * Creation and destruction *
  ****************************/
 
-// Initialize a hash table.
+/// Initialize a hash table.
 void
 hashtable_init(struct hashtable *hashtable,
                size_t capacity,
@@ -141,7 +141,7 @@ hashtable_init(struct hashtable *hashtable,
                ht_free_entry *free_entry);
 
 
-// Compute the size in bytes required for a hash table of a given capacity.
+/// Compute the size in bytes required for a hash table of a given capacity.
 inline size_t
 hashtable_size(size_t capacity)
 {
@@ -149,16 +149,16 @@ hashtable_size(size_t capacity)
 }
 
 
-// Delete all entries in a hash table.
-//
-// If `free_entry' is not NULL, it is called for each entry in the hash table.
+/// Delete all entries in a hash table.
+///
+/// If `free_entry` is not NULL, it is called for each entry in the hash table.
 void
 hashtable_clear(struct hashtable *hashtable);
 
 
-// Allocate and initialize a hash table.
-//
-// Returns NULL if memory cannot be allocated.
+/// Allocate and initialize a hash table.
+///
+/// Returns NULL if memory cannot be allocated.
 inline struct hashtable *
 hashtable_alloc(size_t capacity, ht_equal_keys_func *equal_keys,
                 ht_copy_entry *copy_entry, ht_free_entry *free_entry)
@@ -170,9 +170,9 @@ hashtable_alloc(size_t capacity, ht_equal_keys_func *equal_keys,
 }
 
 
-// Delete all entries and free an allocated hash table.
-//
-// `hashtable' may be NULL.
+/// Delete all entries and free an allocated hash table.
+///
+/// `hashtable` may be NULL.
 inline void
 hashtable_free(struct hashtable *hashtable)
 {
@@ -185,24 +185,24 @@ hashtable_free(struct hashtable *hashtable)
  * Read, write and delete entries *
  **********************************/
 
-// Read an entry from a hash table.
-//
-// Returns NULL if the hash table does not contain an entry for the key.
+/// Read an entry from a hash table.
+///
+/// Returns NULL if the hash table does not contain an entry for the key.
 struct ht_entry const *
 hashtable_get(struct hashtable const *hashtable, struct ht_key key);
 
 
-// Write an entry to a hash table.
-//
-// If the hash table contains an entry for the key, true is stored in
-// `*replaced' and the previous entry is stored in `*entry'; otherwise false is
-// stored in `*replaced'. `replaced' and/or `entry' may be NULL if not needed.
-//
-// If `entry' is NULL and there is a `free_entry' function, it will be called
-// when an entry is replaced.
-//
-// Returns 0 if an entry was written to the hash table, or -1 if the hash table
-// is full.
+/// Write an entry to a hash table.
+///
+/// If the hash table contains an entry for the key, true is stored in
+/// `*replaced` and the previous entry is stored in `*entry`; otherwise false is
+/// stored in `*replaced`. `replaced` and/or `entry` may be NULL if not needed.
+///
+/// If `entry` is NULL and there is a `free_entry` function, it will be called
+/// when an entry is replaced.
+///
+/// Returns 0 if an entry was written to the hash table, or -1 if the hash table
+/// is full.
 int
 hashtable_set(struct hashtable *hashtable,
               struct ht_key key,
@@ -211,36 +211,39 @@ hashtable_set(struct hashtable *hashtable,
               struct ht_entry *entry);
 
 
-// Delete an entry in a hash table.
-//
-// If the hash table contained an entry for the key, the deleted entry is
-// stored in `*entry'. `entry' may be NULL if not needed.
-//
-// Returns 0 if the entry was deleted, or -1 if the hash table does not contain
-// an entry for the key.
+/// Delete an entry in a hash table.
+///
+/// If the hash table contained an entry for the key, the deleted entry is
+/// stored in `*entry`. `entry` may be NULL if not needed.
+///
+/// If `entry` is NULL and there is a `free_entry` function, it will be called
+/// when an entry is removed.
+///
+/// Returns 0 if the entry was deleted, or -1 if the hash table does not contain
+/// an entry for the key.
 int
 hashtable_remove(struct hashtable *hashtable,
                  struct ht_key key,
                  struct ht_entry *entry);
 
 
-// Copy entries from one hash table into another.
-//
-// Entries with equal keys from `source' replace entries in `destination'.
-// If `source' will not fit into `destination', then `destination' is not
-// modified.
-//
-// The `copy_entry' and `free_entry' functions must be the same for `source'
-// and `destination' or an error will be returned.
-//
-// If `free_entry' is not NULL, it is called for each entry in `destination'
-// that is replaced. If `copy_entry' is not NULL, it is called for each entry
-// from `source' that is written to `destination'. If `copy_entry' fails,
-// `destination' is left in an indeterminate state.
-//
-// Returns 0 if all entries in `source' are copied into `destination, or -1 if
-// `source' will not fit into `destination' or `copy_entry' fails, or the
-// functions are not the same between `source' and `destination'.
+/// Copy entries from one hash table into another.
+///
+/// Entries with equal keys from `source` replace entries in `destination`.
+/// If `source` will not fit into `destination`, then `destination` is not
+/// modified.
+///
+/// The `copy_entry` and `free_entry` functions must be the same for `source`
+/// and `destination` or an error will be returned.
+///
+/// If `free_entry` is not NULL, it is called for each entry in `destination`
+/// that is replaced. If `copy_entry` is not NULL, it is called for each entry
+/// from `source` that is written to `destination`. If `copy_entry` fails,
+/// `destination` is left in an indeterminate state.
+///
+/// Returns 0 if all entries in `source` are copied into `destination`, or -1 if
+/// `source` will not fit into `destination` or `copy_entry` fails, or the
+/// functions are not the same between `source` and `destination`.
 int
 hashtable_update(struct hashtable *destination,
                  struct hashtable const *source);
@@ -250,15 +253,15 @@ hashtable_update(struct hashtable *destination,
  * Iteration *
  *************/
 
-// Iterate over entries in a hash table.
-//
-// Do not modify the hash table while iterating. `*iterator' must contain 0
-// before the first call to the function. Do not modify the value of
-// `*iterator' between calls, except to set it to 0 to restart iteration from
-// the beginning.
-//
-// Returns a pointer to the next entry in the hash table, or NULL when there
-// are no more entries.
+/// Iterate over entries in a hash table.
+///
+/// Do not modify the hash table while iterating. `*iterator` must contain 0
+/// before the first call to the function. Do not modify the value of
+/// `*iterator` between calls, except to set it to 0 to restart iteration from
+/// the beginning.
+///
+/// Returns a pointer to the next entry in the hash table, or NULL when there
+/// are no more entries.
 struct ht_entry const *
 hashtable_next(struct hashtable const *hashtable, size_t *iterator);
 
@@ -267,42 +270,42 @@ hashtable_next(struct hashtable const *hashtable, size_t *iterator);
  * Get all keys, values or entries *
  ***********************************/
 
-// Copy the keys from a hash table into an array.
-//
-// Returns the count of items copied into the `keys' array, which will not be
-// more than `keys_count'.
+/// Copy the keys from a hash table into an array.
+///
+/// Returns the count of items copied into the `keys` array, which will not be
+/// more than `keys_count`.
 size_t
 hashtable_copy_keys(struct hashtable const *hashtable,
                     struct ht_key *keys,
                     size_t keys_count);
 
 
-// Copy the values from a hash table into an array.
-//
-// Returns the count of items copied into the `values' array, which will not be
-// more than `values_count'.
+/// Copy the values from a hash table into an array.
+///
+/// Returns the count of items copied into the `values` array, which will not be
+/// more than `values_count`.
 size_t
 hashtable_copy_values(struct hashtable const *hashtable,
                       union ht_value *values,
                       size_t values_count);
 
 
-// Copy the entries from a hash table into an array.
-//
-// Returns the count of items copied into the `entries' array, which will not
-// be more than `entries_count'.
+/// Copy the entries from a hash table into an array.
+///
+/// Returns the count of items copied into the `entries` array, which will not
+/// be more than `entries_count`.
 size_t
 hashtable_copy_entries(struct hashtable const *hashtable,
                        struct ht_entry *entries,
                        size_t entries_count);
 
 
-// Allocate an array containing the keys from a hash table.
-//
-// The array will contain `hashtable->count' items. The caller is responsible
-// for freeing the array.
-//
-// Returns NULL if memory cannot be allocated.
+/// Allocate an array containing the keys from a hash table.
+///
+/// The array will contain `hashtable->count` items. The caller is responsible
+/// for freeing the array.
+///
+/// Returns NULL if memory cannot be allocated.
 inline struct ht_key *
 hashtable_alloc_keys(struct hashtable const *hashtable)
 {
@@ -312,12 +315,12 @@ hashtable_alloc_keys(struct hashtable const *hashtable)
 }
 
 
-// Allocate an array containing the values from a hash table.
-//
-// The array will contain `hashtable->count' items. The caller is responsible
-// for freeing the array.
-//
-// Returns NULL if memory cannot be allocated.
+/// Allocate an array containing the values from a hash table.
+///
+/// The array will contain `hashtable->count` items. The caller is responsible
+/// for freeing the array.
+///
+/// Returns NULL if memory cannot be allocated.
 inline union ht_value *
 hashtable_alloc_values(struct hashtable const *hashtable)
 {
@@ -327,12 +330,12 @@ hashtable_alloc_values(struct hashtable const *hashtable)
 }
 
 
-// Allocate an array containing the entries from a hash table.
-//
-// The array will contain `hashtable->count' items. The caller is responsible
-// for freeing the array.
-//
-// Returns NULL if memory cannot be allocated.
+/// Allocate an array containing the entries from a hash table.
+///
+/// The array will contain `hashtable->count` items. The caller is responsible
+/// for freeing the array.
+///
+/// Returns NULL if memory cannot be allocated.
 inline struct ht_entry *
 hashtable_alloc_entries(struct hashtable const *hashtable)
 {
@@ -346,7 +349,7 @@ hashtable_alloc_entries(struct hashtable const *hashtable)
  * Calculate hash *
  ******************/
 
-// Calculate the hash for a single contiguous range of bytes.
+/// Calculate the hash for a single contiguous range of bytes.
 inline ht_hash
 ht_hash_of(void const *start, size_t size)
 {
@@ -355,7 +358,7 @@ ht_hash_of(void const *start, size_t size)
 }
 
 
-// Calculate the hash for a const string.
+/// Calculate the hash for a const string.
 inline ht_hash
 ht_hash_of_const_str(char const *value)
 {
@@ -364,7 +367,7 @@ ht_hash_of_const_str(char const *value)
 }
 
 
-// Calculate the hash for a long int.
+/// Calculate the hash for a long int.
 inline ht_hash
 ht_hash_of_long(long value)
 {
@@ -372,7 +375,7 @@ ht_hash_of_long(long value)
 }
 
 
-// Calculate the hash for a string.
+/// Calculate the hash for a string.
 inline ht_hash
 ht_hash_of_str(char *value)
 {
@@ -380,7 +383,7 @@ ht_hash_of_str(char *value)
 }
 
 
-// Calculate the hash for an unsigned long int.
+/// Calculate the hash for an unsigned long int.
 inline ht_hash
 ht_hash_of_ulong(unsigned long value)
 {
@@ -392,7 +395,7 @@ ht_hash_of_ulong(unsigned long value)
  * Unsigned long int keys and values *
  *************************************/
 
-// Make a value from an unsigned long int.
+/// Make a value from an unsigned long int.
 inline union ht_value
 ht_ulong_value(unsigned long value)
 {
@@ -400,7 +403,7 @@ ht_ulong_value(unsigned long value)
 }
 
 
-// Make a key from an unsigned long int.
+/// Make a key from an unsigned long int.
 inline struct ht_key
 ht_ulong_key(unsigned long value)
 {
@@ -411,7 +414,7 @@ ht_ulong_key(unsigned long value)
 }
 
 
-// Compare two unsigned long int keys for equality.
+/// Compare two unsigned long int keys for equality.
 inline bool
 ht_equal_ulong_keys(struct hashtable const *hashtable,
                     struct ht_key first, struct ht_key second)
@@ -426,7 +429,7 @@ ht_equal_ulong_keys(struct hashtable const *hashtable,
  * Long int keys and values *
  ****************************/
 
-// Make a value from a long int.
+/// Make a value from a long int.
 inline union ht_value
 ht_long_value(long value)
 {
@@ -434,7 +437,7 @@ ht_long_value(long value)
 }
 
 
-// Make a key from a long int.
+/// Make a key from a long int.
 inline struct ht_key
 ht_long_key(long value)
 {
@@ -445,7 +448,7 @@ ht_long_key(long value)
 }
 
 
-// Compare two long int keys for equality.
+/// Compare two long int keys for equality.
 inline bool
 ht_equal_long_keys(struct hashtable const *hashtable,
                    struct ht_key first, struct ht_key second)
@@ -460,7 +463,7 @@ ht_equal_long_keys(struct hashtable const *hashtable,
  * Const string keys and values *
  ********************************/
 
-// Make a value from a const string.
+/// Make a value from a const string.
 inline union ht_value
 ht_const_str_value(char const *value)
 {
@@ -468,7 +471,7 @@ ht_const_str_value(char const *value)
 }
 
 
-// Make a key from a const string.
+/// Make a key from a const string.
 inline struct ht_key
 ht_const_str_key(char const *value)
 {
@@ -479,7 +482,7 @@ ht_const_str_key(char const *value)
 }
 
 
-// Compare two const string keys for equality.
+/// Compare two const string keys for equality.
 inline bool
 ht_equal_const_str_keys(struct hashtable const *hashtable,
                         struct ht_key first, struct ht_key second)
@@ -495,7 +498,7 @@ ht_equal_const_str_keys(struct hashtable const *hashtable,
  * String keys and values *
  **************************/
 
-// Make a value from a string.
+/// Make a value from a string.
 inline union ht_value
 ht_str_value(char *value)
 {
@@ -503,7 +506,7 @@ ht_str_value(char *value)
 }
 
 
-// Make a key from a string.
+/// Make a key from a string.
 inline struct ht_key
 ht_str_key(char *value)
 {
@@ -514,7 +517,7 @@ ht_str_key(char *value)
 }
 
 
-// Compare two string keys for equality.
+/// Compare two string keys for equality.
 inline bool
 ht_equal_str_keys(struct hashtable const *hashtable,
                   struct ht_key first, struct ht_key second)
